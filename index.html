@@ -1,2294 +1,1175 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0b5d3b" />
-  <title>KINSHASA BUSINESS 🇨🇩</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --green: #087443;
-      --green-dark: #04552f;
-      --green-light: #eaf8f0;
-      --yellow: #f4c400;
-      --red: #d62828;
-      --dark: #17231d;
-      --text: #26332c;
-      --muted: #78857e;
-      --bg: #f5f8f6;
-      --white: #ffffff;
-      --border: #e5ebe7;
-      --shadow: 0 8px 25px rgba(0,0,0,.07);
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    button,
-    input,
-    select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-      border: 0;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* AUTH */
-
-    #authScreen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background:
-        radial-gradient(circle at top right, rgba(244,196,0,.25), transparent 35%),
-        linear-gradient(145deg, #034d2b, #0b7b49);
-    }
-
-    .auth-card {
-      width: 100%;
-      max-width: 430px;
-      background: white;
-      border-radius: 25px;
-      padding: 25px;
-      box-shadow: 0 20px 50px rgba(0,0,0,.2);
-    }
-
-    .brand {
-      text-align: center;
-      margin-bottom: 22px;
-    }
-
-    .flag {
-      font-size: 50px;
-      margin-bottom: 8px;
-    }
-
-    .brand h1 {
-      color: var(--green);
-      font-size: 27px;
-      font-weight: 900;
-    }
-
-    .brand p {
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 5px;
-    }
-
-    .auth-tabs {
-      display: flex;
-      background: #edf3ef;
-      border-radius: 12px;
-      padding: 4px;
-      margin-bottom: 20px;
-    }
-
-    .auth-tabs button {
-      flex: 1;
-      padding: 11px;
-      border-radius: 9px;
-      background: transparent;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .auth-tabs button.active {
-      background: white;
-      color: var(--green);
-      box-shadow: 0 2px 8px rgba(0,0,0,.08);
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 7px;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      outline: none;
-      background: #fafcfb;
-    }
-
-    .form-group input:focus {
-      border-color: var(--green);
-    }
-
-    .main-btn {
-      width: 100%;
-      background: var(--green);
-      color: white;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 800;
-      margin-top: 5px;
-    }
-
-    .main-btn:hover {
-      background: var(--green-dark);
-    }
-
-    .google-btn {
-      width: 100%;
-      padding: 13px;
-      margin-top: 10px;
-      border-radius: 12px;
-      background: #222;
-      color: white;
-      font-weight: 700;
-    }
-
-    .auth-message {
-      margin-top: 12px;
-      padding: 10px;
-      border-radius: 10px;
-      background: var(--green-light);
-      color: var(--green-dark);
-      font-size: 13px;
-      text-align: center;
-    }
-
-    /* APP */
-
-    #appScreen {
-      min-height: 100vh;
-      padding-bottom: 78px;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 13px 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .top-brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .top-brand .mini-flag {
-      font-size: 25px;
-    }
-
-    .top-brand strong {
-      color: var(--green);
-      font-size: 17px;
-    }
-
-    .bell {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: var(--green-light);
-      color: var(--green);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 850px;
-      margin: auto;
-      padding: 15px;
-    }
-
-    /* HERO */
-
-    .hero {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg, #04552f, #0a8a51);
-      border-radius: 23px;
-      padding: 23px;
-      color: white;
-      box-shadow: var(--shadow);
-      margin-bottom: 14px;
-    }
-
-    .hero:after {
-      content: "🇨🇩";
-      position: absolute;
-      right: -10px;
-      bottom: -20px;
-      font-size: 105px;
-      opacity: .12;
-    }
-
-    .hero small {
-      opacity: .8;
-      font-size: 12px;
-    }
-
-    .hero h2 {
-      font-size: 23px;
-      margin-top: 6px;
-    }
-
-    .balance-label {
-      margin-top: 22px;
-      opacity: .85;
-      font-size: 12px;
-    }
-
-    .balance {
-      font-size: 32px;
-      font-weight: 900;
-      margin-top: 3px;
-    }
-
-    .earning-box {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .earning-box div {
-      background: rgba(255,255,255,.13);
-      padding: 11px;
-      border-radius: 12px;
-      flex: 1;
-    }
-
-    .earning-box small {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .earning-box strong {
-      font-size: 14px;
-    }
-
-    /* NOTICE */
-
-    .notice {
-      background: #fff8d9;
-      border: 1px solid #f4e29b;
-      border-radius: 13px;
-      padding: 12px;
-      font-size: 13px;
-      margin-bottom: 16px;
-      color: #6e5a00;
-    }
-
-    /* ACTIONS */
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 20px 0 11px;
-    }
-
-    .section-title h3 {
-      font-size: 17px;
-    }
-
-    .section-title span {
-      color: var(--green);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    .action {
-      background: white;
-      border-radius: 14px;
-      padding: 12px 5px;
-      text-align: center;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-    }
-
-    .action .icon {
-      font-size: 23px;
-      margin-bottom: 5px;
-    }
-
-    .action span {
-      display: block;
-      font-size: 10px;
-      font-weight: 700;
-    }
-
-    /* KIN CARDS */
-
-    .products {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 13px;
-    }
-
-    .product {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 17px;
-      box-shadow: var(--shadow);
-    }
-
-    .product-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .kin {
-      font-size: 19px;
-      font-weight: 900;
-      color: var(--green);
-    }
-
-    .tag {
-      background: #fff2c1;
-      color: #765d00;
-      font-size: 10px;
-      padding: 5px 8px;
-      border-radius: 20px;
-      font-weight: 800;
-    }
-
-    .product-price {
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--dark);
-      margin-bottom: 12px;
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-bottom: 13px;
-    }
-
-    .product-info {
-      background: #f6f9f7;
-      border-radius: 10px;
-      padding: 9px;
-    }
-
-    .product-info small {
-      display: block;
-      color: var(--muted);
-      font-size: 10px;
-      margin-bottom: 4px;
-    }
-
-    .product-info strong {
-      font-size: 13px;
-    }
-
-    .buy-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .buy-btn {
-      flex: 1;
-      padding: 12px;
-      border-radius: 11px;
-      background: var(--green);
-      color: white;
-      font-weight: 800;
-    }
-
-    .limit {
-      font-size: 11px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    /* SECTIONS */
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 17px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-      margin-bottom: 13px;
-    }
-
-    .card h3 {
-      margin-bottom: 12px;
-      font-size: 17px;
-    }
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-      padding: 11px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-
-    .info-row:last-child {
-      border-bottom: 0;
-    }
-
-    .info-row span:first-child {
-      color: var(--muted);
-    }
-
-    .info-row strong {
-      text-align: right;
-    }
-
-    .big-number {
-      font-size: 29px;
-      font-weight: 900;
-      color: var(--green);
-      margin-bottom: 5px;
-    }
-
-    .referral-box {
-      background: var(--green-light);
-      padding: 14px;
-      border-radius: 13px;
-      margin-top: 10px;
-    }
-
-    .referral-code {
-      font-size: 19px;
-      font-weight: 900;
-      color: var(--green);
-      word-break: break-all;
-    }
-
-    .copy-btn {
-      margin-top: 10px;
-      background: var(--green);
-      color: white;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-weight: 700;
-    }
-
-    /* TASKS */
-
-    .task {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 13px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .task:last-child {
-      border-bottom: 0;
-    }
-
-    .task-info strong {
-      display: block;
-      font-size: 14px;
-    }
-
-    .task-info small {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .task-btn {
-      background: var(--green-light);
-      color: var(--green);
-      padding: 9px 12px;
-      border-radius: 9px;
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .task-btn.done {
-      background: #e8e8e8;
-      color: #777;
-    }
-
-    /* PAYMENT */
-
-    .payment {
-      padding: 14px;
-      border-radius: 14px;
-      margin-bottom: 10px;
-      background: #f6f9f7;
-      border: 1px solid var(--border);
-    }
-
-    .payment strong {
-      color: var(--green);
-      font-size: 16px;
-    }
-
-    .payment-number {
-      font-size: 18px;
-      font-weight: 900;
-      margin: 5px 0;
-    }
-
-    .payment small {
-      color: var(--muted);
-    }
-
-    .whatsapp {
-      background: #20b958;
-    }
-
-    .telegram {
-      background: #229ed9;
-    }
-
-    .social-btn {
-      display: block;
-      color: white;
-      padding: 13px;
-      border-radius: 11px;
-      text-align: center;
-      font-weight: 800;
-      margin-top: 9px;
-    }
-
-    /* MODAL */
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: rgba(0,0,0,.55);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-    }
-
-    .modal-content {
-      width: 100%;
-      max-width: 500px;
-      background: white;
-      border-radius: 24px 24px 0 0;
-      padding: 20px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .close {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      background: #edf2ef;
-      color: #555;
-    }
-
-    /* BOTTOM NAV */
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 60;
-      background: white;
-      border-top: 1px solid var(--border);
-      height: 68px;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      box-shadow: 0 -5px 20px rgba(0,0,0,.05);
-    }
-
-    .nav-btn {
-      background: white;
-      color: #8a958f;
-      font-size: 10px;
-      font-weight: 700;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-    }
-
-    .nav-btn .nav-icon {
-      font-size: 21px;
-    }
-
-    .nav-btn.active {
-      color: var(--green);
-    }
-
-    /* RESPONSIVE */
-
-    @media (min-width: 600px) {
-      .products {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .modal {
-        align-items: center;
-      }
-
-      .modal-content {
-        border-radius: 22px;
-      }
-    }
-
-    @media (max-width: 350px) {
-      .quick-actions {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#087443">
+<title>KINSHASA BUSINESS 🇨🇩</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#087443;
+  --dark:#04552f;
+  --light:#eaf8f0;
+  --gold:#f4b400;
+  --red:#d93025;
+  --white:#fff;
+  --bg:#f4f7f6;
+  --text:#17201c;
+  --muted:#68756f;
+}
+body{
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:75px;
+}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+.hidden{display:none!important}
+.container{max-width:700px;margin:auto;padding:14px}
+
+header{
+  background:linear-gradient(135deg,var(--green),var(--dark));
+  color:white;
+  padding:20px 15px;
+  border-radius:0 0 25px 25px;
+}
+.header-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.logo{font-size:22px;font-weight:800}
+.flag{font-size:25px}
+
+.hero{
+  margin-top:15px;
+  background:white;
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 4px 18px #00000012;
+}
+.balance{
+  font-size:32px;
+  font-weight:800;
+  color:var(--green);
+  margin:8px 0;
+}
+.small{font-size:13px;color:var(--muted)}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin:15px 0;
+}
+.action{
+  background:white;
+  border-radius:15px;
+  padding:17px 10px;
+  text-align:center;
+  box-shadow:0 3px 12px #0000000d;
+}
+.action span{font-size:25px;display:block;margin-bottom:5px}
+
+.section-title{
+  margin:20px 0 10px;
+  font-size:19px;
+  font-weight:800;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:17px;
+  margin-bottom:12px;
+  box-shadow:0 3px 15px #0000000d;
+}
+.plan{
+  border:2px solid var(--light);
+}
+.plan h3{
+  color:var(--green);
+  font-size:21px;
+}
+.price{
+  font-size:25px;
+  font-weight:800;
+  margin:8px 0;
+}
+.gain{color:var(--green);font-weight:700}
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  background:var(--light);
+  color:var(--green);
+  font-size:12px;
+  margin-top:7px;
+}
+
+.btn{
+  width:100%;
+  padding:13px;
+  border-radius:12px;
+  background:var(--green);
+  color:white;
+  font-weight:700;
+  margin-top:10px;
+}
+.btn.secondary{
+  background:#eef2f0;
+  color:var(--dark);
+}
+.btn.red{background:var(--red)}
+
+.form{
+  background:white;
+  border-radius:18px;
+  padding:18px;
+  margin-top:15px;
+}
+input,select{
+  width:100%;
+  padding:13px;
+  border:1px solid #d8dfdb;
+  border-radius:10px;
+  margin:7px 0;
+  background:white;
+}
+
+.auth{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.auth-box{
+  width:100%;
+  max-width:430px;
+  background:white;
+  padding:25px;
+  border-radius:25px;
+  box-shadow:0 5px 30px #0002;
+}
+.auth-box h1{
+  color:var(--green);
+  margin-bottom:8px;
+}
+
+.notice{
+  padding:12px;
+  border-radius:12px;
+  background:#fff8df;
+  color:#755d00;
+  margin:10px 0;
+  font-size:13px;
+}
+.success{
+  background:#e8f8ee;
+  color:#096536;
+}
+.error{
+  background:#ffeaea;
+  color:#9b1717;
+}
+
+.bottom{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:68px;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  box-shadow:0 -3px 15px #0002;
+  z-index:20;
+}
+.bottom button{
+  background:none;
+  color:#65716c;
+  font-size:11px;
+}
+.bottom button b{
+  display:block;
+  font-size:20px;
+}
+
+.admin-head{
+  background:#111b17;
+  color:white;
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:15px;
+}
+.admin-stat{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+.stat{
+  background:#fff;
+  color:#17201c;
+  padding:15px;
+  border-radius:14px;
+}
+.stat strong{
+  display:block;
+  font-size:22px;
+  color:var(--green);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+td,th{
+  padding:9px 5px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0008;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  z-index:100;
+}
+.modal-box{
+  background:white;
+  width:100%;
+  max-width:500px;
+  max-height:90vh;
+  overflow:auto;
+  border-radius:20px;
+  padding:20px;
+}
+
+.loading{
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+}
+</style>
 </head>
 
 <body>
 
-<!-- ================= AUTH ================= -->
+<div id="authPage" class="auth">
+  <div class="auth-box">
+    <h1>KINSHASA BUSINESS 🇨🇩</h1>
+    <p class="small">Plateforme de gestion des membres</p>
 
-<section id="authScreen">
-  <div class="auth-card">
+    <div id="authMessage"></div>
 
-    <div class="brand">
-      <div class="flag">🇨🇩</div>
-      <h1>KINSHASA BUSINESS</h1>
-      <p>Plateforme membre</p>
+    <div id="loginForm">
+      <div class="section-title">Connexion</div>
+      <input id="loginEmail" type="email" placeholder="Adresse e-mail">
+      <input id="loginPassword" type="password" placeholder="Mot de passe">
+      <button class="btn" onclick="login()">Se connecter</button>
+      <button class="btn secondary" onclick="showSignup()">Créer un compte</button>
     </div>
 
-    <div class="auth-tabs">
-      <button id="loginTab" class="active" onclick="showAuth('login')">
-        Connexion
-      </button>
-      <button id="signupTab" onclick="showAuth('signup')">
-        Inscription
-      </button>
+    <div id="signupForm" class="hidden">
+      <div class="section-title">Créer un compte</div>
+      <input id="signupName" placeholder="Nom complet">
+      <input id="signupPhone" placeholder="Téléphone">
+      <input id="signupEmail" type="email" placeholder="Adresse e-mail">
+      <input id="signupPassword" type="password" placeholder="Mot de passe">
+      <input id="signupReferral" placeholder="Code parrainage (facultatif)">
+      <button class="btn" onclick="signup()">S'inscrire</button>
+      <button class="btn secondary" onclick="showLogin()">Retour connexion</button>
     </div>
-
-    <form id="loginForm">
-      <div class="form-group">
-        <label>Email</label>
-        <input id="loginEmail" type="email" placeholder="Votre email" required />
-      </div>
-
-      <div class="form-group">
-        <label>Mot de passe</label>
-        <input id="loginPassword" type="password" placeholder="Votre mot de passe" required />
-      </div>
-
-      <button class="main-btn" type="submit">Se connecter</button>
-
-      <button class="google-btn" type="button" onclick="loginWithGithub()">
-        Continuer avec GitHub
-      </button>
-    </form>
-
-    <form id="signupForm" class="hidden">
-      <div class="form-group">
-        <label>Nom complet</label>
-        <input id="signupName" type="text" placeholder="Votre nom" required />
-      </div>
-
-      <div class="form-group">
-        <label>Email</label>
-        <input id="signupEmail" type="email" placeholder="Votre email" required />
-      </div>
-
-      <div class="form-group">
-        <label>Mot de passe</label>
-        <input id="signupPassword" type="password" placeholder="Minimum 6 caractères" minlength="6" required />
-      </div>
-
-      <div class="form-group">
-        <label>Code de parrainage</label>
-        <input id="signupReferral" type="text" placeholder="Facultatif" />
-      </div>
-
-      <button class="main-btn" type="submit">Créer mon compte</button>
-    </form>
-
-    <div id="authMessage" class="auth-message hidden"></div>
-  </div>
-</section>
-
-
-<!-- ================= APPLICATION ================= -->
-
-<section id="appScreen" class="hidden">
-
-  <header class="topbar">
-    <div class="top-brand">
-      <span class="mini-flag">🇨🇩</span>
-      <strong>KINSHASA BUSINESS</strong>
-    </div>
-
-    <button class="bell" onclick="showPage('profile')">🔔</button>
-  </header>
-
-
-  <main class="container">
-
-    <!-- ACCUEIL -->
-
-    <section id="page-home" class="page active">
-
-      <div class="hero">
-        <small>Bienvenue sur</small>
-        <h2>KINSHASA BUSINESS 🇨🇩</h2>
-
-        <div class="balance-label">Solde disponible</div>
-        <div class="balance" id="balance">2 000 FC</div>
-
-        <div class="earning-box">
-          <div>
-            <small>Gains cumulés</small>
-            <strong id="totalEarnings">0 FC</strong>
-          </div>
-
-          <div>
-            <small>Positions actives</small>
-            <strong id="activePositions">0</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="notice">
-        📢 <strong>Information :</strong>
-        consultez toujours les conditions de chaque KIN avant de faire une demande.
-      </div>
-
-      <div class="section-title">
-        <h3>Actions rapides</h3>
-      </div>
-
-      <div class="quick-actions">
-
-        <button class="action" onclick="openModal('depositModal')">
-          <div class="icon">💰</div>
-          <span>Dépôt</span>
-        </button>
-
-        <button class="action" onclick="openModal('withdrawModal')">
-          <div class="icon">💸</div>
-          <span>Retrait</span>
-        </button>
-
-        <button class="action" onclick="showPage('tasks')">
-          <div class="icon">✅</div>
-          <span>Tâches</span>
-        </button>
-
-        <button class="action" onclick="doCheckin()">
-          <div class="icon">📅</div>
-          <span>Pointage</span>
-        </button>
-
-      </div>
-
-
-      <div class="section-title">
-        <h3>Produits KIN</h3>
-        <span>7 niveaux</span>
-      </div>
-
-      <div id="products" class="products"></div>
-
-    </section>
-
-
-    <!-- PRODUITS -->
-
-    <section id="page-products" class="page">
-
-      <div class="section-title">
-        <h3>Tous les produits</h3>
-      </div>
-
-      <div id="productsPage" class="products"></div>
-
-    </section>
-
-
-    <!-- TÂCHES -->
-
-    <section id="page-tasks" class="page">
-
-      <div class="section-title">
-        <h3>Tâches & Pointage</h3>
-      </div>
-
-      <div class="card">
-
-        <div class="task">
-          <div class="task-info">
-            <strong>Pointage quotidien</strong>
-            <small>Effectuez votre pointage chaque jour.</small>
-          </div>
-
-          <button id="checkinBtn" class="task-btn" onclick="doCheckin()">
-            Pointer
-          </button>
-        </div>
-
-        <div class="task">
-          <div class="task-info">
-            <strong>Consulter les produits</strong>
-            <small>Découvrez les niveaux KIN disponibles.</small>
-          </div>
-
-          <button class="task-btn" onclick="showPage('products')">
-            Ouvrir
-          </button>
-        </div>
-
-        <div class="task">
-          <div class="task-info">
-            <strong>Rejoindre notre communauté</strong>
-            <small>WhatsApp / Telegram</small>
-          </div>
-
-          <button class="task-btn" onclick="showPage('profile')">
-            Voir
-          </button>
-        </div>
-
-      </div>
-
-      <div class="card">
-        <h3>Horaires de la plateforme</h3>
-
-        <div class="info-row">
-          <span>Disponibilité</span>
-          <strong>Lundi – Dimanche</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Heures</span>
-          <strong>08:00 – 19:00</strong>
-        </div>
-      </div>
-
-    </section>
-
-
-    <!-- ÉQUIPE -->
-
-    <section id="page-team" class="page">
-
-      <div class="section-title">
-        <h3>Mon équipe</h3>
-      </div>
-
-      <div class="card">
-
-        <div class="big-number" id="teamCount">0</div>
-        <p style="color:#78857e;font-size:13px;">
-          Membres dans votre réseau
-        </p>
-
-        <div class="referral-box">
-          <small>Votre code de parrainage</small>
-          <div class="referral-code" id="referralCode">---</div>
-          <button class="copy-btn" onclick="copyReferral()">
-            Copier le code
-          </button>
-        </div>
-
-      </div>
-
-
-      <div class="card">
-        <h3>Programme de parrainage affiché</h3>
-
-        <div class="info-row">
-          <span>Niveau 1</span>
-          <strong>30 %</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Niveau 2</span>
-          <strong>2 %</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Niveau 3</span>
-          <strong>1 %</strong>
-        </div>
-
-        <p style="font-size:11px;color:#78857e;margin-top:12px;">
-          Les taux affichés sont les paramètres configurés de la plateforme.
-          Le calcul et le versement réels doivent être traités côté serveur.
-        </p>
-      </div>
-
-    </section>
-
-
-    <!-- PROFIL -->
-
-    <section id="page-profile" class="page">
-
-      <div class="section-title">
-        <h3>Mon profil</h3>
-      </div>
-
-      <div class="card">
-
-        <div class="info-row">
-          <span>Nom</span>
-          <strong id="profileName">---</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Email</span>
-          <strong id="profileEmail">---</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Compte</span>
-          <strong>Actif</strong>
-        </div>
-
-      </div>
-
-
-      <div class="card">
-
-        <h3>Paramètres de la plateforme</h3>
-
-        <div class="info-row">
-          <span>Dépôt minimum</span>
-          <strong>15 000 FC</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Retrait minimum</span>
-          <strong>2 000 FC</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Frais de retrait</span>
-          <strong>10 %</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Bonus inscription</span>
-          <strong>2 000 FC</strong>
-        </div>
-
-      </div>
-
-
-      <div class="card">
-
-        <h3>Moyens de paiement</h3>
-
-        <div class="payment">
-          <strong>AIRTEL MONEY</strong>
-          <div class="payment-number">973087965</div>
-          <small>YVETTE — transfert</small>
-        </div>
-
-        <div class="payment">
-          <strong>ORANGE MONEY</strong>
-          <div class="payment-number">899532643</div>
-          <small>JEANCQUELINE — transfert</small>
-        </div>
-
-        <div class="payment">
-          <strong>M-PESA</strong>
-          <div class="payment-number">0861823718</div>
-          <small>REGINA — transfert</small>
-        </div>
-
-      </div>
-
-
-      <div class="card">
-
-        <h3>Communauté</h3>
-
-        <a
-          class="social-btn whatsapp"
-          href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps"
-          target="_blank"
-        >
-          💬 Rejoindre WhatsApp
-        </a>
-
-        <a
-          class="social-btn telegram"
-          href="https://t.me/francscongolais"
-          target="_blank"
-        >
-          ✈️ Rejoindre Telegram
-        </a>
-
-      </div>
-
-
-      <div class="card">
-
-        <h3>Historique local</h3>
-
-        <div id="history"></div>
-
-      </div>
-
-
-      <button
-        class="main-btn"
-        style="background:#b42323;margin-bottom:15px;"
-        onclick="logout()"
-      >
-        Se déconnecter
-      </button>
-
-    </section>
-
-  </main>
-
-
-  <!-- BOTTOM NAV -->
-
-  <nav class="bottom-nav">
-
-    <button class="nav-btn active" data-page="home" onclick="showPage('home')">
-      <span class="nav-icon">🏠</span>
-      Accueil
-    </button>
-
-    <button class="nav-btn" data-page="products" onclick="showPage('products')">
-      <span class="nav-icon">💎</span>
-      Produits
-    </button>
-
-    <button class="nav-btn" data-page="tasks" onclick="showPage('tasks')">
-      <span class="nav-icon">✅</span>
-      Tâches
-    </button>
-
-    <button class="nav-btn" data-page="team" onclick="showPage('team')">
-      <span class="nav-icon">👥</span>
-      Équipe
-    </button>
-
-    <button class="nav-btn" data-page="profile" onclick="showPage('profile')">
-      <span class="nav-icon">👤</span>
-      Profil
-    </button>
-
-  </nav>
-
-</section>
-
-
-<!-- ================= DEPOSIT MODAL ================= -->
-
-<div id="depositModal" class="modal hidden">
-
-  <div class="modal-content">
-
-    <div class="modal-head">
-      <h3>Demande de dépôt</h3>
-      <button class="close" onclick="closeModal('depositModal')">✕</button>
-    </div>
-
-    <div class="notice">
-      Minimum : <strong>15 000 FC</strong>
-    </div>
-
-    <div class="form-group">
-      <label>Montant</label>
-      <input id="depositAmount" type="number" min="15000" placeholder="Ex : 15000" />
-    </div>
-
-    <div class="form-group">
-      <label>Moyen de paiement</label>
-
-      <select id="depositMethod" style="width:100%;padding:14px;border:1px solid #e5ebe7;border-radius:12px;">
-        <option>AIRTEL MONEY</option>
-        <option>ORANGE MONEY</option>
-        <option>M-PESA</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Référence de transfert</label>
-      <input id="depositReference" type="text" placeholder="Référence / numéro de transaction" />
-    </div>
-
-    <button class="main-btn" onclick="submitDeposit()">
-      Envoyer la demande
-    </button>
-
   </div>
 </div>
 
+<div id="app" class="hidden">
 
-<!-- ================= WITHDRAW MODAL ================= -->
-
-<div id="withdrawModal" class="modal hidden">
-
-  <div class="modal-content">
-
-    <div class="modal-head">
-      <h3>Demande de retrait</h3>
-      <button class="close" onclick="closeModal('withdrawModal')">✕</button>
-    </div>
-
-    <div class="notice">
-      Minimum : <strong>2 000 FC</strong><br>
-      Frais automatiques affichés : <strong>10 %</strong>
-    </div>
-
-    <div class="form-group">
-      <label>Montant demandé</label>
-      <input id="withdrawAmount" type="number" min="2000" placeholder="Ex : 5000" />
-    </div>
-
-    <div class="form-group">
-      <label>Moyen de retrait</label>
-
-      <select id="withdrawMethod" style="width:100%;padding:14px;border:1px solid #e5ebe7;border-radius:12px;">
-        <option>AIRTEL MONEY</option>
-        <option>ORANGE MONEY</option>
-        <option>M-PESA</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Numéro de réception</label>
-      <input id="withdrawPhone" type="tel" placeholder="Votre numéro" />
-    </div>
-
-    <button class="main-btn" onclick="submitWithdraw()">
-      Envoyer la demande
-    </button>
-
+<header>
+  <div class="header-row">
+    <div class="logo">KINSHASA BUSINESS 🇨🇩</div>
+    <div class="flag">🇨🇩</div>
   </div>
+  <div style="margin-top:12px">
+    <div class="small" style="color:#d9f5e5">Bienvenue</div>
+    <strong id="userName">Membre</strong>
+  </div>
+</header>
+
+<main class="container">
+
+<div id="maintenance" class="notice hidden">
+  <strong>⚠️ Maintenance</strong><br>
+  La plateforme est temporairement indisponible pour les membres.
 </div>
 
+<section id="homeSection">
+
+<div class="hero">
+  <div class="small">Solde disponible</div>
+  <div class="balance"><span id="balance">0</span> FC</div>
+  <div class="small">Gains cumulés : <b id="earnings">0</b> FC</div>
+</div>
+
+<div class="grid">
+  <button class="action" onclick="showSection('depositSection')">
+    <span>💰</span>Dépôt
+  </button>
+  <button class="action" onclick="showSection('withdrawSection')">
+    <span>💸</span>Retrait
+  </button>
+  <button class="action" onclick="checkin()">
+    <span>📅</span>Pointage
+  </button>
+  <button class="action" onclick="showSection('teamSection')">
+    <span>👥</span>Équipe
+  </button>
+</div>
+
+<div class="section-title">Nos KIN</div>
+<div id="plans"></div>
+
+</section>
+
+<section id="depositSection" class="hidden">
+<div class="section-title">💰 Dépôt</div>
+
+<div class="card">
+<strong>Méthodes de paiement</strong>
+<div id="payments"></div>
+</div>
+
+<div class="form">
+<select id="depositMethod"></select>
+<input id="depositAmount" type="number" placeholder="Montant en FC">
+<input id="depositReference" placeholder="Référence du transfert">
+<button class="btn" onclick="deposit()">Envoyer la demande</button>
+<div class="small">Minimum : 15 000 FC. La validation est effectuée par l'administration.</div>
+</div>
+</section>
+
+<section id="withdrawSection" class="hidden">
+<div class="section-title">💸 Retrait</div>
+
+<div class="form">
+<input id="withdrawAmount" type="number" placeholder="Montant en FC">
+<select id="withdrawMethod"></select>
+<input id="withdrawPhone" placeholder="Numéro de réception">
+<button class="btn" onclick="withdraw()">Demander le retrait</button>
+<div class="small">Minimum : 2 000 FC. Frais automatiques : 10%.</div>
+</div>
+</section>
+
+<section id="teamSection" class="hidden">
+<div class="section-title">👥 Mon équipe</div>
+
+<div class="card">
+<strong>Mon code de parrainage</strong>
+<div id="refCode" class="price">---</div>
+<button class="btn" onclick="copyReferral()">Copier mon code</button>
+</div>
+
+<div class="card">
+<strong>Commissions</strong>
+<p>1er niveau : <b id="comm1">30%</b></p>
+<p>2e niveau : <b id="comm2">2%</b></p>
+<p>3e niveau : <b id="comm3">1%</b></p>
+</div>
+
+<div class="card">
+<a id="whatsapp" target="_blank" class="btn">WhatsApp</a>
+<a id="telegram" target="_blank" class="btn secondary">Telegram</a>
+</div>
+</section>
+
+<section id="profileSection" class="hidden">
+<div class="section-title">👤 Mon profil</div>
+
+<div class="card">
+<p><b>Nom :</b> <span id="profileName"></span></p>
+<p><b>Téléphone :</b> <span id="profilePhone"></span></p>
+<p><b>E-mail :</b> <span id="profileEmail"></span></p>
+</div>
+
+<button class="btn red" onclick="logout()">Se déconnecter</button>
+</section>
+
+<section id="historySection" class="hidden">
+<div class="section-title">📜 Historique</div>
+<div id="history"></div>
+</section>
+
+<section id="adminSection" class="hidden">
+
+<div class="admin-head">
+<h2>🛠️ ADMINISTRATION</h2>
+<p class="small" style="color:#b9c9c1">KINSHASA BUSINESS</p>
+</div>
+
+<div class="admin-stat">
+<div class="stat">
+Utilisateurs
+<strong id="adminUsers">0</strong>
+</div>
+<div class="stat">
+Demandes dépôt
+<strong id="adminDeposits">0</strong>
+</div>
+<div class="stat">
+Retraits
+<strong id="adminWithdrawals">0</strong>
+</div>
+<div class="stat">
+Pointages
+<strong id="adminCheckins">0</strong>
+</div>
+</div>
+
+<div class="section-title">⚙️ Gestion du site</div>
+
+<div class="card">
+<input id="siteName" placeholder="Nom du site">
+<input id="siteColor" placeholder="Couleur principale">
+<input id="siteHours" placeholder="Horaires">
+<select id="maintenanceSelect">
+<option value="false">Site actif</option>
+<option value="true">Maintenance</option>
+</select>
+<button class="btn" onclick="saveSiteSettings()">Enregistrer</button>
+</div>
+
+<div class="section-title">👥 Membres</div>
+
+<div class="card">
+<input id="userSearch" placeholder="Rechercher un membre">
+<button class="btn" onclick="loadAdminUsers()">Rechercher</button>
+<div id="adminUsersList"></div>
+</div>
+
+<div class="section-title">💰 Ajustement de solde</div>
+
+<div class="card">
+<input id="adjustUser" placeholder="ID utilisateur">
+<input id="adjustAmount" type="number" placeholder="+ ou - montant FC">
+<input id="adjustReason" placeholder="Motif obligatoire">
+<button class="btn" onclick="adjustBalance()">Modifier le solde</button>
+</div>
+
+<div class="section-title">⭐ Ajouter directement un KIN</div>
+
+<div class="card">
+<input id="vipUser" placeholder="ID utilisateur">
+<select id="vipPlan"></select>
+<input id="vipReason" placeholder="Motif">
+<button class="btn" onclick="assignVip()">Attribuer le KIN</button>
+</div>
+
+<div class="section-title">🚫 Bannissement</div>
+
+<div class="card">
+<input id="banUser" placeholder="ID utilisateur">
+<select id="banStatus">
+<option value="true">Bannir</option>
+<option value="false">Débannir</option>
+</select>
+<button class="btn red" onclick="banUser()">Appliquer</button>
+</div>
+
+<div class="section-title">💎 Modifier les KIN</div>
+<div id="adminPlans"></div>
+
+<div class="section-title">📋 Demandes de dépôt</div>
+<div id="adminDepositList"></div>
+
+<div class="section-title">📋 Demandes de retrait</div>
+<div id="adminWithdrawalList"></div>
+
+</section>
+
+</main>
+
+<nav class="bottom">
+<button onclick="showSection('homeSection')"><b>🏠</b>Accueil</button>
+<button onclick="showSection('homeSection')"><b>💎</b>Produits</button>
+<button onclick="showSection('historySection')"><b>📋</b>Historique</button>
+<button onclick="showSection('teamSection')"><b>👥</b>Équipe</button>
+<button onclick="showSection('profileSection')"><b>👤</b>Profil</button>
+</nav>
+
+</div>
+
+<div id="modal" class="modal hidden">
+<div class="modal-box">
+<div id="modalContent"></div>
+<button class="btn secondary" onclick="closeModal()">Fermer</button>
+</div>
+</div>
 
 <script>
-  /* =========================================================
-     CONFIGURATION SUPABASE
-  ========================================================= */
-
-  const SUPABASE_URL =
-    "https://uewceocdzvekuopgsmpg.supabase.co";
-
-  const SUPABASE_KEY =
-    "sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-
-  /* =========================================================
-     DONNÉES KIN
-  ========================================================= */
-
-  const KINS = [
-
-    {
-      id: "KIN1",
-      price: 15000,
-      gain: 2000,
-      days: 60,
-      max: 1
-    },
-
-    {
-      id: "KIN2",
-      price: 30000,
-      gain: 4400,
-      days: 60,
-      max: 2
-    },
-
-    {
-      id: "KIN3",
-      price: 80000,
-      gain: 12300,
-      days: 60,
-      max: 3
-    },
-
-    {
-      id: "KIN4",
-      price: 150000,
-      gain: 24000,
-      days: 60,
-      max: 3
-    },
-
-    {
-      id: "KIN5",
-      price: 300000,
-      gain: 52000,
-      days: 60,
-      max: 5
-    },
-
-    {
-      id: "KIN6",
-      price: 600000,
-      gain: 120000,
-      days: 60,
-      max: 2
-    },
-
-    {
-      id: "KIN7",
-      price: 1500000,
-      gain: 330000,
-      days: 60,
-      max: 2
-    }
-
-  ];
-
-
-  let currentUser = null;
-
-
-  /* =========================================================
-     FORMATAGE
-  ========================================================= */
-
-  function money(value) {
-
-    return Number(value || 0)
-      .toLocaleString("fr-FR") + " FC";
-
-  }
-
-
-  /* =========================================================
-     AUTH
-  ========================================================= */
-
-  function showAuth(type) {
-
-    const loginForm =
-      document.getElementById("loginForm");
-
-    const signupForm =
-      document.getElementById("signupForm");
-
-    const loginTab =
-      document.getElementById("loginTab");
-
-    const signupTab =
-      document.getElementById("signupTab");
-
-    clearAuthMessage();
-
-    if (type === "login") {
-
-      loginForm.classList.remove("hidden");
-      signupForm.classList.add("hidden");
-
-      loginTab.classList.add("active");
-      signupTab.classList.remove("active");
-
-    } else {
-
-      loginForm.classList.add("hidden");
-      signupForm.classList.remove("hidden");
-
-      loginTab.classList.remove("active");
-      signupTab.classList.add("active");
-
-    }
-
-  }
-
-
-  function showAuthMessage(message) {
-
-    const box =
-      document.getElementById("authMessage");
-
-    box.textContent = message;
-    box.classList.remove("hidden");
-
-  }
-
-
-  function clearAuthMessage() {
-
-    document
-      .getElementById("authMessage")
-      .classList.add("hidden");
-
-  }
-
-
-  document
-    .getElementById("loginForm")
-    .addEventListener("submit", async function(e) {
-
-      e.preventDefault();
-
-      const email =
-        document.getElementById("loginEmail").value.trim();
-
-      const password =
-        document.getElementById("loginPassword").value;
-
-      showAuthMessage("Connexion en cours...");
-
-      const { error } =
-        await supabaseClient.auth.signInWithPassword({
-          email,
-          password
-        });
-
-      if (error) {
-
-        showAuthMessage(
-          "Erreur : " + error.message
-        );
-
-        return;
-      }
-
-      showAuthMessage("Connexion réussie.");
-
-    });
-
-
-  document
-    .getElementById("signupForm")
-    .addEventListener("submit", async function(e) {
-
-      e.preventDefault();
-
-      const name =
-        document.getElementById("signupName").value.trim();
-
-      const email =
-        document.getElementById("signupEmail").value.trim();
-
-      const password =
-        document.getElementById("signupPassword").value;
-
-      const referrer =
-        document.getElementById("signupReferral").value.trim();
-
-      showAuthMessage("Création du compte...");
-
-      const { error } =
-        await supabaseClient.auth.signUp({
-
-          email,
-          password,
-
-          options: {
-            data: {
-              name: name,
-              referrer: referrer
-            }
-          }
-
-        });
-
-
-      if (error) {
-
-        showAuthMessage(
-          "Erreur : " + error.message
-        );
-
-        return;
-      }
-
-      showAuthMessage(
-        "Inscription réussie ! Vous pouvez maintenant utiliser votre compte."
-      );
-
-      document
-        .getElementById("signupForm")
-        .reset();
-
-    });
-
-
-  async function loginWithGithub() {
-
-    const { error } =
-      await supabaseClient.auth.signInWithOAuth({
-
-        provider: "github",
-
-        options: {
-          redirectTo: window.location.origin
-        }
-
-      });
-
-    if (error) {
-
-      showAuthMessage(
-        "Erreur : " + error.message
-      );
-
-    }
-
-  }
-
-
-  async function logout() {
-
-    await supabaseClient.auth.signOut();
-
-    currentUser = null;
-
-    document
-      .getElementById("appScreen")
-      .classList.add("hidden");
-
-    document
-      .getElementById("authScreen")
-      .classList.remove("hidden");
-
-  }
-
-
-  /* =========================================================
-     SESSION
-  ========================================================= */
-
-  async function loadSession() {
-
-    const {
-      data: { session }
-    } = await supabaseClient.auth.getSession();
-
-    if (session && session.user) {
-
-      openApp(session.user);
-
-    }
-
-  }
-
-
-  supabaseClient.auth.onAuthStateChange(
-    function(event, session) {
-
-      if (session && session.user) {
-
-        openApp(session.user);
-
-      }
-
-    }
-  );
-
-
-  async function openApp(user) {
-
-    currentUser = user;
-
-    document
-      .getElementById("authScreen")
-      .classList.add("hidden");
-
-    document
-      .getElementById("appScreen")
-      .classList.remove("hidden");
-
-    updateProfile();
-
-    renderProducts();
-
-    renderHistory();
-
-    updateStats();
-
-    updateReferral();
-
-  }
-
-
-  /* =========================================================
-     NAVIGATION
-  ========================================================= */
-
-  function showPage(page) {
-
-    document
-      .querySelectorAll(".page")
-      .forEach(function(section) {
-
-        section.classList.remove("active");
-
-      });
-
-
-    const target =
-      document.getElementById(
-        "page-" + page
-      );
-
-    if (target) {
-
-      target.classList.add("active");
-
-    }
-
-
-    document
-      .querySelectorAll(".nav-btn")
-      .forEach(function(btn) {
-
-        btn.classList.remove("active");
-
-        if (
-          btn.dataset.page === page
-        ) {
-
-          btn.classList.add("active");
-
-        }
-
-      });
-
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-
-  }
-
-
-  /* =========================================================
-     PRODUITS
-  ========================================================= */
-
-  function renderProducts() {
-
-    const html =
-      KINS.map(function(kin) {
-
-        const total =
-          kin.gain * kin.days;
-
-        return `
-
-          <div class="product">
-
-            <div class="product-head">
-
-              <div class="kin">
-                ${kin.id}
-              </div>
-
-              <div class="tag">
-                MAX ${kin.max}
-              </div>
-
-            </div>
-
-            <div class="product-price">
-              ${money(kin.price)}
-            </div>
-
-            <div class="product-grid">
-
-              <div class="product-info">
-                <small>Gain journalier affiché</small>
-                <strong>${money(kin.gain)}</strong>
-              </div>
-
-              <div class="product-info">
-                <small>Durée</small>
-                <strong>${kin.days} jours</strong>
-              </div>
-
-              <div class="product-info">
-                <small>Gain affiché / période</small>
-                <strong>${money(total)}</strong>
-              </div>
-
-              <div class="product-info">
-                <small>Achats simultanés</small>
-                <strong>${kin.max} maximum</strong>
-              </div>
-
-            </div>
-
-            <div class="buy-row">
-
-              <button
-                class="buy-btn"
-                onclick="requestKin('${kin.id}')"
-              >
-                Sélectionner ${kin.id}
-              </button>
-
-              <div class="limit">
-                ${kin.max} max.
-              </div>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }).join("");
-
-
-    document.getElementById(
-      "products"
-    ).innerHTML = html;
-
-    document.getElementById(
-      "productsPage"
-    ).innerHTML = html;
-
-  }
-
-
-  function requestKin(id) {
-
-    const kin =
-      KINS.find(function(k) {
-        return k.id === id;
-      });
-
-    if (!kin) return;
-
-    alert(
-      `${kin.id}\n\n` +
-      `Prix : ${money(kin.price)}\n` +
-      `Gain journalier affiché : ${money(kin.gain)}\n` +
-      `Durée : ${kin.days} jours\n` +
-      `Maximum simultané : ${kin.max}\n\n` +
-      `Cette sélection est une demande d'interface. ` +
-      `L'activation réelle doit être validée côté serveur.`
-    );
-
-  }
-
-
-  /* =========================================================
-     LIMITES LOCALES
-  ========================================================= */
-
-  function getPositions() {
-
-    if (!currentUser) return {};
-
-    const key =
-      "kin_positions_" + currentUser.id;
-
-    try {
-
-      return JSON.parse(
-        localStorage.getItem(key) || "{}"
-      );
-
-    } catch(e) {
-
-      return {};
-
-    }
-
-  }
-
-
-  function savePositions(data) {
-
-    if (!currentUser) return;
-
-    const key =
-      "kin_positions_" + currentUser.id;
-
-    localStorage.setItem(
-      key,
-      JSON.stringify(data)
-    );
-
-  }
-
-
-  /* =========================================================
-     STATS
-  ========================================================= */
-
-  function updateStats() {
-
-    if (!currentUser) return;
-
-    const positions =
-      getPositions();
-
-    let total =
-      0;
-
-    Object.keys(positions)
-      .forEach(function(id) {
-
-        total += Number(
-          positions[id] || 0
-        );
-
-      });
-
-    document
-      .getElementById("activePositions")
-      .textContent = total;
-
-    const earnings =
-      Number(
-        localStorage.getItem(
-          "kin_earnings_" + currentUser.id
-        ) || 0
-      );
-
-    document
-      .getElementById("totalEarnings")
-      .textContent = money(earnings);
-
-    const balance =
-      Number(
-        localStorage.getItem(
-          "kin_balance_" + currentUser.id
-        ) || 2000
-      );
-
-    document
-      .getElementById("balance")
-      .textContent = money(balance);
-
-  }
-
-
-  /* =========================================================
-     PROFIL
-  ========================================================= */
-
-  function updateProfile() {
-
-    if (!currentUser) return;
-
-    const metadata =
-      currentUser.user_metadata || {};
-
-    document
-      .getElementById("profileName")
-      .textContent =
-        metadata.name ||
-        "Membre";
-
-    document
-      .getElementById("profileEmail")
-      .textContent =
-        currentUser.email ||
-        "---";
-
-  }
-
-
-  /* =========================================================
-     REFERRAL
-  ========================================================= */
-
-  function updateReferral() {
-
-    if (!currentUser) return;
-
-    const code =
-      currentUser.id
-        .replace(/-/g, "")
-        .substring(0, 8)
-        .toUpperCase();
-
-    document
-      .getElementById("referralCode")
-      .textContent = code;
-
-  }
-
-
-  async function copyReferral() {
-
-    const code =
-      document
-        .getElementById("referralCode")
-        .textContent;
-
-    try {
-
-      await navigator.clipboard.writeText(code);
-
-      alert(
-        "Code de parrainage copié."
-      );
-
-    } catch(e) {
-
-      alert(
-        "Code : " + code
-      );
-
-    }
-
-  }
-
-
-  /* =========================================================
-     POINTAGE
-  ========================================================= */
-
-  function doCheckin() {
-
-    if (!currentUser) return;
-
-    const key =
-      "kin_checkin_" + currentUser.id;
-
-    const today =
-      new Date().toISOString().slice(0, 10);
-
-    const last =
-      localStorage.getItem(key);
-
-    if (last === today) {
-
-      alert(
-        "Vous avez déjà effectué votre pointage aujourd'hui."
-      );
-
-      return;
-
-    }
-
-    localStorage.setItem(
-      key,
-      today
-    );
-
-    const btn =
-      document.getElementById("checkinBtn");
-
-    if (btn) {
-
-      btn.textContent = "Déjà pointé";
-      btn.classList.add("done");
-
-    }
-
-    addHistory(
-      "Pointage quotidien",
-      0,
-      "effectué"
-    );
-
-    alert(
-      "Pointage effectué avec succès."
-    );
-
-  }
-
-
-  /* =========================================================
-     HISTORIQUE
-  ========================================================= */
-
-  function getHistory() {
-
-    if (!currentUser) return [];
-
-    try {
-
-      return JSON.parse(
-        localStorage.getItem(
-          "kin_history_" + currentUser.id
-        ) || "[]"
-      );
-
-    } catch(e) {
-
-      return [];
-
-    }
-
-  }
-
-
-  function addHistory(
-    label,
-    amount,
-    status
-  ) {
-
-    if (!currentUser) return;
-
-    const history =
-      getHistory();
-
-    history.unshift({
-
-      label,
-      amount,
-      status,
-
-      date:
-        new Date().toLocaleString(
-          "fr-FR"
-        )
-
-    });
-
-    localStorage.setItem(
-      "kin_history_" + currentUser.id,
-      JSON.stringify(
-        history.slice(0, 30)
-      )
-    );
-
-    renderHistory();
-
-  }
-
-
-  function renderHistory() {
-
-    const box =
-      document.getElementById("history");
-
-    if (!box || !currentUser) return;
-
-    const history =
-      getHistory();
-
-    if (!history.length) {
-
-      box.innerHTML = `
-        <p style="font-size:13px;color:#78857e;">
-          Aucun historique pour le moment.
-        </p>
-      `;
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      history.map(function(item) {
-
-        return `
-
-          <div class="info-row">
-
-            <span>
-              ${escapeHtml(item.label)}
-              <br>
-              <small style="font-size:10px;">
-                ${escapeHtml(item.date)}
-              </small>
-            </span>
-
-            <strong>
-              ${item.amount
-                ? money(item.amount)
-                : escapeHtml(item.status)}
-            </strong>
-
-          </div>
-
-        `;
-
-      }).join("");
-
-  }
-
-
-  function escapeHtml(value) {
-
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
-  }
-
-
-  /* =========================================================
-     MODALS
-  ========================================================= */
-
-  function openModal(id) {
-
-    document
-      .getElementById(id)
-      .classList.remove("hidden");
-
-  }
-
-
-  function closeModal(id) {
-
-    document
-      .getElementById(id)
-      .classList.add("hidden");
-
-  }
-
-
-  document
-    .querySelectorAll(".modal")
-    .forEach(function(modal) {
-
-      modal.addEventListener(
-        "click",
-        function(e) {
-
-          if (e.target === modal) {
-
-            modal.classList.add("hidden");
-
-          }
-
-        }
-      );
-
-    });
-
-
-  /* =========================================================
-     DÉPÔT
-  ========================================================= */
-
-  function submitDeposit() {
-
-    const amount =
-      Number(
-        document
-          .getElementById("depositAmount")
-          .value
-      );
-
-    const method =
-      document
-        .getElementById("depositMethod")
-        .value;
-
-    const reference =
-      document
-        .getElementById("depositReference")
-        .value.trim();
-
-
-    if (amount < 15000) {
-
-      alert(
-        "Le dépôt minimum est de 15 000 FC."
-      );
-
-      return;
-
-    }
-
-    if (!reference) {
-
-      alert(
-        "Veuillez entrer la référence du transfert."
-      );
-
-      return;
-
-    }
-
-
-    addHistory(
-      "Demande de dépôt — " + method,
-      amount,
-      "en attente"
-    );
-
-
-    closeModal("depositModal");
-
-    document
-      .getElementById("depositAmount")
-      .value = "";
-
-    document
-      .getElementById("depositReference")
-      .value = "";
-
-
-    alert(
-      "Votre demande de dépôt a été enregistrée localement.\n\n" +
-      "Elle doit être vérifiée par le système avant toute activation."
-    );
-
-  }
-
-
-  /* =========================================================
-     RETRAIT
-  ========================================================= */
-
-  function submitWithdraw() {
-
-    const amount =
-      Number(
-        document
-          .getElementById("withdrawAmount")
-          .value
-      );
-
-    const method =
-      document
-        .getElementById("withdrawMethod")
-        .value;
-
-    const phone =
-      document
-        .getElementById("withdrawPhone")
-        .value.trim();
-
-
-    if (amount < 2000) {
-
-      alert(
-        "Le retrait minimum est de 2 000 FC."
-      );
-
-      return;
-
-    }
-
-    if (!phone) {
-
-      alert(
-        "Veuillez entrer votre numéro de réception."
-      );
-
-      return;
-
-    }
-
-
-    const fee =
-      amount * 0.10;
-
-    const net =
-      amount - fee;
-
-
-    addHistory(
-      "Demande de retrait — " + method,
-      amount,
-      "en attente"
-    );
-
-
-    closeModal("withdrawModal");
-
-    document
-      .getElementById("withdrawAmount")
-      .value = "";
-
-    document
-      .getElementById("withdrawPhone")
-      .value = "";
-
-
-    alert(
-
-      "Demande enregistrée.\n\n" +
-
-      "Montant : " + money(amount) + "\n" +
-      "Frais 10 % : " + money(fee) + "\n" +
-      "Montant après frais : " + money(net) + "\n\n" +
-
-      "Le retrait réel doit être validé par le backend."
-
-    );
-
-  }
-
-
-  /* =========================================================
-     INITIALISATION
-  ========================================================= */
-
-  loadSession();
-
+const SUPABASE_URL="https://uewceocdzvekuopgsmpg.supabase.co";
+const SUPABASE_KEY="sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
+
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let user=null;
+let profile=null;
+let wallet=null;
+let plans=[];
+
+function msg(text,type="notice"){
+ document.getElementById("authMessage").innerHTML=
+ `<div class="${type} notice">${text}</div>`;
+}
+
+function showLogin(){
+ document.getElementById("loginForm").classList.remove("hidden");
+ document.getElementById("signupForm").classList.add("hidden");
+}
+function showSignup(){
+ document.getElementById("loginForm").classList.add("hidden");
+ document.getElementById("signupForm").classList.remove("hidden");
+}
+
+async function signup(){
+ const name=document.getElementById("signupName").value.trim();
+ const phone=document.getElementById("signupPhone").value.trim();
+ const email=document.getElementById("signupEmail").value.trim();
+ const password=document.getElementById("signupPassword").value;
+ const referral=document.getElementById("signupReferral").value.trim();
+
+ if(!email||!password){
+   msg("Veuillez remplir l'e-mail et le mot de passe.","error");
+   return;
+ }
+
+ const {data,error}=await sb.auth.signUp({
+   email,
+   password,
+   options:{
+     data:{name,phone,referral_code:referral}
+   }
+ });
+
+ if(error){
+   msg(error.message,"error");
+   return;
+ }
+
+ msg("Inscription réussie ! Vous pouvez maintenant utiliser votre compte.","success");
+ showLogin();
+}
+
+async function login(){
+ const email=document.getElementById("loginEmail").value.trim();
+ const password=document.getElementById("loginPassword").value;
+
+ const {data,error}=await sb.auth.signInWithPassword({email,password});
+
+ if(error){
+   msg(error.message,"error");
+   return;
+ }
+
+ await startApp(data.user);
+}
+
+async function startApp(u){
+ user=u;
+
+ document.getElementById("authPage").classList.add("hidden");
+ document.getElementById("app").classList.remove("hidden");
+
+ await loadProfile();
+ await loadPlans();
+ await loadWallet();
+ await loadSettings();
+ await loadPayments();
+ await loadHistory();
+
+ if(profile && profile.role==="admin"){
+   document.getElementById("adminSection").classList.remove("hidden");
+   await loadAdmin();
+ }
+}
+
+async function loadProfile(){
+ const {data,error}=await sb
+ .from("profiles")
+ .select("*")
+ .eq("id",user.id)
+ .maybeSingle();
+
+ if(error)console.error(error);
+
+ profile=data||{
+   id:user.id,
+   name:user.user_metadata?.name||"Membre",
+   phone:user.user_metadata?.phone||""
+ };
+
+ document.getElementById("userName").textContent=profile.name||"Membre";
+ document.getElementById("profileName").textContent=profile.name||"";
+ document.getElementById("profilePhone").textContent=profile.phone||"";
+ document.getElementById("profileEmail").textContent=user.email||"";
+ document.getElementById("refCode").textContent=profile.referral_code||"---";
+}
+
+async function loadPlans(){
+ const {data,error}=await sb
+ .from("kin_plans")
+ .select("*")
+ .eq("active",true)
+ .order("price");
+
+ if(error){
+   console.error(error);
+   return;
+ }
+
+ plans=data||[];
+
+ const box=document.getElementById("plans");
+ box.innerHTML="";
+
+ plans.forEach(p=>{
+   box.innerHTML+=`
+   <div class="card plan">
+     <h3>${p.name}</h3>
+     <div class="price">${Number(p.price).toLocaleString("fr-FR")} FC</div>
+     <div class="gain">${Number(p.daily_gain).toLocaleString("fr-FR")} FC / jour</div>
+     <div class="badge">${p.duration_days} jours</div>
+     <div class="badge">Maximum : ${p.max_positions}</div>
+     <button class="btn" onclick="activateKin('${p.id}')">
+       Activer ${p.name}
+     </button>
+   </div>`;
+ });
+
+ const select=document.getElementById("vipPlan");
+ select.innerHTML="";
+ plans.forEach(p=>{
+   select.innerHTML+=`<option value="${p.id}">${p.name}</option>`;
+ });
+}
+
+async function loadWallet(){
+ const {data}=await sb
+ .from("kin_wallets")
+ .select("*")
+ .eq("user_id",user.id)
+ .maybeSingle();
+
+ wallet=data||{balance:0,total_earnings:0};
+
+ document.getElementById("balance").textContent=
+ Number(wallet.balance||0).toLocaleString("fr-FR");
+
+ document.getElementById("earnings").textContent=
+ Number(wallet.total_earnings||0).toLocaleString("fr-FR");
+}
+
+async function loadSettings(){
+ const {data}=await sb.from("kin_settings").select("*");
+
+ if(!data)return;
+
+ const settings={};
+ data.forEach(x=>settings[x.key]=x.value);
+
+ if(settings.site_name){
+   document.querySelectorAll(".logo").forEach(x=>{
+     x.innerHTML=settings.site_name+" 🇨🇩";
+   });
+ }
+
+ if(settings.primary_color){
+   document.documentElement.style.setProperty("--green",settings.primary_color);
+ }
+
+ if(settings.referral_level_1)
+   document.getElementById("comm1").textContent=settings.referral_level_1+"%";
+
+ if(settings.referral_level_2)
+   document.getElementById("comm2").textContent=settings.referral_level_2+"%";
+
+ if(settings.referral_level_3)
+   document.getElementById("comm3").textContent=settings.referral_level_3+"%";
+
+ if(settings.whatsapp)
+   document.getElementById("whatsapp").href=settings.whatsapp;
+
+ if(settings.telegram)
+   document.getElementById("telegram").href=settings.telegram;
+
+ if(settings.maintenance==="true" && profile?.role!=="admin"){
+   document.getElementById("maintenance").classList.remove("hidden");
+ }
+}
+
+async function loadPayments(){
+ const {data}=await sb
+ .from("kin_payment_methods")
+ .select("*")
+ .eq("active",true);
+
+ if(!data)return;
+
+ const p=document.getElementById("payments");
+ const ds=document.getElementById("depositMethod");
+ const ws=document.getElementById("withdrawMethod");
+
+ p.innerHTML="";
+ ds.innerHTML="";
+ ws.innerHTML="";
+
+ data.forEach(x=>{
+   p.innerHTML+=`
+   <p style="margin-top:10px">
+   <b>${x.name}</b><br>
+   ${x.number||""} — ${x.account_name||""}
+   </p>`;
+
+   ds.innerHTML+=`<option value="${x.id}">${x.name}</option>`;
+   ws.innerHTML+=`<option value="${x.id}">${x.name}</option>`;
+ });
+}
+
+async function activateKin(planId){
+ const plan=plans.find(x=>x.id===planId);
+ if(!plan)return;
+
+ if(!confirm(
+ `Activer ${plan.name} pour ${Number(plan.price).toLocaleString("fr-FR")} FC ?`
+ ))return;
+
+ /*
+  L'activation financière doit être validée côté serveur.
+  Le bouton appelle la fonction sécurisée si elle existe.
+ */
+ const {data,error}=await sb.rpc("member_activate_kin",{
+   p_plan_id:planId
+ });
+
+ if(error){
+   alert("Activation non effectuée : "+error.message);
+   return;
+ }
+
+ alert("Activation enregistrée.");
+ await loadWallet();
+ await loadHistory();
+}
+
+async function checkin(){
+ const {data,error}=await sb.rpc("daily_checkin");
+
+ if(error){
+   alert(error.message);
+   return;
+ }
+
+ alert(data?.message||"Pointage enregistré. Récompense : 20 FC.");
+ await loadWallet();
+ await loadHistory();
+}
+
+async function deposit(){
+ const amount=Number(document.getElementById("depositAmount").value);
+ const method=document.getElementById("depositMethod").value;
+ const reference=document.getElementById("depositReference").value.trim();
+
+ if(amount<15000){
+   alert("Le dépôt minimum est de 15 000 FC.");
+   return;
+ }
+
+ const {error}=await sb.from("kin_deposit_requests").insert({
+   user_id:user.id,
+   amount,
+   payment_method_id:method,
+   reference,
+   status:"pending"
+ });
+
+ if(error){
+   alert(error.message);
+   return;
+ }
+
+ alert("Demande de dépôt envoyée. Elle sera vérifiée par l'administration.");
+}
+
+async function withdraw(){
+ const amount=Number(document.getElementById("withdrawAmount").value);
+ const method=document.getElementById("withdrawMethod").value;
+ const phone=document.getElementById("withdrawPhone").value.trim();
+
+ if(amount<2000){
+   alert("Le retrait minimum est de 2 000 FC.");
+   return;
+ }
+
+ if(amount>Number(wallet?.balance||0)){
+   alert("Solde insuffisant.");
+   return;
+ }
+
+ const fee=amount*0.10;
+ const net=amount-fee;
+
+ const {error}=await sb.from("kin_withdrawal_requests").insert({
+   user_id:user.id,
+   amount,
+   fee,
+   net_amount:net,
+   payment_method_id:method,
+   phone,
+   status:"pending"
+ });
+
+ if(error){
+   alert(error.message);
+   return;
+ }
+
+ alert("Demande de retrait envoyée.");
+}
+
+async function loadHistory(){
+ const {data}=await sb
+ .from("kin_transactions")
+ .select("*")
+ .eq("user_id",user.id)
+ .order("created_at",{ascending:false})
+ .limit(50);
+
+ const box=document.getElementById("history");
+
+ if(!data||!data.length){
+   box.innerHTML=`<div class="card">Aucune opération pour le moment.</div>`;
+   return;
+ }
+
+ box.innerHTML=data.map(x=>`
+ <div class="card">
+   <b>${x.type||"Opération"}</b>
+   <div>${Number(x.amount||0).toLocaleString("fr-FR")} FC</div>
+   <div class="small">${new Date(x.created_at).toLocaleString("fr-FR")}</div>
+ </div>`).join("");
+}
+
+function showSection(id){
+ document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function copyReferral(){
+ const code=document.getElementById("refCode").textContent;
+ navigator.clipboard?.writeText(code);
+ alert("Code copié.");
+}
+
+async function logout(){
+ await sb.auth.signOut();
+ location.reload();
+}
+
+/* ================= ADMIN ================= */
+
+async function loadAdmin(){
+ await loadAdminUsers();
+ await loadAdminPlans();
+ await loadAdminDeposits();
+ await loadAdminWithdrawals();
+
+ const {count}=await sb
+ .from("profiles")
+ .select("*",{count:"exact",head:true});
+
+ document.getElementById("adminUsers").textContent=count||0;
+
+ const {count:d}=await sb
+ .from("kin_deposit_requests")
+ .select("*",{count:"exact",head:true})
+ .eq("status","pending");
+
+ document.getElementById("adminDeposits").textContent=d||0;
+
+ const {count:w}=await sb
+ .from("kin_withdrawal_requests")
+ .select("*",{count:"exact",head:true})
+ .eq("status","pending");
+
+ document.getElementById("adminWithdrawals").textContent=w||0;
+
+ const {count:c}=await sb
+ .from("kin_daily_checkins")
+ .select("*",{count:"exact",head:true});
+
+ document.getElementById("adminCheckins").textContent=c||0;
+}
+
+async function loadAdminUsers(){
+ let q=document.getElementById("userSearch").value.trim();
+
+ let query=sb.from("profiles")
+   .select("id,name,phone,email,role,banned,referral_code")
+   .order("created_at",{ascending:false})
+   .limit(50);
+
+ if(q)query=query.or(`name.ilike.%${q}%,phone.ilike.%${q}%,email.ilike.%${q}%`);
+
+ const {data,error}=await query;
+
+ if(error){
+   document.getElementById("adminUsersList").innerHTML=
+   `<div class="notice error">${error.message}</div>`;
+   return;
+ }
+
+ document.getElementById("adminUsersList").innerHTML=
+ `<div style="overflow:auto">
+ <table>
+ <tr><th>Nom</th><th>Statut</th><th>ID</th></tr>
+ ${data.map(x=>`
+ <tr>
+ <td>${x.name||"—"}</td>
+ <td>${x.banned?"🚫 Banni":"✅ Actif"}</td>
+ <td style="font-size:9px">${x.id}</td>
+ </tr>`).join("")}
+ </table></div>`;
+}
+
+async function adjustBalance(){
+ const target=document.getElementById("adjustUser").value.trim();
+ const amount=Number(document.getElementById("adjustAmount").value);
+ const reason=document.getElementById("adjustReason").value.trim();
+
+ if(!target||!amount||!reason){
+   alert("Tous les champs sont obligatoires.");
+   return;
+ }
+
+ const {error}=await sb.rpc("admin_adjust_balance",{
+   p_user_id:target,
+   p_amount_delta:amount,
+   p_reason:reason
+ });
+
+ if(error){alert(error.message);return}
+
+ alert("Solde modifié.");
+}
+
+async function assignVip(){
+ const target=document.getElementById("vipUser").value.trim();
+ const plan=document.getElementById("vipPlan").value;
+ const reason=document.getElementById("vipReason").value.trim();
+
+ if(!target||!plan){
+   alert("Utilisateur et KIN obligatoires.");
+   return;
+ }
+
+ const {error}=await sb.rpc("admin_assign_kin",{
+   p_user_id:target,
+   p_plan_id:plan,
+   p_reason:reason
+ });
+
+ if(error){alert(error.message);return}
+
+ alert("KIN attribué.");
+}
+
+async function banUser(){
+ const target=document.getElementById("banUser").value.trim();
+ const banned=document.getElementById("banStatus").value==="true";
+
+ const {error}=await sb.rpc("admin_set_ban",{
+   p_user_id:target,
+   p_banned:banned
+ });
+
+ if(error){alert(error.message);return}
+
+ alert(banned?"Membre banni.":"Membre débanni.");
+ await loadAdminUsers();
+}
+
+async function saveSiteSettings(){
+ const name=document.getElementById("siteName").value.trim();
+ const color=document.getElementById("siteColor").value.trim();
+ const hours=document.getElementById("siteHours").value.trim();
+ const maintenance=document.getElementById("maintenanceSelect").value;
+
+ const settings=[
+   ["site_name",name],
+   ["primary_color",color],
+   ["opening_hours",hours],
+   ["maintenance",maintenance]
+ ];
+
+ for(const [key,value] of settings){
+   if(value){
+     const {error}=await sb.rpc("admin_set_setting",{
+       p_key:key,
+       p_value:value
+     });
+     if(error){
+       alert(error.message);
+       return;
+     }
+   }
+ }
+
+ alert("Paramètres enregistrés.");
+ location.reload();
+}
+
+async function loadAdminPlans(){
+ const {data}=await sb.from("kin_plans").select("*").order("price");
+
+ if(!data)return;
+
+ document.getElementById("adminPlans").innerHTML=data.map(p=>`
+ <div class="card">
+   <b>${p.name}</b>
+   <p>${Number(p.price).toLocaleString("fr-FR")} FC</p>
+   <p>${Number(p.daily_gain).toLocaleString("fr-FR")} FC/jour</p>
+   <p>${p.duration_days} jours — maximum ${p.max_positions}</p>
+ </div>
+ `).join("");
+}
+
+async function loadAdminDeposits(){
+ const {data}=await sb
+ .from("kin_deposit_requests")
+ .select("*")
+ .eq("status","pending")
+ .order("created_at",{ascending:false})
+ .limit(50);
+
+ if(!data||!data.length){
+   document.getElementById("adminDepositList").innerHTML=
+   `<div class="card">Aucune demande.</div>`;
+   return;
+ }
+
+ document.getElementById("adminDepositList").innerHTML=data.map(x=>`
+ <div class="card">
+   <b>${Number(x.amount).toLocaleString("fr-FR")} FC</b>
+   <p class="small">${x.reference||"Sans référence"}</p>
+   <button class="btn" onclick="reviewDeposit('${x.id}','approved')">✅ Valider</button>
+   <button class="btn red" onclick="reviewDeposit('${x.id}','rejected')">❌ Refuser</button>
+ </div>
+ `).join("");
+}
+
+async function reviewDeposit(id,status){
+ const {error}=await sb.rpc("admin_review_deposit",{
+   p_request_id:id,
+   p_status:status
+ });
+
+ if(error){alert(error.message);return}
+
+ alert("Demande traitée.");
+ await loadAdminDeposits();
+ await loadAdmin();
+}
+
+async function loadAdminWithdrawals(){
+ const {data}=await sb
+ .from("kin_withdrawal_requests")
+ .select("*")
+ .eq("status","pending")
+ .order("created_at",{ascending:false})
+ .limit(50);
+
+ if(!data||!data.length){
+   document.getElementById("adminWithdrawalList").innerHTML=
+   `<div class="card">Aucune demande.</div>`;
+   return;
+ }
+
+ document.getElementById("adminWithdrawalList").innerHTML=data.map(x=>`
+ <div class="card">
+   <b>${Number(x.amount).toLocaleString("fr-FR")} FC</b>
+   <p>Net : ${Number(x.net_amount).toLocaleString("fr-FR")} FC</p>
+   <p class="small">${x.phone||""}</p>
+   <button class="btn" onclick="reviewWithdrawal('${x.id}','approved')">✅ Valider</button>
+   <button class="btn red" onclick="reviewWithdrawal('${x.id}','rejected')">❌ Refuser</button>
+ </div>
+ `).join("");
+}
+
+async function reviewWithdrawal(id,status){
+ const {error}=await sb.rpc("admin_review_withdrawal",{
+   p_request_id:id,
+   p_status:status
+ });
+
+ if(error){alert(error.message);return}
+
+ alert("Retrait traité.");
+ await loadAdminWithdrawals();
+ await loadAdmin();
+}
+
+async function loadAdminWithdrawals(){
+ await loadAdminWithdrawalsReal();
+}
+
+async function loadAdminWithdrawalsReal(){
+ const {data}=await sb
+ .from("kin_withdrawal_requests")
+ .select("*")
+ .eq("status","pending")
+ .order("created_at",{ascending:false})
+ .limit(50);
+
+ const box=document.getElementById("adminWithdrawalList");
+
+ if(!data||!data.length){
+   box.innerHTML=`<div class="card">Aucune demande.</div>`;
+   return;
+ }
+
+ box.innerHTML=data.map(x=>`
+ <div class="card">
+ <b>${Number(x.amount).toLocaleString("fr-FR")} FC</b>
+ <p>Net après 10% : ${Number(x.net_amount).toLocaleString("fr-FR")} FC</p>
+ <p>${x.phone||""}</p>
+ <button class="btn" onclick="reviewWithdrawal('${x.id}','approved')">✅ Valider</button>
+ <button class="btn red" onclick="reviewWithdrawal('${x.id}','rejected')">❌ Refuser</button>
+ </div>`).join("");
+}
+
+sb.auth.getSession().then(async({data})=>{
+ if(data.session){
+   await startApp(data.session.user);
+ }
+});
+
+sb.auth.onAuthStateChange(async(event,session)=>{
+ if(event==="SIGNED_OUT"){
+   location.reload();
+ }
+});
 </script>
 
 </body>
