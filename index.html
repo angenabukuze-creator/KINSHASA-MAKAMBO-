@@ -1,1123 +1,1138 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KINSHASA MAKAMBO</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f3f4f6;
-  color:#171717;
-  padding-bottom:78px;
-}
-
-button,input,select{
-  font-family:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-.hidden{
-  display:none!important;
-}
-
-/* AUTH */
-#authPage{
-  min-height:100vh;
-  background:linear-gradient(160deg,#061a38,#0b5ed7);
-  padding:25px 18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.authBox{
-  width:100%;
-  max-width:430px;
-  background:white;
-  border-radius:24px;
-  padding:25px;
-  box-shadow:0 15px 45px rgba(0,0,0,.25);
-}
-
-.logo{
-  text-align:center;
-  color:#0b5ed7;
-  font-size:27px;
-  font-weight:800;
-  margin-bottom:8px;
-}
-
-.authSubtitle{
-  text-align:center;
-  color:#666;
-  margin-bottom:22px;
-}
-
-.authBox input{
-  width:100%;
-  padding:14px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  margin-bottom:12px;
-  font-size:16px;
-}
-
-.primaryBtn{
-  width:100%;
-  border:0;
-  background:#0b5ed7;
-  color:white;
-  padding:14px;
-  border-radius:10px;
-  font-size:17px;
-  font-weight:700;
-}
-
-.secondaryBtn{
-  width:100%;
-  border:0;
-  background:#eee;
-  color:#222;
-  padding:13px;
-  border-radius:10px;
-  margin-top:10px;
-  font-weight:700;
-}
-
-.message{
-  margin:10px 0;
-  padding:12px;
-  border-radius:9px;
-  display:none;
-}
-
-/* APP */
-#app{
-  min-height:100vh;
-}
-
-.top{
-  background:#0b5ed7;
-  color:white;
-  padding:17px 18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
-  top:0;
-  z-index:50;
-}
-
-.topTitle{
-  font-size:21px;
-  font-weight:800;
-}
-
-.menuButton{
-  width:48px;
-  height:42px;
-  border:0;
-  border-radius:12px;
-  background:white;
-  color:#333;
-  font-size:24px;
-}
-
-.page{
-  max-width:720px;
-  margin:auto;
-}
-
-.hero{
-  height:185px;
-  background:
-    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
-    linear-gradient(120deg,#164b8a,#5d8fb9);
-  display:flex;
-  align-items:flex-end;
-  padding:22px;
-  color:white;
-}
-
-.hero h1{
-  font-size:28px;
-}
-
-.hero p{
-  margin-top:7px;
-  color:#eee;
-}
-
-/* BALANCES */
-.balanceGrid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  padding:15px;
-}
-
-.balance{
-  background:#fff;
-  border:2px solid #e51b3e;
-  border-radius:18px;
-  padding:18px;
-}
-
-.balance small{
-  color:#777;
-  display:block;
-  margin-top:10px;
-}
-
-.balance strong{
-  font-size:25px;
-}
-
-/* NOTICE */
-.notice{
-  margin:0 15px 15px;
-  background:#111;
-  color:white;
-  padding:14px;
-  border-radius:16px;
-  overflow:hidden;
-  white-space:nowrap;
-}
-
-/* QUICK */
-.quick{
-  margin:0 15px 18px;
-  padding:18px 10px;
-  background:#111;
-  color:white;
-  border-radius:18px;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:5px;
-}
-
-.quick button{
-  border:0;
-  background:transparent;
-  color:white;
-}
-
-.circle{
-  width:62px;
-  height:62px;
-  margin:auto;
-  border:3px solid white;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:27px;
-}
-
-.quick span{
-  display:block;
-  margin-top:8px;
-  font-size:13px;
-  font-weight:700;
-}
-
-/* SECTIONS */
-.section{
-  padding:0 15px 18px;
-}
-
-.sectionTitle{
-  font-size:22px;
-  font-weight:800;
-  margin:10px 0 14px;
-}
-
-.sectionTitle span{
-  color:#e51b3e;
-}
-
-/* PRODUCTS */
-.products{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.product{
-  background:white;
-  border-radius:20px;
-  padding:12px;
-  box-shadow:0 3px 15px rgba(0,0,0,.08);
-}
-
-.product .vip{
-  text-align:center;
-  font-size:21px;
-  font-weight:800;
-  margin-bottom:10px;
-}
-
-.productImage{
-  width:100%;
-  height:135px;
-  border-radius:12px;
-  background:linear-gradient(135deg,#222,#777);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:white;
-  font-size:42px;
-}
-
-.productInfo{
-  margin-top:12px;
-}
-
-.productInfo div{
-  display:flex;
-  justify-content:space-between;
-  gap:5px;
-  margin:7px 0;
-  font-size:13px;
-}
-
-.productInfo b{
-  color:#d62b42;
-}
-
-.price{
-  text-align:center;
-  font-size:21px;
-  font-weight:800;
-  margin:15px 0 10px;
-}
-
-.buyBtn{
-  width:100%;
-  border:0;
-  background:#e51b3e;
-  color:white;
-  padding:13px;
-  border-radius:10px;
-  font-size:16px;
-  font-weight:800;
-}
-
-/* CARDS */
-.card{
-  background:white;
-  margin:15px;
-  padding:20px;
-  border-radius:20px;
-  box-shadow:0 3px 14px rgba(0,0,0,.07);
-}
-
-.card h2{
-  color:#0b5ed7;
-  margin-bottom:14px;
-}
-
-.formInput{
-  width:100%;
-  padding:14px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  margin-bottom:12px;
-  font-size:16px;
-}
-
-.redBtn{
-  width:100%;
-  background:#e51b3e;
-  color:white;
-  border:0;
-  padding:14px;
-  border-radius:10px;
-  font-weight:800;
-  font-size:16px;
-}
-
-/* SERVICES */
-.services{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:14px;
-}
-
-.service{
-  background:white;
-  border-radius:17px;
-  padding:18px 10px;
-  text-align:center;
-}
-
-.serviceIcon{
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  margin:auto auto 10px;
-  background:#e51b3e;
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:25px;
-}
-
-.service p{
-  font-weight:700;
-}
-
-/* TEAM */
-.referralBox{
-  background:linear-gradient(135deg,#071d42,#0b5ed7);
-  color:white;
-  padding:20px;
-  border-radius:18px;
-}
-
-.referralLink{
-  background:white;
-  color:#222;
-  padding:13px;
-  border-radius:9px;
-  margin:14px 0;
-  word-break:break-all;
-  font-size:13px;
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:14px;
-}
-
-.stat{
-  background:white;
-  color:#222;
-  padding:16px;
-  border-radius:14px;
-  text-align:center;
-}
-
-.stat strong{
-  display:block;
-  font-size:25px;
-  color:#0b5ed7;
-}
-
-/* TASK */
-.task{
-  background:white;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:12px;
-  border-left:5px solid #e51b3e;
-}
-
-.task button{
-  margin-top:12px;
-  width:100%;
-  border:0;
-  background:#0b5ed7;
-  color:white;
-  padding:12px;
-  border-radius:9px;
-  font-weight:700;
-}
-
-/* HISTORY */
-.history{
-  background:white;
-  padding:15px;
-  border-radius:15px;
-  margin-bottom:10px;
-}
-
-.historyRow{
-  display:flex;
-  justify-content:space-between;
-  padding:10px 0;
-  border-bottom:1px solid #eee;
-}
-
-.greenText{
-  color:#198754;
-}
-
-.redText{
-  color:#dc3545;
-}
-
-/* BOTTOM NAV */
-.bottomNav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  height:72px;
-  background:#e91435;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  z-index:100;
-  box-shadow:0 -3px 15px rgba(0,0,0,.2);
-}
-
-.bottomNav button{
-  border:0;
-  background:transparent;
-  color:white;
-  font-size:12px;
-  font-weight:700;
-}
-
-.bottomNav .navIcon{
-  font-size:23px;
-  display:block;
-  margin-bottom:2px;
-}
-
-/* MODAL */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:200;
-}
-
-.modalBox{
-  background:white;
-  border-radius:22px;
-  padding:25px;
-  width:100%;
-  max-width:430px;
-  max-height:85vh;
-  overflow:auto;
-}
-
-.modalBox h2{
-  margin-bottom:15px;
-  color:#0b5ed7;
-}
-
-.closeBtn{
-  width:100%;
-  margin-top:10px;
-  border:0;
-  padding:13px;
-  border-radius:10px;
-  background:#ddd;
-  font-weight:700;
-}
-
-/* MENU */
-.sideMenu{
-  position:fixed;
-  top:0;
-  right:0;
-  width:290px;
-  height:100vh;
-  background:white;
-  z-index:150;
-  padding:25px;
-  box-shadow:-8px 0 25px rgba(0,0,0,.2);
-}
-
-.sideMenu button{
-  width:100%;
-  text-align:left;
-  border:0;
-  background:#f1f2f4;
-  margin:6px 0;
-  padding:14px;
-  border-radius:10px;
-  font-size:16px;
-}
-
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  z-index:140;
-}
-
-@media(max-width:420px){
-  .products{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .productImage{
-    height:115px;
-  }
-
-  .quick span{
-    font-size:11px;
-  }
-
-  .balance strong{
-    font-size:21px;
-  }
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0b5d3b" />
+  <title>KINSHASA BUSINESS 🇨🇩</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --green: #087443;
+      --green-dark: #04552f;
+      --green-light: #eaf8f0;
+      --yellow: #f4c400;
+      --red: #d62828;
+      --dark: #17231d;
+      --text: #26332c;
+      --muted: #78857e;
+      --bg: #f5f8f6;
+      --white: #ffffff;
+      --border: #e5ebe7;
+      --shadow: 0 8px 25px rgba(0,0,0,.07);
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* AUTH */
+
+    #authScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at top right, rgba(244,196,0,.25), transparent 35%),
+        linear-gradient(145deg, #034d2b, #0b7b49);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 430px;
+      background: white;
+      border-radius: 25px;
+      padding: 25px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.2);
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .flag {
+      font-size: 50px;
+      margin-bottom: 8px;
+    }
+
+    .brand h1 {
+      color: var(--green);
+      font-size: 27px;
+      font-weight: 900;
+    }
+
+    .brand p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      background: #edf3ef;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+
+    .auth-tabs button {
+      flex: 1;
+      padding: 11px;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .auth-tabs button.active {
+      background: white;
+      color: var(--green);
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      background: #fafcfb;
+    }
+
+    .form-group input:focus {
+      border-color: var(--green);
+    }
+
+    .main-btn {
+      width: 100%;
+      background: var(--green);
+      color: white;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      margin-top: 5px;
+    }
+
+    .main-btn:hover {
+      background: var(--green-dark);
+    }
+
+    .google-btn {
+      width: 100%;
+      padding: 13px;
+      margin-top: 10px;
+      border-radius: 12px;
+      background: #222;
+      color: white;
+      font-weight: 700;
+    }
+
+    .auth-message {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 10px;
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* APP */
+
+    #appScreen {
+      min-height: 100vh;
+      padding-bottom: 78px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 13px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .top-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-brand .mini-flag {
+      font-size: 25px;
+    }
+
+    .top-brand strong {
+      color: var(--green);
+      font-size: 17px;
+    }
+
+    .bell {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--green-light);
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 850px;
+      margin: auto;
+      padding: 15px;
+    }
+
+    /* HERO */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #04552f, #0a8a51);
+      border-radius: 23px;
+      padding: 23px;
+      color: white;
+      box-shadow: var(--shadow);
+      margin-bottom: 14px;
+    }
+
+    .hero:after {
+      content: "🇨🇩";
+      position: absolute;
+      right: -10px;
+      bottom: -20px;
+      font-size: 105px;
+      opacity: .12;
+    }
+
+    .hero small {
+      opacity: .8;
+      font-size: 12px;
+    }
+
+    .hero h2 {
+      font-size: 23px;
+      margin-top: 6px;
+    }
+
+    .balance-label {
+      margin-top: 22px;
+      opacity: .85;
+      font-size: 12px;
+    }
+
+    .balance {
+      font-size: 32px;
+      font-weight: 900;
+      margin-top: 3px;
+    }
+
+    .earning-box {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .earning-box div {
+      background: rgba(255,255,255,.13);
+      padding: 11px;
+      border-radius: 12px;
+      flex: 1;
+    }
+
+    .earning-box small {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .earning-box strong {
+      font-size: 14px;
+    }
+
+    /* NOTICE */
+
+    .notice {
+      background: #fff8d9;
+      border: 1px solid #f4e29b;
+      border-radius: 13px;
+      padding: 12px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      color: #6e5a00;
+    }
+
+    /* ACTIONS */
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0 11px;
+    }
+
+    .section-title h3 {
+      font-size: 17px;
+    }
+
+    .section-title span {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .action {
+      background: white;
+      border-radius: 14px;
+      padding: 12px 5px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .action .icon {
+      font-size: 23px;
+      margin-bottom: 5px;
+    }
+
+    .action span {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* KIN CARDS */
+
+    .products {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 13px;
+    }
+
+    .product {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 17px;
+      box-shadow: var(--shadow);
+    }
+
+    .product-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .kin {
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--green);
+    }
+
+    .tag {
+      background: #fff2c1;
+      color: #765d00;
+      font-size: 10px;
+      padding: 5px 8px;
+      border-radius: 20px;
+      font-weight: 800;
+    }
+
+    .product-price {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--dark);
+      margin-bottom: 12px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 13px;
+    }
+
+    .product-info {
+      background: #f6f9f7;
+      border-radius: 10px;
+      padding: 9px;
+    }
+
+    .product-info small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .product-info strong {
+      font-size: 13px;
+    }
+
+    .buy-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .buy-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 11px;
+      background: var(--green);
+      color: white;
+      font-weight: 800;
+    }
+
+    .limit {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* SECTIONS */
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 17px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 13px;
+    }
+
+    .card h3 {
+      margin-bottom: 12px;
+      font-size: 17px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .info-row:last-child {
+      border-bottom: 0;
+    }
+
+    .info-row span:first-child {
+      color: var(--muted);
+    }
+
+    .info-row strong {
+      text-align: right;
+    }
+
+    .big-number {
+      font-size: 29px;
+      font-weight: 900;
+      color: var(--green);
+      margin-bottom: 5px;
+    }
+
+    .referral-box {
+      background: var(--green-light);
+      padding: 14px;
+      border-radius: 13px;
+      margin-top: 10px;
+    }
+
+    .referral-code {
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--green);
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      margin-top: 10px;
+      background: var(--green);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    /* TASKS */
+
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .task:last-child {
+      border-bottom: 0;
+    }
+
+    .task-info strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .task-info small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .task-btn {
+      background: var(--green-light);
+      color: var(--green);
+      padding: 9px 12px;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .task-btn.done {
+      background: #e8e8e8;
+      color: #777;
+    }
+
+    /* PAYMENT */
+
+    .payment {
+      padding: 14px;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      background: #f6f9f7;
+      border: 1px solid var(--border);
+    }
+
+    .payment strong {
+      color: var(--green);
+      font-size: 16px;
+    }
+
+    .payment-number {
+      font-size: 18px;
+      font-weight: 900;
+      margin: 5px 0;
+    }
+
+    .payment small {
+      color: var(--muted);
+    }
+
+    .whatsapp {
+      background: #20b958;
+    }
+
+    .telegram {
+      background: #229ed9;
+    }
+
+    .social-btn {
+      display: block;
+      color: white;
+      padding: 13px;
+      border-radius: 11px;
+      text-align: center;
+      font-weight: 800;
+      margin-top: 9px;
+    }
+
+    /* MODAL */
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0,0,0,.55);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 500px;
+      background: white;
+      border-radius: 24px 24px 0 0;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .close {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: #edf2ef;
+      color: #555;
+    }
+
+    /* BOTTOM NAV */
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 60;
+      background: white;
+      border-top: 1px solid var(--border);
+      height: 68px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      box-shadow: 0 -5px 20px rgba(0,0,0,.05);
+    }
+
+    .nav-btn {
+      background: white;
+      color: #8a958f;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .nav-btn .nav-icon {
+      font-size: 21px;
+    }
+
+    .nav-btn.active {
+      color: var(--green);
+    }
+
+    /* RESPONSIVE */
+
+    @media (min-width: 600px) {
+      .products {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .modal {
+        align-items: center;
+      }
+
+      .modal-content {
+        border-radius: 22px;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- AUTHENTIFICATION -->
-<section id="authPage">
+<!-- ================= AUTH ================= -->
 
-  <div class="authBox">
+<section id="authScreen">
+  <div class="auth-card">
 
-    <div class="logo">KINSHASA MAKAMBO</div>
+    <div class="brand">
+      <div class="flag">🇨🇩</div>
+      <h1>KINSHASA BUSINESS</h1>
+      <p>Plateforme membre</p>
+    </div>
 
-    <p class="authSubtitle" id="authTitle">
-      Créez votre compte
-    </p>
+    <div class="auth-tabs">
+      <button id="loginTab" class="active" onclick="showAuth('login')">
+        Connexion
+      </button>
+      <button id="signupTab" onclick="showAuth('signup')">
+        Inscription
+      </button>
+    </div>
 
-    <div id="message" class="message"></div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email</label>
+        <input id="loginEmail" type="email" placeholder="Votre email" required />
+      </div>
 
-    <input id="name" type="text" placeholder="Nom complet">
-    <input id="phone" type="tel" placeholder="Téléphone">
-    <input id="email" type="email" placeholder="Adresse email">
-    <input id="password" type="password" placeholder="Mot de passe">
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input id="loginPassword" type="password" placeholder="Votre mot de passe" required />
+      </div>
 
-    <button id="submitButton" class="primaryBtn">
-      Créer mon compte
-    </button>
+      <button class="main-btn" type="submit">Se connecter</button>
 
-    <button id="modeButton" class="secondaryBtn">
-      J'ai déjà un compte
-    </button>
+      <button class="google-btn" type="button" onclick="loginWithGithub()">
+        Continuer avec GitHub
+      </button>
+    </form>
 
+    <form id="signupForm" class="hidden">
+      <div class="form-group">
+        <label>Nom complet</label>
+        <input id="signupName" type="text" placeholder="Votre nom" required />
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input id="signupEmail" type="email" placeholder="Votre email" required />
+      </div>
+
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input id="signupPassword" type="password" placeholder="Minimum 6 caractères" minlength="6" required />
+      </div>
+
+      <div class="form-group">
+        <label>Code de parrainage</label>
+        <input id="signupReferral" type="text" placeholder="Facultatif" />
+      </div>
+
+      <button class="main-btn" type="submit">Créer mon compte</button>
+    </form>
+
+    <div id="authMessage" class="auth-message hidden"></div>
   </div>
-
 </section>
 
 
-<!-- APPLICATION -->
-<section id="app" class="hidden">
+<!-- ================= APPLICATION ================= -->
 
-  <header class="top">
-    <div class="topTitle">KINSHASA MAKAMBO</div>
-    <button class="menuButton" onclick="openMenu()">☰</button>
+<section id="appScreen" class="hidden">
+
+  <header class="topbar">
+    <div class="top-brand">
+      <span class="mini-flag">🇨🇩</span>
+      <strong>KINSHASA BUSINESS</strong>
+    </div>
+
+    <button class="bell" onclick="showPage('profile')">🔔</button>
   </header>
 
-  <main class="page">
+
+  <main class="container">
 
     <!-- ACCUEIL -->
-    <section id="homePage">
+
+    <section id="page-home" class="page active">
 
       <div class="hero">
-        <div>
-          <h1>Bienvenue 👋</h1>
-          <p>Votre espace membre KINSHASA MAKAMBO</p>
+        <small>Bienvenue sur</small>
+        <h2>KINSHASA BUSINESS 🇨🇩</h2>
+
+        <div class="balance-label">Solde disponible</div>
+        <div class="balance" id="balance">2 000 FC</div>
+
+        <div class="earning-box">
+          <div>
+            <small>Gains cumulés</small>
+            <strong id="totalEarnings">0 FC</strong>
+          </div>
+
+          <div>
+            <small>Positions actives</small>
+            <strong id="activePositions">0</strong>
+          </div>
         </div>
-      </div>
-
-      <div class="balanceGrid">
-
-        <div class="balance">
-          <strong id="balanceDisplay">CDF 0</strong>
-          <small>Solde du compte</small>
-        </div>
-
-        <div class="balance">
-          <strong id="earningsDisplay">CDF 0</strong>
-          <small>Revenus cumulés</small>
-        </div>
-
       </div>
 
       <div class="notice">
-        🔔 Bienvenue sur KINSHASA MAKAMBO • Votre espace membre est prêt.
+        📢 <strong>Information :</strong>
+        consultez toujours les conditions de chaque KIN avant de faire une demande.
       </div>
 
-      <div class="quick">
+      <div class="section-title">
+        <h3>Actions rapides</h3>
+      </div>
 
-        <button onclick="showPage('depositPage')">
-          <div class="circle">＄</div>
-          <span>Recharge</span>
+      <div class="quick-actions">
+
+        <button class="action" onclick="openModal('depositModal')">
+          <div class="icon">💰</div>
+          <span>Dépôt</span>
         </button>
 
-        <button onclick="showPage('withdrawPage')">
-          <div class="circle">↑</div>
+        <button class="action" onclick="openModal('withdrawModal')">
+          <div class="icon">💸</div>
           <span>Retrait</span>
         </button>
 
-        <button onclick="showPage('tasksPage')">
-          <div class="circle">☷</div>
+        <button class="action" onclick="showPage('tasks')">
+          <div class="icon">✅</div>
           <span>Tâches</span>
         </button>
 
-        <button onclick="showPage('tasksPage')">
-          <div class="circle">✓</div>
+        <button class="action" onclick="doCheckin()">
+          <div class="icon">📅</div>
           <span>Pointage</span>
         </button>
 
       </div>
 
-      <div class="section">
 
-        <div class="sectionTitle">
-          Produits <span>spéciaux</span>
-        </div>
-
-        <div class="products">
-
-          <div class="product">
-            <div class="vip">VIP 1</div>
-
-            <div class="productImage">🚗</div>
-
-            <div class="productInfo">
-              <div>
-                <span>Prix</span>
-                <b>CDF 20 000</b>
-              </div>
-
-              <div>
-                <span>Revenu quotidien</span>
-                <b>CDF 3 600</b>
-              </div>
-
-              <div>
-                <span>Revenu total</span>
-                <b>CDF 108 000</b>
-              </div>
-
-              <div>
-                <span>Période</span>
-                <b>30 jours</b>
-              </div>
-            </div>
-
-            <div class="price">CDF 20 000</div>
-
-            <button class="buyBtn" onclick="buyProduct('VIP 1','20000')">
-              Acheter
-            </button>
-          </div>
-
-
-          <div class="product">
-            <div class="vip">VIP 2</div>
-
-            <div class="productImage">🚘</div>
-
-            <div class="productInfo">
-              <div>
-                <span>Prix</span>
-                <b>CDF 45 000</b>
-              </div>
-
-              <div>
-                <span>Revenu quotidien</span>
-                <b>CDF 8 100</b>
-              </div>
-
-              <div>
-                <span>Revenu total</span>
-                <b>CDF 243 000</b>
-              </div>
-
-              <div>
-                <span>Période</span>
-                <b>30 jours</b>
-              </div>
-            </div>
-
-            <div class="price">CDF 45 000</div>
-
-            <button class="buyBtn" onclick="buyProduct('VIP 2','45000')">
-              Acheter
-            </button>
-          </div>
-
-
-          <div class="product">
-            <div class="vip">VIP 3</div>
-
-            <div class="productImage">🏢</div>
-
-            <div class="productInfo">
-              <div>
-                <span>Prix</span>
-                <b>CDF 100 000</b>
-              </div>
-
-              <div>
-                <span>Revenu quotidien</span>
-                <b>À définir</b>
-              </div>
-
-              <div>
-                <span>Période</span>
-                <b>30 jours</b>
-              </div>
-            </div>
-
-            <div class="price">CDF 100 000</div>
-
-            <button class="buyBtn" onclick="buyProduct('VIP 3','100000')">
-              Acheter
-            </button>
-          </div>
-
-
-          <div class="product">
-            <div class="vip">VIP 4</div>
-
-            <div class="productImage">💎</div>
-
-            <div class="productInfo">
-              <div>
-                <span>Prix</span>
-                <b>À définir</b>
-              </div>
-
-              <div>
-                <span>Revenu</span>
-                <b>À définir</b>
-              </div>
-
-              <div>
-                <span>Période</span>
-                <b>30 jours</b>
-              </div>
-            </div>
-
-            <div class="price">VIP 4</div>
-
-            <button class="buyBtn" onclick="buyProduct('VIP 4','0')">
-              Voir
-            </button>
-          </div>
-
-        </div>
+      <div class="section-title">
+        <h3>Produits KIN</h3>
+        <span>7 niveaux</span>
       </div>
+
+      <div id="products" class="products"></div>
 
     </section>
 
 
     <!-- PRODUITS -->
-    <section id="productsPage" class="hidden">
 
-      <div class="card">
-        <h2>🛍️ Produits</h2>
-        <p>
-          Découvrez les offres disponibles dans KINSHASA MAKAMBO.
-        </p>
+    <section id="page-products" class="page">
+
+      <div class="section-title">
+        <h3>Tous les produits</h3>
       </div>
 
-      <div class="section">
-        <div class="products">
-
-          <div class="product">
-            <div class="vip">VIP 1</div>
-            <div class="productImage">🚗</div>
-            <div class="price">CDF 20 000</div>
-            <button class="buyBtn" onclick="buyProduct('VIP 1','20000')">
-              Acheter
-            </button>
-          </div>
-
-          <div class="product">
-            <div class="vip">VIP 2</div>
-            <div class="productImage">🚘</div>
-            <div class="price">CDF 45 000</div>
-            <button class="buyBtn" onclick="buyProduct('VIP 2','45000')">
-              Acheter
-            </button>
-          </div>
-
-        </div>
-      </div>
+      <div id="productsPage" class="products"></div>
 
     </section>
 
 
     <!-- TÂCHES -->
-    <section id="tasksPage" class="hidden">
 
-      <div class="card">
-        <h2>📋 Tâches quotidiennes</h2>
-        <p>
-          Effectuez vos tâches disponibles et consultez vos récompenses.
-        </p>
+    <section id="page-tasks" class="page">
+
+      <div class="section-title">
+        <h3>Tâches & Pointage</h3>
       </div>
 
       <div class="card">
 
         <div class="task">
-          <h3>Pointage quotidien</h3>
-          <p>Connectez-vous chaque jour pour enregistrer votre présence.</p>
+          <div class="task-info">
+            <strong>Pointage quotidien</strong>
+            <small>Effectuez votre pointage chaque jour.</small>
+          </div>
 
-          <button onclick="dailyCheckin()">
-            Pointer maintenant
+          <button id="checkinBtn" class="task-btn" onclick="doCheckin()">
+            Pointer
           </button>
         </div>
 
         <div class="task">
-          <h3>Visiter la plateforme</h3>
-          <p>Consultez votre espace membre aujourd'hui.</p>
+          <div class="task-info">
+            <strong>Consulter les produits</strong>
+            <small>Découvrez les niveaux KIN disponibles.</small>
+          </div>
 
-          <button onclick="completeTask()">
-            Effectuer la tâche
+          <button class="task-btn" onclick="showPage('products')">
+            Ouvrir
           </button>
         </div>
 
+        <div class="task">
+          <div class="task-info">
+            <strong>Rejoindre notre communauté</strong>
+            <small>WhatsApp / Telegram</small>
+          </div>
+
+          <button class="task-btn" onclick="showPage('profile')">
+            Voir
+          </button>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <h3>Horaires de la plateforme</h3>
+
+        <div class="info-row">
+          <span>Disponibilité</span>
+          <strong>Lundi – Dimanche</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Heures</span>
+          <strong>08:00 – 19:00</strong>
+        </div>
       </div>
 
     </section>
 
 
     <!-- ÉQUIPE -->
-    <section id="teamPage" class="hidden">
 
-      <div class="card">
+    <section id="page-team" class="page">
 
-        <h2>👥 Mon équipe</h2>
-
-        <p>
-          Invitez de nouveaux membres avec votre lien personnel.
-        </p>
-
-        <div class="referralBox">
-
-          <h3>🔗 Mon lien de parrainage</h3>
-
-          <div id="referralLink" class="referralLink">
-            Chargement...
-          </div>
-
-          <button class="primaryBtn" onclick="copyReferral()">
-            📋 Copier mon lien
-          </button>
-
-          <div class="stats">
-
-            <div class="stat">
-              <strong id="refCount">0</strong>
-              Filleuls
-            </div>
-
-            <div class="stat">
-              <strong id="refBonus">CDF 0</strong>
-              Bonus
-            </div>
-
-          </div>
-
-        </div>
-
+      <div class="section-title">
+        <h3>Mon équipe</h3>
       </div>
 
       <div class="card">
 
-        <h2>📊 Mon équipe</h2>
-
-        <p>
-          Votre équipe apparaîtra ici lorsque les inscriptions par
-          parrainage seront reliées à la base de données.
+        <div class="big-number" id="teamCount">0</div>
+        <p style="color:#78857e;font-size:13px;">
+          Membres dans votre réseau
         </p>
 
+        <div class="referral-box">
+          <small>Votre code de parrainage</small>
+          <div class="referral-code" id="referralCode">---</div>
+          <button class="copy-btn" onclick="copyReferral()">
+            Copier le code
+          </button>
+        </div>
+
+      </div>
+
+
+      <div class="card">
+        <h3>Programme de parrainage affiché</h3>
+
+        <div class="info-row">
+          <span>Niveau 1</span>
+          <strong>30 %</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Niveau 2</span>
+          <strong>2 %</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Niveau 3</span>
+          <strong>1 %</strong>
+        </div>
+
+        <p style="font-size:11px;color:#78857e;margin-top:12px;">
+          Les taux affichés sont les paramètres configurés de la plateforme.
+          Le calcul et le versement réels doivent être traités côté serveur.
+        </p>
       </div>
 
     </section>
 
 
     <!-- PROFIL -->
-    <section id="profilePage" class="hidden">
+
+    <section id="page-profile" class="page">
+
+      <div class="section-title">
+        <h3>Mon profil</h3>
+      </div>
 
       <div class="card">
 
-        <h2>👤 Mon profil</h2>
+        <div class="info-row">
+          <span>Nom</span>
+          <strong id="profileName">---</strong>
+        </div>
 
-        <p><b>Nom :</b> <span id="profileName">-</span></p>
-        <br>
+        <div class="info-row">
+          <span>Email</span>
+          <strong id="profileEmail">---</strong>
+        </div>
 
-        <p><b>Téléphone :</b> <span id="profilePhone">-</span></p>
-        <br>
-
-        <p><b>Email :</b> <span id="profileEmail">-</span></p>
-
-      </div>
-
-
-      <div class="section">
-
-        <div class="sectionTitle">Mes services</div>
-
-        <div class="services">
-
-          <div class="service" onclick="aboutPlatform()">
-            <div class="serviceIcon">ⓘ</div>
-            <p>À propos</p>
-          </div>
-
-          <div class="service" onclick="showHistory()">
-            <div class="serviceIcon">☷</div>
-            <p>Historique</p>
-          </div>
-
-          <div class="service" onclick="contactService()">
-            <div class="serviceIcon">☎</div>
-            <p>Service client</p>
-          </div>
-
-          <div class="service" onclick="changePassword()">
-            <div class="serviceIcon">🔒</div>
-            <p>Mot de passe</p>
-          </div>
-
+        <div class="info-row">
+          <span>Compte</span>
+          <strong>Actif</strong>
         </div>
 
       </div>
 
-      <div class="card">
-
-        <button class="redBtn" onclick="logout()">
-          🔐 Déconnexion
-        </button>
-
-      </div>
-
-    </section>
-
-
-    <!-- DÉPÔT -->
-    <section id="depositPage" class="hidden">
 
       <div class="card">
 
-        <h2>💰 Dépôt / Recharge</h2>
+        <h3>Paramètres de la plateforme</h3>
 
-        <p>
-          Indiquez le montant que vous souhaitez déposer.
-        </p>
+        <div class="info-row">
+          <span>Dépôt minimum</span>
+          <strong>15 000 FC</strong>
+        </div>
 
-        <br>
+        <div class="info-row">
+          <span>Retrait minimum</span>
+          <strong>2 000 FC</strong>
+        </div>
 
-        <input
-          id="depositAmount"
-          class="formInput"
-          type="number"
-          placeholder="Montant en CDF"
-        >
+        <div class="info-row">
+          <span>Frais de retrait</span>
+          <strong>10 %</strong>
+        </div>
 
-        <select id="depositMethod" class="formInput">
-          <option>Mobile Money</option>
-          <option>Airtel Money</option>
-          <option>Orange Money</option>
-          <option>M-Pesa</option>
-        </select>
-
-        <button class="redBtn" onclick="requestDeposit()">
-          Envoyer la demande
-        </button>
-
-      </div>
-
-    </section>
-
-
-    <!-- RETRAIT -->
-    <section id="withdrawPage" class="hidden">
-
-      <div class="card">
-
-        <h2>💸 Retrait</h2>
-
-        <p>
-          Entrez le montant que vous souhaitez retirer.
-        </p>
-
-        <br>
-
-        <input
-          id="withdrawAmount"
-          class="formInput"
-          type="number"
-          placeholder="Montant en CDF"
-        >
-
-        <input
-          id="withdrawNumber"
-          class="formInput"
-          type="tel"
-          placeholder="Numéro Mobile Money"
-        >
-
-        <button class="redBtn" onclick="requestWithdraw()">
-          Demander le retrait
-        </button>
-
-      </div>
-
-    </section>
-
-
-    <!-- HISTORIQUE -->
-    <section id="historyPage" class="hidden">
-
-      <div class="card">
-
-        <h2>📊 Historique</h2>
-
-        <div id="historyList">
-          <p>Aucune opération pour le moment.</p>
+        <div class="info-row">
+          <span>Bonus inscription</span>
+          <strong>2 000 FC</strong>
         </div>
 
       </div>
+
+
+      <div class="card">
+
+        <h3>Moyens de paiement</h3>
+
+        <div class="payment">
+          <strong>AIRTEL MONEY</strong>
+          <div class="payment-number">973087965</div>
+          <small>YVETTE — transfert</small>
+        </div>
+
+        <div class="payment">
+          <strong>ORANGE MONEY</strong>
+          <div class="payment-number">899532643</div>
+          <small>JEANCQUELINE — transfert</small>
+        </div>
+
+        <div class="payment">
+          <strong>M-PESA</strong>
+          <div class="payment-number">0861823718</div>
+          <small>REGINA — transfert</small>
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Communauté</h3>
+
+        <a
+          class="social-btn whatsapp"
+          href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps"
+          target="_blank"
+        >
+          💬 Rejoindre WhatsApp
+        </a>
+
+        <a
+          class="social-btn telegram"
+          href="https://t.me/francscongolais"
+          target="_blank"
+        >
+          ✈️ Rejoindre Telegram
+        </a>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Historique local</h3>
+
+        <div id="history"></div>
+
+      </div>
+
+
+      <button
+        class="main-btn"
+        style="background:#b42323;margin-bottom:15px;"
+        onclick="logout()"
+      >
+        Se déconnecter
+      </button>
 
     </section>
 
   </main>
 
 
-  <!-- NAVIGATION BAS -->
-  <nav class="bottomNav">
+  <!-- BOTTOM NAV -->
 
-    <button onclick="showPage('homePage')">
-      <span class="navIcon">⌂</span>
+  <nav class="bottom-nav">
+
+    <button class="nav-btn active" data-page="home" onclick="showPage('home')">
+      <span class="nav-icon">🏠</span>
       Accueil
     </button>
 
-    <button onclick="showPage('productsPage')">
-      <span class="navIcon">🛍️</span>
+    <button class="nav-btn" data-page="products" onclick="showPage('products')">
+      <span class="nav-icon">💎</span>
       Produits
     </button>
 
-    <button onclick="showPage('tasksPage')">
-      <span class="navIcon">☷</span>
+    <button class="nav-btn" data-page="tasks" onclick="showPage('tasks')">
+      <span class="nav-icon">✅</span>
       Tâches
     </button>
 
-    <button onclick="showPage('teamPage')">
-      <span class="navIcon">👥</span>
+    <button class="nav-btn" data-page="team" onclick="showPage('team')">
+      <span class="nav-icon">👥</span>
       Équipe
     </button>
 
-    <button onclick="showPage('profilePage')">
-      <span class="navIcon">♙</span>
+    <button class="nav-btn" data-page="profile" onclick="showPage('profile')">
+      <span class="nav-icon">👤</span>
       Profil
     </button>
 
@@ -1126,978 +1141,1153 @@ button{
 </section>
 
 
-<!-- MENU -->
-<div id="overlay" class="overlay hidden" onclick="closeMenu()"></div>
+<!-- ================= DEPOSIT MODAL ================= -->
 
-<div id="sideMenu" class="sideMenu hidden">
+<div id="depositModal" class="modal hidden">
 
-  <h2>KINSHASA MAKAMBO</h2>
+  <div class="modal-content">
 
-  <br>
+    <div class="modal-head">
+      <h3>Demande de dépôt</h3>
+      <button class="close" onclick="closeModal('depositModal')">✕</button>
+    </div>
 
-  <button onclick="showPage('homePage');closeMenu()">
-    🏠 Accueil
-  </button>
+    <div class="notice">
+      Minimum : <strong>15 000 FC</strong>
+    </div>
 
-  <button onclick="showPage('productsPage');closeMenu()">
-    🛍️ Produits
-  </button>
+    <div class="form-group">
+      <label>Montant</label>
+      <input id="depositAmount" type="number" min="15000" placeholder="Ex : 15000" />
+    </div>
 
-  <button onclick="showPage('tasksPage');closeMenu()">
-    📋 Tâches
-  </button>
+    <div class="form-group">
+      <label>Moyen de paiement</label>
 
-  <button onclick="showPage('teamPage');closeMenu()">
-    👥 Mon équipe
-  </button>
+      <select id="depositMethod" style="width:100%;padding:14px;border:1px solid #e5ebe7;border-radius:12px;">
+        <option>AIRTEL MONEY</option>
+        <option>ORANGE MONEY</option>
+        <option>M-PESA</option>
+      </select>
+    </div>
 
-  <button onclick="showPage('profilePage');closeMenu()">
-    👤 Profil
-  </button>
+    <div class="form-group">
+      <label>Référence de transfert</label>
+      <input id="depositReference" type="text" placeholder="Référence / numéro de transaction" />
+    </div>
 
-  <button onclick="showPage('depositPage');closeMenu()">
-    ➕ Dépôt
-  </button>
-
-  <button onclick="showPage('withdrawPage');closeMenu()">
-    ➖ Retrait
-  </button>
-
-  <button onclick="showPage('historyPage');closeMenu()">
-    📊 Historique
-  </button>
-
-  <button onclick="logout()">
-    🔐 Déconnexion
-  </button>
-
-</div>
-
-
-<!-- MODAL -->
-<div id="modal" class="modal hidden">
-
-  <div class="modalBox">
-
-    <h2 id="modalTitle">Information</h2>
-
-    <div id="modalContent"></div>
-
-    <button class="closeBtn" onclick="closeModal()">
-      Fermer
+    <button class="main-btn" onclick="submitDeposit()">
+      Envoyer la demande
     </button>
 
   </div>
+</div>
 
+
+<!-- ================= WITHDRAW MODAL ================= -->
+
+<div id="withdrawModal" class="modal hidden">
+
+  <div class="modal-content">
+
+    <div class="modal-head">
+      <h3>Demande de retrait</h3>
+      <button class="close" onclick="closeModal('withdrawModal')">✕</button>
+    </div>
+
+    <div class="notice">
+      Minimum : <strong>2 000 FC</strong><br>
+      Frais automatiques affichés : <strong>10 %</strong>
+    </div>
+
+    <div class="form-group">
+      <label>Montant demandé</label>
+      <input id="withdrawAmount" type="number" min="2000" placeholder="Ex : 5000" />
+    </div>
+
+    <div class="form-group">
+      <label>Moyen de retrait</label>
+
+      <select id="withdrawMethod" style="width:100%;padding:14px;border:1px solid #e5ebe7;border-radius:12px;">
+        <option>AIRTEL MONEY</option>
+        <option>ORANGE MONEY</option>
+        <option>M-PESA</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Numéro de réception</label>
+      <input id="withdrawPhone" type="tel" placeholder="Votre numéro" />
+    </div>
+
+    <button class="main-btn" onclick="submitWithdraw()">
+      Envoyer la demande
+    </button>
+
+  </div>
 </div>
 
 
 <script>
+  /* =========================================================
+     CONFIGURATION SUPABASE
+  ========================================================= */
 
-/* ============================
-   SUPABASE
-============================ */
+  const SUPABASE_URL =
+    "https://uewceocdzvekuopgsmpg.supabase.co";
 
-const SUPABASE_URL =
-"https://uewceocdzvekuopgsmpg.supabase.co";
+  const SUPABASE_KEY =
+    "sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
 
-const SUPABASE_KEY =
-"sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
-
-const db =
-supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-
-/* ============================
-   VARIABLES
-============================ */
-
-let currentUser = null;
-let loginMode = false;
-
-const authPage =
-document.getElementById("authPage");
-
-const app =
-document.getElementById("app");
-
-const message =
-document.getElementById("message");
-
-const submitButton =
-document.getElementById("submitButton");
-
-const modeButton =
-document.getElementById("modeButton");
-
-const authTitle =
-document.getElementById("authTitle");
-
-const nameInput =
-document.getElementById("name");
-
-const phoneInput =
-document.getElementById("phone");
-
-const emailInput =
-document.getElementById("email");
-
-const passwordInput =
-document.getElementById("password");
-
-
-/* ============================
-   MESSAGE
-============================ */
-
-function showMessage(text,type="green"){
-
-  message.style.display="block";
-  message.textContent=text;
-
-  if(type==="green"){
-    message.style.background="#d1e7dd";
-    message.style.color="#0f5132";
-  }else{
-    message.style.background="#f8d7da";
-    message.style.color="#842029";
-  }
-
-}
-
-
-/* ============================
-   AUTH MODE
-============================ */
-
-modeButton.onclick=function(){
-
-  loginMode=!loginMode;
-
-  if(loginMode){
-
-    authTitle.textContent="Connectez-vous à votre compte";
-
-    nameInput.style.display="none";
-    phoneInput.style.display="none";
-
-    submitButton.textContent="Se connecter";
-
-    modeButton.textContent="Créer un compte";
-
-  }else{
-
-    authTitle.textContent="Créez votre compte";
-
-    nameInput.style.display="block";
-    phoneInput.style.display="block";
-
-    submitButton.textContent="Créer mon compte";
-
-    modeButton.textContent="J'ai déjà un compte";
-
-  }
-
-};
-
-
-/* ============================
-   INSCRIPTION / CONNEXION
-============================ */
-
-submitButton.onclick=async function(){
-
-  const email =
-    emailInput.value.trim();
-
-  const password =
-    passwordInput.value.trim();
-
-  if(!email || !password){
-
-    showMessage(
-      "Veuillez remplir votre email et votre mot de passe.",
-      "red"
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
     );
 
-    return;
+
+  /* =========================================================
+     DONNÉES KIN
+  ========================================================= */
+
+  const KINS = [
+
+    {
+      id: "KIN1",
+      price: 15000,
+      gain: 2000,
+      days: 60,
+      max: 1
+    },
+
+    {
+      id: "KIN2",
+      price: 30000,
+      gain: 4400,
+      days: 60,
+      max: 2
+    },
+
+    {
+      id: "KIN3",
+      price: 80000,
+      gain: 12300,
+      days: 60,
+      max: 3
+    },
+
+    {
+      id: "KIN4",
+      price: 150000,
+      gain: 24000,
+      days: 60,
+      max: 3
+    },
+
+    {
+      id: "KIN5",
+      price: 300000,
+      gain: 52000,
+      days: 60,
+      max: 5
+    },
+
+    {
+      id: "KIN6",
+      price: 600000,
+      gain: 120000,
+      days: 60,
+      max: 2
+    },
+
+    {
+      id: "KIN7",
+      price: 1500000,
+      gain: 330000,
+      days: 60,
+      max: 2
+    }
+
+  ];
+
+
+  let currentUser = null;
+
+
+  /* =========================================================
+     FORMATAGE
+  ========================================================= */
+
+  function money(value) {
+
+    return Number(value || 0)
+      .toLocaleString("fr-FR") + " FC";
+
   }
 
 
-  submitButton.disabled=true;
+  /* =========================================================
+     AUTH
+  ========================================================= */
+
+  function showAuth(type) {
+
+    const loginForm =
+      document.getElementById("loginForm");
+
+    const signupForm =
+      document.getElementById("signupForm");
+
+    const loginTab =
+      document.getElementById("loginTab");
+
+    const signupTab =
+      document.getElementById("signupTab");
+
+    clearAuthMessage();
+
+    if (type === "login") {
+
+      loginForm.classList.remove("hidden");
+      signupForm.classList.add("hidden");
+
+      loginTab.classList.add("active");
+      signupTab.classList.remove("active");
+
+    } else {
+
+      loginForm.classList.add("hidden");
+      signupForm.classList.remove("hidden");
+
+      loginTab.classList.remove("active");
+      signupTab.classList.add("active");
+
+    }
+
+  }
 
 
-  try{
+  function showAuthMessage(message) {
 
-    if(loginMode){
+    const box =
+      document.getElementById("authMessage");
 
-      const {data,error} =
-        await db.auth.signInWithPassword({
+    box.textContent = message;
+    box.classList.remove("hidden");
+
+  }
+
+
+  function clearAuthMessage() {
+
+    document
+      .getElementById("authMessage")
+      .classList.add("hidden");
+
+  }
+
+
+  document
+    .getElementById("loginForm")
+    .addEventListener("submit", async function(e) {
+
+      e.preventDefault();
+
+      const email =
+        document.getElementById("loginEmail").value.trim();
+
+      const password =
+        document.getElementById("loginPassword").value;
+
+      showAuthMessage("Connexion en cours...");
+
+      const { error } =
+        await supabaseClient.auth.signInWithPassword({
           email,
           password
         });
 
-      if(error) throw error;
+      if (error) {
 
-      currentUser=data.user;
-
-      openMember();
-
-    }else{
-
-      const name =
-        nameInput.value.trim();
-
-      const phone =
-        phoneInput.value.trim();
-
-      if(!name || !phone){
-
-        showMessage(
-          "Veuillez remplir votre nom et votre téléphone.",
-          "red"
+        showAuthMessage(
+          "Erreur : " + error.message
         );
-
-        submitButton.disabled=false;
 
         return;
       }
 
+      showAuthMessage("Connexion réussie.");
 
-      const referral =
-        new URLSearchParams(
-          window.location.search
-        ).get("ref") || "";
+    });
 
 
-      const {data,error} =
-        await db.auth.signUp({
+  document
+    .getElementById("signupForm")
+    .addEventListener("submit", async function(e) {
+
+      e.preventDefault();
+
+      const name =
+        document.getElementById("signupName").value.trim();
+
+      const email =
+        document.getElementById("signupEmail").value.trim();
+
+      const password =
+        document.getElementById("signupPassword").value;
+
+      const referrer =
+        document.getElementById("signupReferral").value.trim();
+
+      showAuthMessage("Création du compte...");
+
+      const { error } =
+        await supabaseClient.auth.signUp({
 
           email,
           password,
 
-          options:{
-            data:{
-              name:name,
-              phone:phone,
-              referral_code:referral
+          options: {
+            data: {
+              name: name,
+              referrer: referrer
             }
           }
 
         });
 
 
-      if(error) throw error;
+      if (error) {
 
+        showAuthMessage(
+          "Erreur : " + error.message
+        );
 
-      showMessage(
-        "Inscription réussie ! Vous pouvez maintenant utiliser votre compte.",
-        "green"
+        return;
+      }
+
+      showAuthMessage(
+        "Inscription réussie ! Vous pouvez maintenant utiliser votre compte."
       );
 
+      document
+        .getElementById("signupForm")
+        .reset();
 
-      if(data.session){
+    });
 
-        currentUser=data.user;
 
-        setTimeout(
-          openMember,
-          500
-        );
+  async function loginWithGithub() {
 
-      }else{
+    const { error } =
+      await supabaseClient.auth.signInWithOAuth({
 
-        showMessage(
-          "Compte créé. Vous pouvez maintenant vous connecter.",
-          "green"
-        );
+        provider: "github",
+
+        options: {
+          redirectTo: window.location.origin
+        }
+
+      });
+
+    if (error) {
+
+      showAuthMessage(
+        "Erreur : " + error.message
+      );
+
+    }
+
+  }
+
+
+  async function logout() {
+
+    await supabaseClient.auth.signOut();
+
+    currentUser = null;
+
+    document
+      .getElementById("appScreen")
+      .classList.add("hidden");
+
+    document
+      .getElementById("authScreen")
+      .classList.remove("hidden");
+
+  }
+
+
+  /* =========================================================
+     SESSION
+  ========================================================= */
+
+  async function loadSession() {
+
+    const {
+      data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (session && session.user) {
+
+      openApp(session.user);
+
+    }
+
+  }
+
+
+  supabaseClient.auth.onAuthStateChange(
+    function(event, session) {
+
+      if (session && session.user) {
+
+        openApp(session.user);
 
       }
 
     }
-
-  }catch(error){
-
-    showMessage(
-      error.message || "Une erreur est survenue.",
-      "red"
-    );
-
-  }
+  );
 
 
-  submitButton.disabled=false;
+  async function openApp(user) {
 
-};
+    currentUser = user;
 
+    document
+      .getElementById("authScreen")
+      .classList.add("hidden");
 
-/* ============================
-   SESSION
-============================ */
+    document
+      .getElementById("appScreen")
+      .classList.remove("hidden");
 
-async function checkSession(){
+    updateProfile();
 
-  const result =
-    await db.auth.getSession();
+    renderProducts();
 
-  if(
-    result.data &&
-    result.data.session
-  ){
+    renderHistory();
 
-    currentUser =
-      result.data.session.user;
+    updateStats();
 
-    openMember();
+    updateReferral();
 
   }
 
-}
+
+  /* =========================================================
+     NAVIGATION
+  ========================================================= */
+
+  function showPage(page) {
+
+    document
+      .querySelectorAll(".page")
+      .forEach(function(section) {
+
+        section.classList.remove("active");
+
+      });
 
 
-db.auth.onAuthStateChange(
-  function(event,session){
+    const target =
+      document.getElementById(
+        "page-" + page
+      );
 
-    if(session){
+    if (target) {
 
-      currentUser=session.user;
+      target.classList.add("active");
 
     }
 
-  }
-);
+
+    document
+      .querySelectorAll(".nav-btn")
+      .forEach(function(btn) {
+
+        btn.classList.remove("active");
+
+        if (
+          btn.dataset.page === page
+        ) {
+
+          btn.classList.add("active");
+
+        }
+
+      });
 
 
-/* ============================
-   OUVRIR ESPACE MEMBRE
-============================ */
-
-function openMember(){
-
-  if(!currentUser) return;
-
-  authPage.classList.add("hidden");
-
-  app.classList.remove("hidden");
-
-  loadProfile();
-
-  createReferral();
-
-  loadHistory();
-
-}
-
-
-/* ============================
-   PROFIL
-============================ */
-
-function loadProfile(){
-
-  const meta =
-    currentUser.user_metadata || {};
-
-  document.getElementById(
-    "profileName"
-  ).textContent =
-    meta.name || "Membre";
-
-  document.getElementById(
-    "profilePhone"
-  ).textContent =
-    meta.phone || "Non renseigné";
-
-  document.getElementById(
-    "profileEmail"
-  ).textContent =
-    currentUser.email || "";
-
-}
-
-
-/* ============================
-   NAVIGATION
-============================ */
-
-function showPage(id){
-
-  const pages=[
-    "homePage",
-    "productsPage",
-    "tasksPage",
-    "teamPage",
-    "profilePage",
-    "depositPage",
-    "withdrawPage",
-    "historyPage"
-  ];
-
-  pages.forEach(function(page){
-
-    const element =
-      document.getElementById(page);
-
-    if(element){
-
-      element.classList.add("hidden");
-
-    }
-
-  });
-
-
-  const target =
-    document.getElementById(id);
-
-  if(target){
-
-    target.classList.remove("hidden");
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
 
   }
 
 
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+  /* =========================================================
+     PRODUITS
+  ========================================================= */
 
-}
+  function renderProducts() {
 
+    const html =
+      KINS.map(function(kin) {
 
-/* ============================
-   MENU
-============================ */
+        const total =
+          kin.gain * kin.days;
 
-function openMenu(){
+        return `
 
-  document
-    .getElementById("sideMenu")
-    .classList.remove("hidden");
+          <div class="product">
 
-  document
-    .getElementById("overlay")
-    .classList.remove("hidden");
+            <div class="product-head">
 
-}
+              <div class="kin">
+                ${kin.id}
+              </div>
 
+              <div class="tag">
+                MAX ${kin.max}
+              </div>
 
-function closeMenu(){
+            </div>
 
-  document
-    .getElementById("sideMenu")
-    .classList.add("hidden");
+            <div class="product-price">
+              ${money(kin.price)}
+            </div>
 
-  document
-    .getElementById("overlay")
-    .classList.add("hidden");
+            <div class="product-grid">
 
-}
+              <div class="product-info">
+                <small>Gain journalier affiché</small>
+                <strong>${money(kin.gain)}</strong>
+              </div>
 
+              <div class="product-info">
+                <small>Durée</small>
+                <strong>${kin.days} jours</strong>
+              </div>
 
-/* ============================
-   REFERRAL
-============================ */
+              <div class="product-info">
+                <small>Gain affiché / période</small>
+                <strong>${money(total)}</strong>
+              </div>
 
-function createReferral(){
+              <div class="product-info">
+                <small>Achats simultanés</small>
+                <strong>${kin.max} maximum</strong>
+              </div>
 
-  if(!currentUser) return;
+            </div>
 
+            <div class="buy-row">
 
-  const link =
-    window.location.origin +
-    window.location.pathname +
-    "?ref=" +
-    currentUser.id;
+              <button
+                class="buy-btn"
+                onclick="requestKin('${kin.id}')"
+              >
+                Sélectionner ${kin.id}
+              </button>
 
+              <div class="limit">
+                ${kin.max} max.
+              </div>
 
-  document.getElementById(
-    "referralLink"
-  ).textContent=link;
+            </div>
 
-}
-
-
-async function copyReferral(){
-
-  const link =
-    document.getElementById(
-      "referralLink"
-    ).textContent;
-
-
-  try{
-
-    await navigator.clipboard.writeText(link);
-
-    openModal(
-      "Parrainage",
-      "Votre lien de parrainage a été copié."
-    );
-
-  }catch(error){
-
-    openModal(
-      "Votre lien",
-      link
-    );
-
-  }
-
-}
-
-
-/* ============================
-   PRODUITS
-============================ */
-
-function buyProduct(name,price){
-
-  openModal(
-    "🛍️ "+name,
-    `
-      <p><b>Prix :</b> CDF ${Number(price).toLocaleString()}</p>
-      <br>
-      <p>
-        La commande sera enregistrée lorsque
-        le système de paiement et la validation
-        administrateur seront connectés.
-      </p>
-      <br>
-      <p>
-        <b>Statut :</b> En attente de configuration.
-      </p>
-    `
-  );
-
-}
-
-
-/* ============================
-   TÂCHES
-============================ */
-
-function dailyCheckin(){
-
-  const today =
-    new Date().toLocaleDateString();
-
-  const last =
-    localStorage.getItem(
-      "km_checkin"
-    );
-
-
-  if(last===today){
-
-    openModal(
-      "Pointage",
-      "Vous avez déjà effectué votre pointage aujourd'hui."
-    );
-
-    return;
-
-  }
-
-
-  localStorage.setItem(
-    "km_checkin",
-    today
-  );
-
-
-  addHistory(
-    "Pointage quotidien",
-    "Effectué"
-  );
-
-
-  openModal(
-    "Pointage réussi",
-    "Votre présence du jour a été enregistrée."
-  );
-
-}
-
-
-function completeTask(){
-
-  addHistory(
-    "Tâche quotidienne",
-    "Terminée"
-  );
-
-
-  openModal(
-    "Tâche terminée",
-    "Votre tâche a été enregistrée."
-  );
-
-}
-
-
-/* ============================
-   DÉPÔT
-============================ */
-
-function requestDeposit(){
-
-  const amount =
-    document.getElementById(
-      "depositAmount"
-    ).value;
-
-  const method =
-    document.getElementById(
-      "depositMethod"
-    ).value;
-
-
-  if(!amount || Number(amount)<=0){
-
-    openModal(
-      "Dépôt",
-      "Veuillez entrer un montant valide."
-    );
-
-    return;
-
-  }
-
-
-  addHistory(
-    "Dépôt demandé",
-    "CDF "+
-    Number(amount).toLocaleString()
-  );
-
-
-  openModal(
-    "Dépôt envoyé",
-    `
-      <p>Montant : <b>CDF ${Number(amount).toLocaleString()}</b></p>
-      <p>Méthode : <b>${method}</b></p>
-      <br>
-      <p>
-        Votre demande a été enregistrée.
-        La validation réelle devra être reliée
-        à Supabase et au système de paiement.
-      </p>
-    `
-  );
-
-
-  document.getElementById(
-    "depositAmount"
-  ).value="";
-
-}
-
-
-/* ============================
-   RETRAIT
-============================ */
-
-function requestWithdraw(){
-
-  const amount =
-    document.getElementById(
-      "withdrawAmount"
-    ).value;
-
-  const number =
-    document.getElementById(
-      "withdrawNumber"
-    ).value;
-
-
-  if(!amount || Number(amount)<=0){
-
-    openModal(
-      "Retrait",
-      "Veuillez entrer un montant valide."
-    );
-
-    return;
-
-  }
-
-
-  if(!number){
-
-    openModal(
-      "Retrait",
-      "Veuillez entrer votre numéro Mobile Money."
-    );
-
-    return;
-
-  }
-
-
-  addHistory(
-    "Retrait demandé",
-    "CDF "+
-    Number(amount).toLocaleString()
-  );
-
-
-  openModal(
-    "Retrait envoyé",
-    `
-      <p>Montant : <b>CDF ${Number(amount).toLocaleString()}</b></p>
-      <p>Numéro : <b>${number}</b></p>
-      <br>
-      <p>
-        Votre demande a été enregistrée.
-        Le traitement réel devra être sécurisé
-        côté serveur.
-      </p>
-    `
-  );
-
-
-  document.getElementById(
-    "withdrawAmount"
-  ).value="";
-
-  document.getElementById(
-    "withdrawNumber"
-  ).value="";
-
-}
-
-
-/* ============================
-   HISTORIQUE LOCAL
-============================ */
-
-function addHistory(type,value){
-
-  const history =
-    JSON.parse(
-      localStorage.getItem(
-        "km_history"
-      ) || "[]"
-    );
-
-
-  history.unshift({
-
-    type:type,
-    value:value,
-    date:new Date().toLocaleString()
-
-  });
-
-
-  localStorage.setItem(
-    "km_history",
-    JSON.stringify(history)
-  );
-
-
-  loadHistory();
-
-}
-
-
-function loadHistory(){
-
-  const list =
-    document.getElementById(
-      "historyList"
-    );
-
-  if(!list) return;
-
-
-  const history =
-    JSON.parse(
-      localStorage.getItem(
-        "km_history"
-      ) || "[]"
-    );
-
-
-  if(history.length===0){
-
-    list.innerHTML =
-      "<p>Aucune opération pour le moment.</p>";
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    history.map(function(item){
-
-      return `
-        <div class="history">
-          <div class="historyRow">
-            <b>${item.type}</b>
-            <span>${item.value}</span>
           </div>
 
-          <small>${item.date}</small>
-        </div>
+        `;
+
+      }).join("");
+
+
+    document.getElementById(
+      "products"
+    ).innerHTML = html;
+
+    document.getElementById(
+      "productsPage"
+    ).innerHTML = html;
+
+  }
+
+
+  function requestKin(id) {
+
+    const kin =
+      KINS.find(function(k) {
+        return k.id === id;
+      });
+
+    if (!kin) return;
+
+    alert(
+      `${kin.id}\n\n` +
+      `Prix : ${money(kin.price)}\n` +
+      `Gain journalier affiché : ${money(kin.gain)}\n` +
+      `Durée : ${kin.days} jours\n` +
+      `Maximum simultané : ${kin.max}\n\n` +
+      `Cette sélection est une demande d'interface. ` +
+      `L'activation réelle doit être validée côté serveur.`
+    );
+
+  }
+
+
+  /* =========================================================
+     LIMITES LOCALES
+  ========================================================= */
+
+  function getPositions() {
+
+    if (!currentUser) return {};
+
+    const key =
+      "kin_positions_" + currentUser.id;
+
+    try {
+
+      return JSON.parse(
+        localStorage.getItem(key) || "{}"
+      );
+
+    } catch(e) {
+
+      return {};
+
+    }
+
+  }
+
+
+  function savePositions(data) {
+
+    if (!currentUser) return;
+
+    const key =
+      "kin_positions_" + currentUser.id;
+
+    localStorage.setItem(
+      key,
+      JSON.stringify(data)
+    );
+
+  }
+
+
+  /* =========================================================
+     STATS
+  ========================================================= */
+
+  function updateStats() {
+
+    if (!currentUser) return;
+
+    const positions =
+      getPositions();
+
+    let total =
+      0;
+
+    Object.keys(positions)
+      .forEach(function(id) {
+
+        total += Number(
+          positions[id] || 0
+        );
+
+      });
+
+    document
+      .getElementById("activePositions")
+      .textContent = total;
+
+    const earnings =
+      Number(
+        localStorage.getItem(
+          "kin_earnings_" + currentUser.id
+        ) || 0
+      );
+
+    document
+      .getElementById("totalEarnings")
+      .textContent = money(earnings);
+
+    const balance =
+      Number(
+        localStorage.getItem(
+          "kin_balance_" + currentUser.id
+        ) || 2000
+      );
+
+    document
+      .getElementById("balance")
+      .textContent = money(balance);
+
+  }
+
+
+  /* =========================================================
+     PROFIL
+  ========================================================= */
+
+  function updateProfile() {
+
+    if (!currentUser) return;
+
+    const metadata =
+      currentUser.user_metadata || {};
+
+    document
+      .getElementById("profileName")
+      .textContent =
+        metadata.name ||
+        "Membre";
+
+    document
+      .getElementById("profileEmail")
+      .textContent =
+        currentUser.email ||
+        "---";
+
+  }
+
+
+  /* =========================================================
+     REFERRAL
+  ========================================================= */
+
+  function updateReferral() {
+
+    if (!currentUser) return;
+
+    const code =
+      currentUser.id
+        .replace(/-/g, "")
+        .substring(0, 8)
+        .toUpperCase();
+
+    document
+      .getElementById("referralCode")
+      .textContent = code;
+
+  }
+
+
+  async function copyReferral() {
+
+    const code =
+      document
+        .getElementById("referralCode")
+        .textContent;
+
+    try {
+
+      await navigator.clipboard.writeText(code);
+
+      alert(
+        "Code de parrainage copié."
+      );
+
+    } catch(e) {
+
+      alert(
+        "Code : " + code
+      );
+
+    }
+
+  }
+
+
+  /* =========================================================
+     POINTAGE
+  ========================================================= */
+
+  function doCheckin() {
+
+    if (!currentUser) return;
+
+    const key =
+      "kin_checkin_" + currentUser.id;
+
+    const today =
+      new Date().toISOString().slice(0, 10);
+
+    const last =
+      localStorage.getItem(key);
+
+    if (last === today) {
+
+      alert(
+        "Vous avez déjà effectué votre pointage aujourd'hui."
+      );
+
+      return;
+
+    }
+
+    localStorage.setItem(
+      key,
+      today
+    );
+
+    const btn =
+      document.getElementById("checkinBtn");
+
+    if (btn) {
+
+      btn.textContent = "Déjà pointé";
+      btn.classList.add("done");
+
+    }
+
+    addHistory(
+      "Pointage quotidien",
+      0,
+      "effectué"
+    );
+
+    alert(
+      "Pointage effectué avec succès."
+    );
+
+  }
+
+
+  /* =========================================================
+     HISTORIQUE
+  ========================================================= */
+
+  function getHistory() {
+
+    if (!currentUser) return [];
+
+    try {
+
+      return JSON.parse(
+        localStorage.getItem(
+          "kin_history_" + currentUser.id
+        ) || "[]"
+      );
+
+    } catch(e) {
+
+      return [];
+
+    }
+
+  }
+
+
+  function addHistory(
+    label,
+    amount,
+    status
+  ) {
+
+    if (!currentUser) return;
+
+    const history =
+      getHistory();
+
+    history.unshift({
+
+      label,
+      amount,
+      status,
+
+      date:
+        new Date().toLocaleString(
+          "fr-FR"
+        )
+
+    });
+
+    localStorage.setItem(
+      "kin_history_" + currentUser.id,
+      JSON.stringify(
+        history.slice(0, 30)
+      )
+    );
+
+    renderHistory();
+
+  }
+
+
+  function renderHistory() {
+
+    const box =
+      document.getElementById("history");
+
+    if (!box || !currentUser) return;
+
+    const history =
+      getHistory();
+
+    if (!history.length) {
+
+      box.innerHTML = `
+        <p style="font-size:13px;color:#78857e;">
+          Aucun historique pour le moment.
+        </p>
       `;
 
-    }).join("");
+      return;
 
-}
-
-
-function showHistory(){
-
-  showPage("historyPage");
-
-}
+    }
 
 
-/* ============================
-   SERVICES
-============================ */
+    box.innerHTML =
+      history.map(function(item) {
 
-function aboutPlatform(){
+        return `
 
-  openModal(
-    "KINSHASA MAKAMBO",
-    `
-      <p><b>Bienvenue chez KINSHASA MAKAMBO.</b></p>
-      <br>
-      <p>
-        Votre espace membre regroupe vos produits,
-        tâches, équipe, profil et opérations.
-      </p>
-      <br>
-      <p>
-        Les fonctionnalités financières seront
-        reliées à un système sécurisé avant leur
-        utilisation réelle.
-      </p>
-    `
-  );
+          <div class="info-row">
 
-}
+            <span>
+              ${escapeHtml(item.label)}
+              <br>
+              <small style="font-size:10px;">
+                ${escapeHtml(item.date)}
+              </small>
+            </span>
 
+            <strong>
+              ${item.amount
+                ? money(item.amount)
+                : escapeHtml(item.status)}
+            </strong>
 
-function contactService(){
+          </div>
 
-  openModal(
-    "Service client",
-    `
-      <p>Service client KINSHASA MAKAMBO</p>
-      <br>
-      <p>
-        Le lien WhatsApp ou Telegram pourra être
-        ajouté ici.
-      </p>
-    `
-  );
+        `;
 
-}
-
-
-async function changePassword(){
-
-  if(!currentUser || !currentUser.email){
-
-    return;
+      }).join("");
 
   }
 
 
-  const {error} =
-    await db.auth.resetPasswordForEmail(
-      currentUser.email,
-      {
-        redirectTo:
-          window.location.origin
-      }
+  function escapeHtml(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* =========================================================
+     MODALS
+  ========================================================= */
+
+  function openModal(id) {
+
+    document
+      .getElementById(id)
+      .classList.remove("hidden");
+
+  }
+
+
+  function closeModal(id) {
+
+    document
+      .getElementById(id)
+      .classList.add("hidden");
+
+  }
+
+
+  document
+    .querySelectorAll(".modal")
+    .forEach(function(modal) {
+
+      modal.addEventListener(
+        "click",
+        function(e) {
+
+          if (e.target === modal) {
+
+            modal.classList.add("hidden");
+
+          }
+
+        }
+      );
+
+    });
+
+
+  /* =========================================================
+     DÉPÔT
+  ========================================================= */
+
+  function submitDeposit() {
+
+    const amount =
+      Number(
+        document
+          .getElementById("depositAmount")
+          .value
+      );
+
+    const method =
+      document
+        .getElementById("depositMethod")
+        .value;
+
+    const reference =
+      document
+        .getElementById("depositReference")
+        .value.trim();
+
+
+    if (amount < 15000) {
+
+      alert(
+        "Le dépôt minimum est de 15 000 FC."
+      );
+
+      return;
+
+    }
+
+    if (!reference) {
+
+      alert(
+        "Veuillez entrer la référence du transfert."
+      );
+
+      return;
+
+    }
+
+
+    addHistory(
+      "Demande de dépôt — " + method,
+      amount,
+      "en attente"
     );
 
 
-  if(error){
+    closeModal("depositModal");
 
-    openModal(
-      "Mot de passe",
-      error.message
-    );
+    document
+      .getElementById("depositAmount")
+      .value = "";
 
-  }else{
+    document
+      .getElementById("depositReference")
+      .value = "";
 
-    openModal(
-      "Mot de passe",
-      "Un lien de modification du mot de passe a été demandé."
+
+    alert(
+      "Votre demande de dépôt a été enregistrée localement.\n\n" +
+      "Elle doit être vérifiée par le système avant toute activation."
     );
 
   }
 
-}
+
+  /* =========================================================
+     RETRAIT
+  ========================================================= */
+
+  function submitWithdraw() {
+
+    const amount =
+      Number(
+        document
+          .getElementById("withdrawAmount")
+          .value
+      );
+
+    const method =
+      document
+        .getElementById("withdrawMethod")
+        .value;
+
+    const phone =
+      document
+        .getElementById("withdrawPhone")
+        .value.trim();
 
 
-/* ============================
-   MODAL
-============================ */
+    if (amount < 2000) {
 
-function openModal(title,content){
+      alert(
+        "Le retrait minimum est de 2 000 FC."
+      );
 
-  document.getElementById(
-    "modalTitle"
-  ).textContent=title;
+      return;
 
-  document.getElementById(
-    "modalContent"
-  ).innerHTML=content;
+    }
 
-  document.getElementById(
-    "modal"
-  ).classList.remove("hidden");
+    if (!phone) {
 
-}
+      alert(
+        "Veuillez entrer votre numéro de réception."
+      );
 
+      return;
 
-function closeModal(){
-
-  document.getElementById(
-    "modal"
-  ).classList.add("hidden");
-
-}
+    }
 
 
-/* ============================
-   DÉCONNEXION
-============================ */
+    const fee =
+      amount * 0.10;
 
-async function logout(){
-
-  await db.auth.signOut();
-
-  currentUser=null;
-
-  app.classList.add("hidden");
-
-  authPage.classList.remove("hidden");
-
-  showMessage(
-    "Vous êtes déconnecté.",
-    "green"
-  );
-
-}
+    const net =
+      amount - fee;
 
 
-/* ============================
-   DÉMARRAGE
-============================ */
+    addHistory(
+      "Demande de retrait — " + method,
+      amount,
+      "en attente"
+    );
 
-checkSession();
+
+    closeModal("withdrawModal");
+
+    document
+      .getElementById("withdrawAmount")
+      .value = "";
+
+    document
+      .getElementById("withdrawPhone")
+      .value = "";
+
+
+    alert(
+
+      "Demande enregistrée.\n\n" +
+
+      "Montant : " + money(amount) + "\n" +
+      "Frais 10 % : " + money(fee) + "\n" +
+      "Montant après frais : " + money(net) + "\n\n" +
+
+      "Le retrait réel doit être validé par le backend."
+
+    );
+
+  }
+
+
+  /* =========================================================
+     INITIALISATION
+  ========================================================= */
+
+  loadSession();
 
 </script>
 
