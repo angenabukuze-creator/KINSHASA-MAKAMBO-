@@ -2,327 +2,1201 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KINSHASA MAKAMBO</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#f4f6f8;color:#17202a}
-.header{background:#0b5ed7;color:#fff;padding:18px;display:flex;justify-content:space-between;align-items:center}
-.header h1{font-size:20px}
-.menu-btn{background:#fff;color:#0b5ed7;border:0;border-radius:8px;padding:9px 12px;font-size:20px}
-.container{max-width:600px;margin:auto;padding:18px}
-.card{background:#fff;padding:20px;border-radius:14px;margin-bottom:16px;box-shadow:0 3px 12px rgba(0,0,0,.08)}
-.card h2{margin-bottom:15px;color:#0b5ed7}
-input,select{width:100%;padding:13px;margin:7px 0;border:1px solid #ddd;border-radius:8px;font-size:15px}
-button{border:0;border-radius:8px;padding:13px 16px;cursor:pointer;font-size:15px}
-.primary{width:100%;background:#0b5ed7;color:#fff;margin-top:8px}
-.green{background:#198754;color:#fff}
-.red{background:#dc3545;color:#fff}
-.gray{background:#6c757d;color:#fff}
-.menu{display:none;background:#fff;padding:10px;border-bottom:1px solid #ddd}
-.menu button{width:100%;text-align:left;margin:4px 0;background:#f1f3f5;color:#17202a}
-.page{display:none}
-.page.active{display:block}
-.message{padding:12px;margin:10px 0;border-radius:8px;display:none}
-.success{background:#d1e7dd;color:#0f5132}
-.error{background:#f8d7da;color:#842029}
-.balance{font-size:32px;font-weight:bold;color:#198754;margin:10px 0}
-.referral{background:#eef5ff;padding:15px;border-radius:10px;word-break:break-all;margin:10px 0}
-.history-item{border-bottom:1px solid #eee;padding:12px 0}
-.history-item:last-child{border-bottom:0}
-.stat{display:flex;justify-content:space-between;background:#f8f9fa;padding:14px;border-radius:10px;margin:8px 0}
-.logout{width:100%;margin-top:10px}
-.auth-box{margin-top:50px}
-.small{font-size:13px;color:#6c757d;margin-top:8px}
-.link-btn{margin-top:8px;width:100%}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f3f4f6;
+  color:#171717;
+  padding-bottom:78px;
+}
+
+button,input,select{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* AUTH */
+#authPage{
+  min-height:100vh;
+  background:linear-gradient(160deg,#061a38,#0b5ed7);
+  padding:25px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.authBox{
+  width:100%;
+  max-width:430px;
+  background:white;
+  border-radius:24px;
+  padding:25px;
+  box-shadow:0 15px 45px rgba(0,0,0,.25);
+}
+
+.logo{
+  text-align:center;
+  color:#0b5ed7;
+  font-size:27px;
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.authSubtitle{
+  text-align:center;
+  color:#666;
+  margin-bottom:22px;
+}
+
+.authBox input{
+  width:100%;
+  padding:14px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  margin-bottom:12px;
+  font-size:16px;
+}
+
+.primaryBtn{
+  width:100%;
+  border:0;
+  background:#0b5ed7;
+  color:white;
+  padding:14px;
+  border-radius:10px;
+  font-size:17px;
+  font-weight:700;
+}
+
+.secondaryBtn{
+  width:100%;
+  border:0;
+  background:#eee;
+  color:#222;
+  padding:13px;
+  border-radius:10px;
+  margin-top:10px;
+  font-weight:700;
+}
+
+.message{
+  margin:10px 0;
+  padding:12px;
+  border-radius:9px;
+  display:none;
+}
+
+/* APP */
+#app{
+  min-height:100vh;
+}
+
+.top{
+  background:#0b5ed7;
+  color:white;
+  padding:17px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.topTitle{
+  font-size:21px;
+  font-weight:800;
+}
+
+.menuButton{
+  width:48px;
+  height:42px;
+  border:0;
+  border-radius:12px;
+  background:white;
+  color:#333;
+  font-size:24px;
+}
+
+.page{
+  max-width:720px;
+  margin:auto;
+}
+
+.hero{
+  height:185px;
+  background:
+    linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+    linear-gradient(120deg,#164b8a,#5d8fb9);
+  display:flex;
+  align-items:flex-end;
+  padding:22px;
+  color:white;
+}
+
+.hero h1{
+  font-size:28px;
+}
+
+.hero p{
+  margin-top:7px;
+  color:#eee;
+}
+
+/* BALANCES */
+.balanceGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  padding:15px;
+}
+
+.balance{
+  background:#fff;
+  border:2px solid #e51b3e;
+  border-radius:18px;
+  padding:18px;
+}
+
+.balance small{
+  color:#777;
+  display:block;
+  margin-top:10px;
+}
+
+.balance strong{
+  font-size:25px;
+}
+
+/* NOTICE */
+.notice{
+  margin:0 15px 15px;
+  background:#111;
+  color:white;
+  padding:14px;
+  border-radius:16px;
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+/* QUICK */
+.quick{
+  margin:0 15px 18px;
+  padding:18px 10px;
+  background:#111;
+  color:white;
+  border-radius:18px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+}
+
+.quick button{
+  border:0;
+  background:transparent;
+  color:white;
+}
+
+.circle{
+  width:62px;
+  height:62px;
+  margin:auto;
+  border:3px solid white;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:27px;
+}
+
+.quick span{
+  display:block;
+  margin-top:8px;
+  font-size:13px;
+  font-weight:700;
+}
+
+/* SECTIONS */
+.section{
+  padding:0 15px 18px;
+}
+
+.sectionTitle{
+  font-size:22px;
+  font-weight:800;
+  margin:10px 0 14px;
+}
+
+.sectionTitle span{
+  color:#e51b3e;
+}
+
+/* PRODUCTS */
+.products{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.product{
+  background:white;
+  border-radius:20px;
+  padding:12px;
+  box-shadow:0 3px 15px rgba(0,0,0,.08);
+}
+
+.product .vip{
+  text-align:center;
+  font-size:21px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.productImage{
+  width:100%;
+  height:135px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#222,#777);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:42px;
+}
+
+.productInfo{
+  margin-top:12px;
+}
+
+.productInfo div{
+  display:flex;
+  justify-content:space-between;
+  gap:5px;
+  margin:7px 0;
+  font-size:13px;
+}
+
+.productInfo b{
+  color:#d62b42;
+}
+
+.price{
+  text-align:center;
+  font-size:21px;
+  font-weight:800;
+  margin:15px 0 10px;
+}
+
+.buyBtn{
+  width:100%;
+  border:0;
+  background:#e51b3e;
+  color:white;
+  padding:13px;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:800;
+}
+
+/* CARDS */
+.card{
+  background:white;
+  margin:15px;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 3px 14px rgba(0,0,0,.07);
+}
+
+.card h2{
+  color:#0b5ed7;
+  margin-bottom:14px;
+}
+
+.formInput{
+  width:100%;
+  padding:14px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  margin-bottom:12px;
+  font-size:16px;
+}
+
+.redBtn{
+  width:100%;
+  background:#e51b3e;
+  color:white;
+  border:0;
+  padding:14px;
+  border-radius:10px;
+  font-weight:800;
+  font-size:16px;
+}
+
+/* SERVICES */
+.services{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.service{
+  background:white;
+  border-radius:17px;
+  padding:18px 10px;
+  text-align:center;
+}
+
+.serviceIcon{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  margin:auto auto 10px;
+  background:#e51b3e;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+}
+
+.service p{
+  font-weight:700;
+}
+
+/* TEAM */
+.referralBox{
+  background:linear-gradient(135deg,#071d42,#0b5ed7);
+  color:white;
+  padding:20px;
+  border-radius:18px;
+}
+
+.referralLink{
+  background:white;
+  color:#222;
+  padding:13px;
+  border-radius:9px;
+  margin:14px 0;
+  word-break:break-all;
+  font-size:13px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:14px;
+}
+
+.stat{
+  background:white;
+  color:#222;
+  padding:16px;
+  border-radius:14px;
+  text-align:center;
+}
+
+.stat strong{
+  display:block;
+  font-size:25px;
+  color:#0b5ed7;
+}
+
+/* TASK */
+.task{
+  background:white;
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:12px;
+  border-left:5px solid #e51b3e;
+}
+
+.task button{
+  margin-top:12px;
+  width:100%;
+  border:0;
+  background:#0b5ed7;
+  color:white;
+  padding:12px;
+  border-radius:9px;
+  font-weight:700;
+}
+
+/* HISTORY */
+.history{
+  background:white;
+  padding:15px;
+  border-radius:15px;
+  margin-bottom:10px;
+}
+
+.historyRow{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+}
+
+.greenText{
+  color:#198754;
+}
+
+.redText{
+  color:#dc3545;
+}
+
+/* BOTTOM NAV */
+.bottomNav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:72px;
+  background:#e91435;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  z-index:100;
+  box-shadow:0 -3px 15px rgba(0,0,0,.2);
+}
+
+.bottomNav button{
+  border:0;
+  background:transparent;
+  color:white;
+  font-size:12px;
+  font-weight:700;
+}
+
+.bottomNav .navIcon{
+  font-size:23px;
+  display:block;
+  margin-bottom:2px;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.65);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:200;
+}
+
+.modalBox{
+  background:white;
+  border-radius:22px;
+  padding:25px;
+  width:100%;
+  max-width:430px;
+  max-height:85vh;
+  overflow:auto;
+}
+
+.modalBox h2{
+  margin-bottom:15px;
+  color:#0b5ed7;
+}
+
+.closeBtn{
+  width:100%;
+  margin-top:10px;
+  border:0;
+  padding:13px;
+  border-radius:10px;
+  background:#ddd;
+  font-weight:700;
+}
+
+/* MENU */
+.sideMenu{
+  position:fixed;
+  top:0;
+  right:0;
+  width:290px;
+  height:100vh;
+  background:white;
+  z-index:150;
+  padding:25px;
+  box-shadow:-8px 0 25px rgba(0,0,0,.2);
+}
+
+.sideMenu button{
+  width:100%;
+  text-align:left;
+  border:0;
+  background:#f1f2f4;
+  margin:6px 0;
+  padding:14px;
+  border-radius:10px;
+  font-size:16px;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:140;
+}
+
+@media(max-width:420px){
+  .products{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .productImage{
+    height:115px;
+  }
+
+  .quick span{
+    font-size:11px;
+  }
+
+  .balance strong{
+    font-size:21px;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-<h1>KINSHASA MAKAMBO</h1>
-<button class="menu-btn" onclick="toggleMenu()">☰</button>
+<!-- AUTHENTIFICATION -->
+<section id="authPage">
+
+  <div class="authBox">
+
+    <div class="logo">KINSHASA MAKAMBO</div>
+
+    <p class="authSubtitle" id="authTitle">
+      Créez votre compte
+    </p>
+
+    <div id="message" class="message"></div>
+
+    <input id="name" type="text" placeholder="Nom complet">
+    <input id="phone" type="tel" placeholder="Téléphone">
+    <input id="email" type="email" placeholder="Adresse email">
+    <input id="password" type="password" placeholder="Mot de passe">
+
+    <button id="submitButton" class="primaryBtn">
+      Créer mon compte
+    </button>
+
+    <button id="modeButton" class="secondaryBtn">
+      J'ai déjà un compte
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- APPLICATION -->
+<section id="app" class="hidden">
+
+  <header class="top">
+    <div class="topTitle">KINSHASA MAKAMBO</div>
+    <button class="menuButton" onclick="openMenu()">☰</button>
+  </header>
+
+  <main class="page">
+
+    <!-- ACCUEIL -->
+    <section id="homePage">
+
+      <div class="hero">
+        <div>
+          <h1>Bienvenue 👋</h1>
+          <p>Votre espace membre KINSHASA MAKAMBO</p>
+        </div>
+      </div>
+
+      <div class="balanceGrid">
+
+        <div class="balance">
+          <strong id="balanceDisplay">CDF 0</strong>
+          <small>Solde du compte</small>
+        </div>
+
+        <div class="balance">
+          <strong id="earningsDisplay">CDF 0</strong>
+          <small>Revenus cumulés</small>
+        </div>
+
+      </div>
+
+      <div class="notice">
+        🔔 Bienvenue sur KINSHASA MAKAMBO • Votre espace membre est prêt.
+      </div>
+
+      <div class="quick">
+
+        <button onclick="showPage('depositPage')">
+          <div class="circle">＄</div>
+          <span>Recharge</span>
+        </button>
+
+        <button onclick="showPage('withdrawPage')">
+          <div class="circle">↑</div>
+          <span>Retrait</span>
+        </button>
+
+        <button onclick="showPage('tasksPage')">
+          <div class="circle">☷</div>
+          <span>Tâches</span>
+        </button>
+
+        <button onclick="showPage('tasksPage')">
+          <div class="circle">✓</div>
+          <span>Pointage</span>
+        </button>
+
+      </div>
+
+      <div class="section">
+
+        <div class="sectionTitle">
+          Produits <span>spéciaux</span>
+        </div>
+
+        <div class="products">
+
+          <div class="product">
+            <div class="vip">VIP 1</div>
+
+            <div class="productImage">🚗</div>
+
+            <div class="productInfo">
+              <div>
+                <span>Prix</span>
+                <b>CDF 20 000</b>
+              </div>
+
+              <div>
+                <span>Revenu quotidien</span>
+                <b>CDF 3 600</b>
+              </div>
+
+              <div>
+                <span>Revenu total</span>
+                <b>CDF 108 000</b>
+              </div>
+
+              <div>
+                <span>Période</span>
+                <b>30 jours</b>
+              </div>
+            </div>
+
+            <div class="price">CDF 20 000</div>
+
+            <button class="buyBtn" onclick="buyProduct('VIP 1','20000')">
+              Acheter
+            </button>
+          </div>
+
+
+          <div class="product">
+            <div class="vip">VIP 2</div>
+
+            <div class="productImage">🚘</div>
+
+            <div class="productInfo">
+              <div>
+                <span>Prix</span>
+                <b>CDF 45 000</b>
+              </div>
+
+              <div>
+                <span>Revenu quotidien</span>
+                <b>CDF 8 100</b>
+              </div>
+
+              <div>
+                <span>Revenu total</span>
+                <b>CDF 243 000</b>
+              </div>
+
+              <div>
+                <span>Période</span>
+                <b>30 jours</b>
+              </div>
+            </div>
+
+            <div class="price">CDF 45 000</div>
+
+            <button class="buyBtn" onclick="buyProduct('VIP 2','45000')">
+              Acheter
+            </button>
+          </div>
+
+
+          <div class="product">
+            <div class="vip">VIP 3</div>
+
+            <div class="productImage">🏢</div>
+
+            <div class="productInfo">
+              <div>
+                <span>Prix</span>
+                <b>CDF 100 000</b>
+              </div>
+
+              <div>
+                <span>Revenu quotidien</span>
+                <b>À définir</b>
+              </div>
+
+              <div>
+                <span>Période</span>
+                <b>30 jours</b>
+              </div>
+            </div>
+
+            <div class="price">CDF 100 000</div>
+
+            <button class="buyBtn" onclick="buyProduct('VIP 3','100000')">
+              Acheter
+            </button>
+          </div>
+
+
+          <div class="product">
+            <div class="vip">VIP 4</div>
+
+            <div class="productImage">💎</div>
+
+            <div class="productInfo">
+              <div>
+                <span>Prix</span>
+                <b>À définir</b>
+              </div>
+
+              <div>
+                <span>Revenu</span>
+                <b>À définir</b>
+              </div>
+
+              <div>
+                <span>Période</span>
+                <b>30 jours</b>
+              </div>
+            </div>
+
+            <div class="price">VIP 4</div>
+
+            <button class="buyBtn" onclick="buyProduct('VIP 4','0')">
+              Voir
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- PRODUITS -->
+    <section id="productsPage" class="hidden">
+
+      <div class="card">
+        <h2>🛍️ Produits</h2>
+        <p>
+          Découvrez les offres disponibles dans KINSHASA MAKAMBO.
+        </p>
+      </div>
+
+      <div class="section">
+        <div class="products">
+
+          <div class="product">
+            <div class="vip">VIP 1</div>
+            <div class="productImage">🚗</div>
+            <div class="price">CDF 20 000</div>
+            <button class="buyBtn" onclick="buyProduct('VIP 1','20000')">
+              Acheter
+            </button>
+          </div>
+
+          <div class="product">
+            <div class="vip">VIP 2</div>
+            <div class="productImage">🚘</div>
+            <div class="price">CDF 45 000</div>
+            <button class="buyBtn" onclick="buyProduct('VIP 2','45000')">
+              Acheter
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- TÂCHES -->
+    <section id="tasksPage" class="hidden">
+
+      <div class="card">
+        <h2>📋 Tâches quotidiennes</h2>
+        <p>
+          Effectuez vos tâches disponibles et consultez vos récompenses.
+        </p>
+      </div>
+
+      <div class="card">
+
+        <div class="task">
+          <h3>Pointage quotidien</h3>
+          <p>Connectez-vous chaque jour pour enregistrer votre présence.</p>
+
+          <button onclick="dailyCheckin()">
+            Pointer maintenant
+          </button>
+        </div>
+
+        <div class="task">
+          <h3>Visiter la plateforme</h3>
+          <p>Consultez votre espace membre aujourd'hui.</p>
+
+          <button onclick="completeTask()">
+            Effectuer la tâche
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ÉQUIPE -->
+    <section id="teamPage" class="hidden">
+
+      <div class="card">
+
+        <h2>👥 Mon équipe</h2>
+
+        <p>
+          Invitez de nouveaux membres avec votre lien personnel.
+        </p>
+
+        <div class="referralBox">
+
+          <h3>🔗 Mon lien de parrainage</h3>
+
+          <div id="referralLink" class="referralLink">
+            Chargement...
+          </div>
+
+          <button class="primaryBtn" onclick="copyReferral()">
+            📋 Copier mon lien
+          </button>
+
+          <div class="stats">
+
+            <div class="stat">
+              <strong id="refCount">0</strong>
+              Filleuls
+            </div>
+
+            <div class="stat">
+              <strong id="refBonus">CDF 0</strong>
+              Bonus
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <h2>📊 Mon équipe</h2>
+
+        <p>
+          Votre équipe apparaîtra ici lorsque les inscriptions par
+          parrainage seront reliées à la base de données.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- PROFIL -->
+    <section id="profilePage" class="hidden">
+
+      <div class="card">
+
+        <h2>👤 Mon profil</h2>
+
+        <p><b>Nom :</b> <span id="profileName">-</span></p>
+        <br>
+
+        <p><b>Téléphone :</b> <span id="profilePhone">-</span></p>
+        <br>
+
+        <p><b>Email :</b> <span id="profileEmail">-</span></p>
+
+      </div>
+
+
+      <div class="section">
+
+        <div class="sectionTitle">Mes services</div>
+
+        <div class="services">
+
+          <div class="service" onclick="aboutPlatform()">
+            <div class="serviceIcon">ⓘ</div>
+            <p>À propos</p>
+          </div>
+
+          <div class="service" onclick="showHistory()">
+            <div class="serviceIcon">☷</div>
+            <p>Historique</p>
+          </div>
+
+          <div class="service" onclick="contactService()">
+            <div class="serviceIcon">☎</div>
+            <p>Service client</p>
+          </div>
+
+          <div class="service" onclick="changePassword()">
+            <div class="serviceIcon">🔒</div>
+            <p>Mot de passe</p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <button class="redBtn" onclick="logout()">
+          🔐 Déconnexion
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- DÉPÔT -->
+    <section id="depositPage" class="hidden">
+
+      <div class="card">
+
+        <h2>💰 Dépôt / Recharge</h2>
+
+        <p>
+          Indiquez le montant que vous souhaitez déposer.
+        </p>
+
+        <br>
+
+        <input
+          id="depositAmount"
+          class="formInput"
+          type="number"
+          placeholder="Montant en CDF"
+        >
+
+        <select id="depositMethod" class="formInput">
+          <option>Mobile Money</option>
+          <option>Airtel Money</option>
+          <option>Orange Money</option>
+          <option>M-Pesa</option>
+        </select>
+
+        <button class="redBtn" onclick="requestDeposit()">
+          Envoyer la demande
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- RETRAIT -->
+    <section id="withdrawPage" class="hidden">
+
+      <div class="card">
+
+        <h2>💸 Retrait</h2>
+
+        <p>
+          Entrez le montant que vous souhaitez retirer.
+        </p>
+
+        <br>
+
+        <input
+          id="withdrawAmount"
+          class="formInput"
+          type="number"
+          placeholder="Montant en CDF"
+        >
+
+        <input
+          id="withdrawNumber"
+          class="formInput"
+          type="tel"
+          placeholder="Numéro Mobile Money"
+        >
+
+        <button class="redBtn" onclick="requestWithdraw()">
+          Demander le retrait
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- HISTORIQUE -->
+    <section id="historyPage" class="hidden">
+
+      <div class="card">
+
+        <h2>📊 Historique</h2>
+
+        <div id="historyList">
+          <p>Aucune opération pour le moment.</p>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- NAVIGATION BAS -->
+  <nav class="bottomNav">
+
+    <button onclick="showPage('homePage')">
+      <span class="navIcon">⌂</span>
+      Accueil
+    </button>
+
+    <button onclick="showPage('productsPage')">
+      <span class="navIcon">🛍️</span>
+      Produits
+    </button>
+
+    <button onclick="showPage('tasksPage')">
+      <span class="navIcon">☷</span>
+      Tâches
+    </button>
+
+    <button onclick="showPage('teamPage')">
+      <span class="navIcon">👥</span>
+      Équipe
+    </button>
+
+    <button onclick="showPage('profilePage')">
+      <span class="navIcon">♙</span>
+      Profil
+    </button>
+
+  </nav>
+
+</section>
+
+
+<!-- MENU -->
+<div id="overlay" class="overlay hidden" onclick="closeMenu()"></div>
+
+<div id="sideMenu" class="sideMenu hidden">
+
+  <h2>KINSHASA MAKAMBO</h2>
+
+  <br>
+
+  <button onclick="showPage('homePage');closeMenu()">
+    🏠 Accueil
+  </button>
+
+  <button onclick="showPage('productsPage');closeMenu()">
+    🛍️ Produits
+  </button>
+
+  <button onclick="showPage('tasksPage');closeMenu()">
+    📋 Tâches
+  </button>
+
+  <button onclick="showPage('teamPage');closeMenu()">
+    👥 Mon équipe
+  </button>
+
+  <button onclick="showPage('profilePage');closeMenu()">
+    👤 Profil
+  </button>
+
+  <button onclick="showPage('depositPage');closeMenu()">
+    ➕ Dépôt
+  </button>
+
+  <button onclick="showPage('withdrawPage');closeMenu()">
+    ➖ Retrait
+  </button>
+
+  <button onclick="showPage('historyPage');closeMenu()">
+    📊 Historique
+  </button>
+
+  <button onclick="logout()">
+    🔐 Déconnexion
+  </button>
+
 </div>
 
-<div id="menu" class="menu">
 
-<button onclick="showPage('home')">🏠 Accueil</button>
-<button onclick="showPage('deposit')">➕ Dépôt</button>
-<button onclick="showPage('withdraw')">➖ Retrait</button>
-<button onclick="showPage('history')">📊 Historique</button>
-<button onclick="showPage('profile')">👤 Profil</button>
-<button onclick="showPage('team')">👥 Mon équipe</button>
-<button onclick="showPage('referral')">🔗 Parrainage</button>
-<button class="red logout" onclick="logout()">🔐 Déconnexion</button>
+<!-- MODAL -->
+<div id="modal" class="modal hidden">
 
-</div>
+  <div class="modalBox">
 
-<div id="authPage" class="container">
+    <h2 id="modalTitle">Information</h2>
 
-<div class="card auth-box">
+    <div id="modalContent"></div>
 
-<h2 id="authTitle">Créer un compte</h2>
+    <button class="closeBtn" onclick="closeModal()">
+      Fermer
+    </button>
 
-<div id="message" class="message"></div>
-
-<div id="registerFields">
-
-<input id="name" type="text" placeholder="Nom complet">
-<input id="phone" type="tel" placeholder="Numéro de téléphone">
-
-</div>
-
-<input id="email" type="email" placeholder="Adresse email">
-<input id="password" type="password" placeholder="Mot de passe">
-
-<button id="submitButton" class="primary" onclick="submitAuth()">
-Créer mon compte
-</button>
-
-<button id="modeButton" class="gray link-btn" onclick="toggleAuthMode()">
-J'ai déjà un compte
-</button>
-
-</div>
-</div>
-
-
-<div id="memberPage" class="container" style="display:none">
-
-
-<div id="home" class="page active">
-
-<div class="card">
-
-<h2>🏠 Bienvenue</h2>
-
-<p>Bonjour <strong id="welcomeName"></strong> 👋</p>
-
-<p class="small">
-Bienvenue dans votre espace membre KINSHASA MAKAMBO.
-</p>
-
-</div>
-
-<div class="card">
-
-<h2>💰 Mon solde</h2>
-
-<div class="balance">
-<span id="balance">0.00</span> $
-</div>
-
-<p class="small">Solde disponible</p>
-
-</div>
-
-<div class="card">
-
-<h2>📊 Résumé</h2>
-
-<div class="stat">
-<span>👥 Mon équipe</span>
-<strong id="teamCountHome">0</strong>
-</div>
-
-<div class="stat">
-<span>💰 Bonus</span>
-<strong id="bonusHome">0 $</strong>
-</div>
-
-</div>
-
-</div>
-
-
-<div id="deposit" class="page">
-
-<div class="card">
-
-<h2>➕ Effectuer un dépôt</h2>
-
-<input id="depositAmount" type="number" min="1" placeholder="Montant en dollars">
-
-<select id="depositMethod">
-<option value="">Choisir le moyen de paiement</option>
-<option>Mobile Money</option>
-<option>Airtel Money</option>
-<option>Orange Money</option>
-<option>M-Pesa</option>
-</select>
-
-<input id="depositReference" type="text" placeholder="Référence de paiement">
-
-<button class="green primary" onclick="makeDeposit()">
-Envoyer la demande
-</button>
-
-</div>
-
-</div>
-
-
-<div id="withdraw" class="page">
-
-<div class="card">
-
-<h2>➖ Demander un retrait</h2>
-
-<p>
-Solde disponible :
-<strong><span id="withdrawBalance">0</span> $</strong>
-</p>
-
-<input id="withdrawAmount" type="number" min="1" placeholder="Montant à retirer">
-
-<select id="withdrawMethod">
-<option value="">Choisir le moyen de retrait</option>
-<option>Mobile Money</option>
-<option>Airtel Money</option>
-<option>Orange Money</option>
-<option>M-Pesa</option>
-</select>
-
-<input id="withdrawNumber" type="text" placeholder="Numéro de téléphone">
-
-<button class="red primary" onclick="makeWithdraw()">
-Demander le retrait
-</button>
-
-</div>
-
-</div>
-
-
-<div id="history" class="page">
-
-<div class="card">
-
-<h2>📊 Mon historique</h2>
-
-<div id="historyList">
-<p class="small">Aucune opération pour le moment.</p>
-</div>
-
-</div>
-
-</div>
-
-
-<div id="profile" class="page">
-
-<div class="card">
-
-<h2>👤 Mon profil</h2>
-
-<div class="stat">
-<span>Nom</span>
-<strong id="profileName">-</strong>
-</div>
-
-<div class="stat">
-<span>Téléphone</span>
-<strong id="profilePhone">-</strong>
-</div>
-
-<div class="stat">
-<span>Email</span>
-<strong id="profileEmail">-</strong>
-</div>
-
-<div class="stat">
-<span>ID membre</span>
-<strong id="profileId">-</strong>
-</div>
-
-</div>
-
-</div>
-
-
-<div id="team" class="page">
-
-<div class="card">
-
-<h2>👥 Mon équipe</h2>
-
-<div class="stat">
-<span>Nombre de filleuls</span>
-<strong id="teamCount">0</strong>
-</div>
-
-<div class="stat">
-<span>Bonus de parrainage</span>
-<strong id="teamBonus">0 $</strong>
-</div>
-
-<p class="small">
-Partagez votre lien de parrainage pour inviter de nouveaux membres.
-</p>
-
-</div>
-
-<div class="card">
-
-<h2>🔗 Votre lien</h2>
-
-<div class="referral" id="teamReferralLink">-</div>
-
-<button class="primary" onclick="copyReferral()">
-📋 Copier mon lien
-</button>
-
-</div>
-
-</div>
-
-
-<div id="referral" class="page">
-
-<div class="card">
-
-<h2>🔗 Mon parrainage</h2>
-
-<p>Invitez vos amis avec votre lien personnel :</p>
-
-<div class="referral" id="referralLink">-</div>
-
-<button class="primary" onclick="copyReferral()">
-📋 Copier mon lien
-</button>
-
-</div>
-
-<div class="card">
-
-<h2>📊 Statistiques</h2>
-
-<div class="stat">
-<span>👥 Filleuls</span>
-<strong id="referralCount">0</strong>
-</div>
-
-<div class="stat">
-<span>💰 Bonus</span>
-<strong id="referralBonus">0 $</strong>
-</div>
-
-</div>
-
-</div>
-
-
-<button class="red logout" onclick="logout()">
-🔐 Se déconnecter
-</button>
+  </div>
 
 </div>
 
 
 <script>
+
+/* ============================
+   SUPABASE
+============================ */
 
 const SUPABASE_URL =
 "https://uewceocdzvekuopgsmpg.supabase.co";
@@ -330,549 +1204,898 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
 
-const db = supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+const db =
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
-let registerMode = true;
+
+/* ============================
+   VARIABLES
+============================ */
+
 let currentUser = null;
+let loginMode = false;
+
+const authPage =
+document.getElementById("authPage");
+
+const app =
+document.getElementById("app");
+
+const message =
+document.getElementById("message");
+
+const submitButton =
+document.getElementById("submitButton");
+
+const modeButton =
+document.getElementById("modeButton");
+
+const authTitle =
+document.getElementById("authTitle");
+
+const nameInput =
+document.getElementById("name");
+
+const phoneInput =
+document.getElementById("phone");
+
+const emailInput =
+document.getElementById("email");
+
+const passwordInput =
+document.getElementById("password");
 
 
-function showMessage(text,type){
+/* ============================
+   MESSAGE
+============================ */
 
-const box=document.getElementById("message");
+function showMessage(text,type="green"){
 
-box.textContent=text;
+  message.style.display="block";
+  message.textContent=text;
 
-box.className="message "+
-(type==="green"?"success":"error");
-
-box.style.display="block";
-}
-
-
-function toggleMenu(){
-
-const menu=document.getElementById("menu");
-
-menu.style.display=
-menu.style.display==="block"
-?"none"
-:"block";
-}
-
-
-function showPage(page){
-
-document.querySelectorAll(".page").forEach(p=>{
-p.classList.remove("active");
-});
-
-const selected=document.getElementById(page);
-
-if(selected) selected.classList.add("active");
-
-document.getElementById("menu").style.display="none";
-}
-
-
-function toggleAuthMode(){
-
-registerMode=!registerMode;
-
-const title=document.getElementById("authTitle");
-const fields=document.getElementById("registerFields");
-const submit=document.getElementById("submitButton");
-const mode=document.getElementById("modeButton");
-
-if(registerMode){
-
-title.textContent="Créer un compte";
-fields.style.display="block";
-submit.textContent="Créer mon compte";
-mode.textContent="J'ai déjà un compte";
-
-}else{
-
-title.textContent="Connexion";
-fields.style.display="none";
-submit.textContent="Se connecter";
-mode.textContent="Créer un nouveau compte";
-
-}
+  if(type==="green"){
+    message.style.background="#d1e7dd";
+    message.style.color="#0f5132";
+  }else{
+    message.style.background="#f8d7da";
+    message.style.color="#842029";
+  }
 
 }
 
 
-async function submitAuth(){
+/* ============================
+   AUTH MODE
+============================ */
 
-const email=document.getElementById("email").value.trim();
-const password=document.getElementById("password").value;
+modeButton.onclick=function(){
 
-if(!email || !password){
+  loginMode=!loginMode;
 
-showMessage(
-"Veuillez remplir votre email et votre mot de passe.",
-"red"
+  if(loginMode){
+
+    authTitle.textContent="Connectez-vous à votre compte";
+
+    nameInput.style.display="none";
+    phoneInput.style.display="none";
+
+    submitButton.textContent="Se connecter";
+
+    modeButton.textContent="Créer un compte";
+
+  }else{
+
+    authTitle.textContent="Créez votre compte";
+
+    nameInput.style.display="block";
+    phoneInput.style.display="block";
+
+    submitButton.textContent="Créer mon compte";
+
+    modeButton.textContent="J'ai déjà un compte";
+
+  }
+
+};
+
+
+/* ============================
+   INSCRIPTION / CONNEXION
+============================ */
+
+submitButton.onclick=async function(){
+
+  const email =
+    emailInput.value.trim();
+
+  const password =
+    passwordInput.value.trim();
+
+  if(!email || !password){
+
+    showMessage(
+      "Veuillez remplir votre email et votre mot de passe.",
+      "red"
+    );
+
+    return;
+  }
+
+
+  submitButton.disabled=true;
+
+
+  try{
+
+    if(loginMode){
+
+      const {data,error} =
+        await db.auth.signInWithPassword({
+          email,
+          password
+        });
+
+      if(error) throw error;
+
+      currentUser=data.user;
+
+      openMember();
+
+    }else{
+
+      const name =
+        nameInput.value.trim();
+
+      const phone =
+        phoneInput.value.trim();
+
+      if(!name || !phone){
+
+        showMessage(
+          "Veuillez remplir votre nom et votre téléphone.",
+          "red"
+        );
+
+        submitButton.disabled=false;
+
+        return;
+      }
+
+
+      const referral =
+        new URLSearchParams(
+          window.location.search
+        ).get("ref") || "";
+
+
+      const {data,error} =
+        await db.auth.signUp({
+
+          email,
+          password,
+
+          options:{
+            data:{
+              name:name,
+              phone:phone,
+              referral_code:referral
+            }
+          }
+
+        });
+
+
+      if(error) throw error;
+
+
+      showMessage(
+        "Inscription réussie ! Vous pouvez maintenant utiliser votre compte.",
+        "green"
+      );
+
+
+      if(data.session){
+
+        currentUser=data.user;
+
+        setTimeout(
+          openMember,
+          500
+        );
+
+      }else{
+
+        showMessage(
+          "Compte créé. Vous pouvez maintenant vous connecter.",
+          "green"
+        );
+
+      }
+
+    }
+
+  }catch(error){
+
+    showMessage(
+      error.message || "Une erreur est survenue.",
+      "red"
+    );
+
+  }
+
+
+  submitButton.disabled=false;
+
+};
+
+
+/* ============================
+   SESSION
+============================ */
+
+async function checkSession(){
+
+  const result =
+    await db.auth.getSession();
+
+  if(
+    result.data &&
+    result.data.session
+  ){
+
+    currentUser =
+      result.data.session.user;
+
+    openMember();
+
+  }
+
+}
+
+
+db.auth.onAuthStateChange(
+  function(event,session){
+
+    if(session){
+
+      currentUser=session.user;
+
+    }
+
+  }
 );
 
-return;
-}
 
-
-if(registerMode){
-
-const name=document.getElementById("name").value.trim();
-const phone=document.getElementById("phone").value.trim();
-
-if(!name || !phone){
-
-showMessage(
-"Veuillez remplir votre nom et votre numéro.",
-"red"
-);
-
-return;
-}
-
-
-const urlParams=
-new URLSearchParams(window.location.search);
-
-const referrer=
-urlParams.get("ref") || "";
-
-
-const result=await db.auth.signUp({
-
-email:email,
-
-password:password,
-
-options:{
-data:{
-name:name,
-phone:phone,
-referrer:referrer
-}
-}
-
-});
-
-
-if(result.error){
-
-showMessage(
-result.error.message,
-"red"
-);
-
-return;
-}
-
-
-currentUser=result.data.user;
-
-showMessage(
-"Inscription réussie ! Vous pouvez maintenant utiliser votre compte.",
-"green"
-);
-
-document.getElementById("authPage").style.display="none";
-document.getElementById("memberPage").style.display="block";
-document.getElementById("menu").style.display="block";
-
-loadMember();
-
-return;
-
-}
-
-
-const result=
-await db.auth.signInWithPassword({
-email:email,
-password:password
-});
-
-
-if(result.error){
-
-showMessage(
-result.error.message,
-"red"
-);
-
-return;
-}
-
-
-currentUser=result.data.user;
-
-openMember();
-
-}
-
+/* ============================
+   OUVRIR ESPACE MEMBRE
+============================ */
 
 function openMember(){
 
-document.getElementById("authPage").style.display="none";
-document.getElementById("memberPage").style.display="block";
-document.getElementById("menu").style.display="block";
+  if(!currentUser) return;
 
-loadMember();
+  authPage.classList.add("hidden");
 
-}
+  app.classList.remove("hidden");
 
+  loadProfile();
 
-function loadMember(){
+  createReferral();
 
-if(!currentUser)return;
-
-const metadata=currentUser.user_metadata || {};
-
-const name=metadata.name || "Membre";
-const phone=metadata.phone || "-";
-
-document.getElementById("welcomeName").textContent=name;
-document.getElementById("profileName").textContent=name;
-document.getElementById("profilePhone").textContent=phone;
-document.getElementById("profileEmail").textContent=currentUser.email || "-";
-document.getElementById("profileId").textContent=currentUser.id;
-
-updateBalance();
-createReferralLink();
-loadHistory();
-loadTeam();
+  loadHistory();
 
 }
 
 
-function balanceKey(){
+/* ============================
+   PROFIL
+============================ */
 
-return "km_balance_"+currentUser.id;
+function loadProfile(){
 
-}
+  const meta =
+    currentUser.user_metadata || {};
 
+  document.getElementById(
+    "profileName"
+  ).textContent =
+    meta.name || "Membre";
 
-function updateBalance(){
+  document.getElementById(
+    "profilePhone"
+  ).textContent =
+    meta.phone || "Non renseigné";
 
-let balance=Number(
-localStorage.getItem(balanceKey()) || 0
-);
-
-document.getElementById("balance").textContent=
-balance.toFixed(2);
-
-document.getElementById("withdrawBalance").textContent=
-balance.toFixed(2);
-
-}
-
-
-function makeDeposit(){
-
-const amount=Number(
-document.getElementById("depositAmount").value
-);
-
-const method=document.getElementById("depositMethod").value;
-
-const reference=document.getElementById("depositReference").value.trim();
-
-if(amount<=0){
-
-alert("Entrez un montant valide.");
-return;
-
-}
-
-if(!method){
-
-alert("Choisissez un moyen de paiement.");
-return;
-
-}
-
-let balance=Number(
-localStorage.getItem(balanceKey()) || 0
-);
-
-balance+=amount;
-
-localStorage.setItem(
-balanceKey(),
-balance
-);
-
-addHistory({
-
-type:"Dépôt",
-amount:amount,
-method:method,
-reference:reference,
-date:new Date().toLocaleString()
-
-});
-
-document.getElementById("depositAmount").value="";
-document.getElementById("depositMethod").value="";
-document.getElementById("depositReference").value="";
-
-updateBalance();
-
-alert("Votre demande de dépôt a été enregistrée.");
-
-showPage("history");
+  document.getElementById(
+    "profileEmail"
+  ).textContent =
+    currentUser.email || "";
 
 }
 
 
-function makeWithdraw(){
+/* ============================
+   NAVIGATION
+============================ */
 
-const amount=Number(
-document.getElementById("withdrawAmount").value
-);
+function showPage(id){
 
-const method=document.getElementById("withdrawMethod").value;
+  const pages=[
+    "homePage",
+    "productsPage",
+    "tasksPage",
+    "teamPage",
+    "profilePage",
+    "depositPage",
+    "withdrawPage",
+    "historyPage"
+  ];
 
-const number=document.getElementById("withdrawNumber").value.trim();
+  pages.forEach(function(page){
 
-let balance=Number(
-localStorage.getItem(balanceKey()) || 0
-);
+    const element =
+      document.getElementById(page);
 
-if(amount<=0){
+    if(element){
 
-alert("Entrez un montant valide.");
-return;
+      element.classList.add("hidden");
 
-}
+    }
 
-if(amount>balance){
+  });
 
-alert("Votre solde est insuffisant.");
-return;
 
-}
+  const target =
+    document.getElementById(id);
 
-if(!method || !number){
+  if(target){
 
-alert("Veuillez remplir tous les champs.");
-return;
+    target.classList.remove("hidden");
 
-}
+  }
 
-balance-=amount;
 
-localStorage.setItem(
-balanceKey(),
-balance
-);
-
-addHistory({
-
-type:"Retrait",
-amount:amount,
-method:method,
-reference:number,
-date:new Date().toLocaleString()
-
-});
-
-document.getElementById("withdrawAmount").value="";
-document.getElementById("withdrawMethod").value="";
-document.getElementById("withdrawNumber").value="";
-
-updateBalance();
-
-alert("Votre demande de retrait a été enregistrée.");
-
-showPage("history");
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 
 }
 
 
-function historyKey(){
+/* ============================
+   MENU
+============================ */
 
-return "km_history_"+currentUser.id;
+function openMenu(){
 
-}
+  document
+    .getElementById("sideMenu")
+    .classList.remove("hidden");
 
-
-function addHistory(operation){
-
-let history=JSON.parse(
-localStorage.getItem(historyKey()) || "[]"
-);
-
-history.unshift(operation);
-
-localStorage.setItem(
-historyKey(),
-JSON.stringify(history)
-);
-
-loadHistory();
+  document
+    .getElementById("overlay")
+    .classList.remove("hidden");
 
 }
 
 
-function loadHistory(){
+function closeMenu(){
 
-const box=document.getElementById("historyList");
+  document
+    .getElementById("sideMenu")
+    .classList.add("hidden");
 
-let history=JSON.parse(
-localStorage.getItem(historyKey()) || "[]"
-);
-
-if(!history.length){
-
-box.innerHTML=
-'<p class="small">Aucune opération pour le moment.</p>';
-
-return;
-
-}
-
-box.innerHTML="";
-
-history.forEach(item=>{
-
-const div=document.createElement("div");
-
-div.className="history-item";
-
-const color=
-item.type==="Dépôt"
-?"#198754"
-:"#dc3545";
-
-div.innerHTML=`
-
-<strong style="color:${color}">
-${item.type}
-</strong>
-
-<br>
-
-Montant :
-<strong>${Number(item.amount).toFixed(2)} $</strong>
-
-<br>
-
-Moyen :
-${item.method}
-
-<br>
-
-${item.reference
-?"Référence : "+item.reference+"<br>"
-:""}
-
-<span class="small">
-${item.date}
-</span>
-`;
-
-box.appendChild(div);
-
-});
+  document
+    .getElementById("overlay")
+    .classList.add("hidden");
 
 }
 
 
-function createReferralLink(){
+/* ============================
+   REFERRAL
+============================ */
 
-if(!currentUser)return;
+function createReferral(){
 
-const link=
-"https://kinshasa-makambo.vercel.app/?ref="
-+currentUser.id;
+  if(!currentUser) return;
 
-document.getElementById("referralLink").textContent=link;
-document.getElementById("teamReferralLink").textContent=link;
+
+  const link =
+    window.location.origin +
+    window.location.pathname +
+    "?ref=" +
+    currentUser.id;
+
+
+  document.getElementById(
+    "referralLink"
+  ).textContent=link;
 
 }
 
 
 async function copyReferral(){
 
-const link=
-"https://kinshasa-makambo.vercel.app/?ref="
-+currentUser.id;
-
-try{
-
-await navigator.clipboard.writeText(link);
-
-alert("Lien de parrainage copié !");
-
-}catch(error){
-
-prompt("Copiez votre lien :",link);
-
-}
-
-}
+  const link =
+    document.getElementById(
+      "referralLink"
+    ).textContent;
 
 
-function loadTeam(){
+  try{
 
-const count=0;
-const bonus=0;
+    await navigator.clipboard.writeText(link);
 
-document.getElementById("teamCount").textContent=count;
-document.getElementById("teamCountHome").textContent=count;
-document.getElementById("referralCount").textContent=count;
+    openModal(
+      "Parrainage",
+      "Votre lien de parrainage a été copié."
+    );
 
-document.getElementById("teamBonus").textContent=
-bonus.toFixed(2)+" $";
+  }catch(error){
 
-document.getElementById("referralBonus").textContent=
-bonus.toFixed(2)+" $";
+    openModal(
+      "Votre lien",
+      link
+    );
 
-document.getElementById("bonusHome").textContent=
-bonus.toFixed(2)+" $";
+  }
 
 }
 
+
+/* ============================
+   PRODUITS
+============================ */
+
+function buyProduct(name,price){
+
+  openModal(
+    "🛍️ "+name,
+    `
+      <p><b>Prix :</b> CDF ${Number(price).toLocaleString()}</p>
+      <br>
+      <p>
+        La commande sera enregistrée lorsque
+        le système de paiement et la validation
+        administrateur seront connectés.
+      </p>
+      <br>
+      <p>
+        <b>Statut :</b> En attente de configuration.
+      </p>
+    `
+  );
+
+}
+
+
+/* ============================
+   TÂCHES
+============================ */
+
+function dailyCheckin(){
+
+  const today =
+    new Date().toLocaleDateString();
+
+  const last =
+    localStorage.getItem(
+      "km_checkin"
+    );
+
+
+  if(last===today){
+
+    openModal(
+      "Pointage",
+      "Vous avez déjà effectué votre pointage aujourd'hui."
+    );
+
+    return;
+
+  }
+
+
+  localStorage.setItem(
+    "km_checkin",
+    today
+  );
+
+
+  addHistory(
+    "Pointage quotidien",
+    "Effectué"
+  );
+
+
+  openModal(
+    "Pointage réussi",
+    "Votre présence du jour a été enregistrée."
+  );
+
+}
+
+
+function completeTask(){
+
+  addHistory(
+    "Tâche quotidienne",
+    "Terminée"
+  );
+
+
+  openModal(
+    "Tâche terminée",
+    "Votre tâche a été enregistrée."
+  );
+
+}
+
+
+/* ============================
+   DÉPÔT
+============================ */
+
+function requestDeposit(){
+
+  const amount =
+    document.getElementById(
+      "depositAmount"
+    ).value;
+
+  const method =
+    document.getElementById(
+      "depositMethod"
+    ).value;
+
+
+  if(!amount || Number(amount)<=0){
+
+    openModal(
+      "Dépôt",
+      "Veuillez entrer un montant valide."
+    );
+
+    return;
+
+  }
+
+
+  addHistory(
+    "Dépôt demandé",
+    "CDF "+
+    Number(amount).toLocaleString()
+  );
+
+
+  openModal(
+    "Dépôt envoyé",
+    `
+      <p>Montant : <b>CDF ${Number(amount).toLocaleString()}</b></p>
+      <p>Méthode : <b>${method}</b></p>
+      <br>
+      <p>
+        Votre demande a été enregistrée.
+        La validation réelle devra être reliée
+        à Supabase et au système de paiement.
+      </p>
+    `
+  );
+
+
+  document.getElementById(
+    "depositAmount"
+  ).value="";
+
+}
+
+
+/* ============================
+   RETRAIT
+============================ */
+
+function requestWithdraw(){
+
+  const amount =
+    document.getElementById(
+      "withdrawAmount"
+    ).value;
+
+  const number =
+    document.getElementById(
+      "withdrawNumber"
+    ).value;
+
+
+  if(!amount || Number(amount)<=0){
+
+    openModal(
+      "Retrait",
+      "Veuillez entrer un montant valide."
+    );
+
+    return;
+
+  }
+
+
+  if(!number){
+
+    openModal(
+      "Retrait",
+      "Veuillez entrer votre numéro Mobile Money."
+    );
+
+    return;
+
+  }
+
+
+  addHistory(
+    "Retrait demandé",
+    "CDF "+
+    Number(amount).toLocaleString()
+  );
+
+
+  openModal(
+    "Retrait envoyé",
+    `
+      <p>Montant : <b>CDF ${Number(amount).toLocaleString()}</b></p>
+      <p>Numéro : <b>${number}</b></p>
+      <br>
+      <p>
+        Votre demande a été enregistrée.
+        Le traitement réel devra être sécurisé
+        côté serveur.
+      </p>
+    `
+  );
+
+
+  document.getElementById(
+    "withdrawAmount"
+  ).value="";
+
+  document.getElementById(
+    "withdrawNumber"
+  ).value="";
+
+}
+
+
+/* ============================
+   HISTORIQUE LOCAL
+============================ */
+
+function addHistory(type,value){
+
+  const history =
+    JSON.parse(
+      localStorage.getItem(
+        "km_history"
+      ) || "[]"
+    );
+
+
+  history.unshift({
+
+    type:type,
+    value:value,
+    date:new Date().toLocaleString()
+
+  });
+
+
+  localStorage.setItem(
+    "km_history",
+    JSON.stringify(history)
+  );
+
+
+  loadHistory();
+
+}
+
+
+function loadHistory(){
+
+  const list =
+    document.getElementById(
+      "historyList"
+    );
+
+  if(!list) return;
+
+
+  const history =
+    JSON.parse(
+      localStorage.getItem(
+        "km_history"
+      ) || "[]"
+    );
+
+
+  if(history.length===0){
+
+    list.innerHTML =
+      "<p>Aucune opération pour le moment.</p>";
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    history.map(function(item){
+
+      return `
+        <div class="history">
+          <div class="historyRow">
+            <b>${item.type}</b>
+            <span>${item.value}</span>
+          </div>
+
+          <small>${item.date}</small>
+        </div>
+      `;
+
+    }).join("");
+
+}
+
+
+function showHistory(){
+
+  showPage("historyPage");
+
+}
+
+
+/* ============================
+   SERVICES
+============================ */
+
+function aboutPlatform(){
+
+  openModal(
+    "KINSHASA MAKAMBO",
+    `
+      <p><b>Bienvenue chez KINSHASA MAKAMBO.</b></p>
+      <br>
+      <p>
+        Votre espace membre regroupe vos produits,
+        tâches, équipe, profil et opérations.
+      </p>
+      <br>
+      <p>
+        Les fonctionnalités financières seront
+        reliées à un système sécurisé avant leur
+        utilisation réelle.
+      </p>
+    `
+  );
+
+}
+
+
+function contactService(){
+
+  openModal(
+    "Service client",
+    `
+      <p>Service client KINSHASA MAKAMBO</p>
+      <br>
+      <p>
+        Le lien WhatsApp ou Telegram pourra être
+        ajouté ici.
+      </p>
+    `
+  );
+
+}
+
+
+async function changePassword(){
+
+  if(!currentUser || !currentUser.email){
+
+    return;
+
+  }
+
+
+  const {error} =
+    await db.auth.resetPasswordForEmail(
+      currentUser.email,
+      {
+        redirectTo:
+          window.location.origin
+      }
+    );
+
+
+  if(error){
+
+    openModal(
+      "Mot de passe",
+      error.message
+    );
+
+  }else{
+
+    openModal(
+      "Mot de passe",
+      "Un lien de modification du mot de passe a été demandé."
+    );
+
+  }
+
+}
+
+
+/* ============================
+   MODAL
+============================ */
+
+function openModal(title,content){
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent=title;
+
+  document.getElementById(
+    "modalContent"
+  ).innerHTML=content;
+
+  document.getElementById(
+    "modal"
+  ).classList.remove("hidden");
+
+}
+
+
+function closeModal(){
+
+  document.getElementById(
+    "modal"
+  ).classList.add("hidden");
+
+}
+
+
+/* ============================
+   DÉCONNEXION
+============================ */
 
 async function logout(){
 
-await db.auth.signOut();
+  await db.auth.signOut();
 
-currentUser=null;
+  currentUser=null;
 
-document.getElementById("memberPage").style.display="none";
-document.getElementById("authPage").style.display="block";
-document.getElementById("menu").style.display="none";
+  app.classList.add("hidden");
 
-registerMode=false;
+  authPage.classList.remove("hidden");
 
-toggleAuthMode();
-
-document.getElementById("email").value="";
-document.getElementById("password").value="";
+  showMessage(
+    "Vous êtes déconnecté.",
+    "green"
+  );
 
 }
 
 
-async function checkSession(){
-
-const result=await db.auth.getSession();
-
-if(result.data && result.data.session){
-
-currentUser=result.data.session.user;
-
-openMember();
-
-}
-
-}
-
+/* ============================
+   DÉMARRAGE
+============================ */
 
 checkSession();
 
