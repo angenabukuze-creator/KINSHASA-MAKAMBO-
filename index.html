@@ -1,262 +1,614 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KINSHASA MAKAMBO</title>
 
-<title>KINSHASA MAKAMBO</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<style>
-* {
-  box-sizing: border-box;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f5f8;
+      color: #222;
+    }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f7fb;
-  color: #222;
-}
+    header {
+      background: #0756a3;
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+    }
 
-header {
-  background: #0756a3;
-  color: white;
-  text-align: center;
-  padding: 28px 15px;
-}
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
 
-header h1 {
-  margin: 0;
-  font-size: 28px;
-}
+    header p {
+      margin: 8px 0 0;
+    }
 
-header p {
-  margin: 8px 0 0;
-}
+    .container {
+      max-width: 450px;
+      margin: 40px auto;
+      padding: 25px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
 
-.container {
-  max-width: 450px;
-  margin: 35px auto;
-  padding: 15px;
-}
+    h2 {
+      text-align: center;
+      color: #0756a3;
+      margin-top: 0;
+    }
 
-.card {
-  background: white;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.10);
-}
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
 
-h2 {
-  text-align: center;
-  margin-top: 0;
-}
+    input {
+      width: 100%;
+      padding: 13px;
+      margin-top: 7px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
 
-label {
-  display: block;
-  margin-top: 15px;
-  margin-bottom: 6px;
-  font-weight: bold;
-}
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 8px;
+      background: #0756a3;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-input {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-}
+    button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
 
-input:focus {
-  outline: none;
-  border-color: #0756a3;
-}
+    .switch {
+      background: white;
+      color: #0756a3;
+      border: 1px solid #0756a3;
+      margin-top: 10px;
+    }
 
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 20px;
-  border: none;
-  border-radius: 8px;
-  background: #0756a3;
-  color: white;
-  font-size: 17px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
 
-button:hover {
-  background: #064784;
-}
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #666;
+    }
 
-.secondary {
-  background: #eee;
-  color: #222;
-}
-
-.message {
-  text-align: center;
-  margin-top: 15px;
-  font-weight: bold;
-}
-
-footer {
-  text-align: center;
-  margin: 30px 0;
-  color: #777;
-  font-size: 13px;
-}
-</style>
+    #logoutButton {
+      display: none;
+      background: #c62828;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <h1>KINSHASA MAKAMBO</h1>
-  <p>Votre espace d'investissement</p>
-</header>
+  <header>
+    <h1>KINSHASA MAKAMBO</h1>
+    <p>Bienvenue sur votre plateforme</p>
+  </header>
 
-<div class="container">
+  <div class="container">
 
-  <div class="card">
+    <h2 id="title">Créer un compte</h2>
 
-    <h2>Créer un compte</h2>
+    <form id="authForm">
 
-    <form id="signupForm">
+      <div id="signupFields">
 
-      <label for="name">Nom</label>
-      <input
-        id="name"
-        type="text"
-        placeholder="Votre nom"
-        required
-      >
+        <label for="name">Nom</label>
+        <input
+          type="text"
+          id="name"
+          placeholder="Votre nom"
+          autocomplete="name"
+        >
 
-      <label for="phone">Numéro de téléphone</label>
-      <input
-        id="phone"
-        type="tel"
-        value="+243 "
-        required
-      >
+        <label for="phone">Numéro de téléphone</label>
+        <input
+          type="tel"
+          id="phone"
+          placeholder="+243..."
+          autocomplete="tel"
+        >
+
+      </div>
 
       <label for="email">Email</label>
       <input
-        id="email"
         type="email"
-        placeholder="Votre adresse email"
+        id="email"
+        placeholder="votre@email.com"
+        autocomplete="email"
         required
       >
 
       <label for="password">Mot de passe</label>
       <input
+        type="password"
         id="password"
-        type="password"
-        placeholder="Votre mot de passe"
+        placeholder="Mot de passe"
+        autocomplete="new-password"
         required
-        minlength="6"
       >
 
-      <label for="confirmPassword">
-        Confirmer le mot de passe
-      </label>
+      <div id="confirmField">
 
-      <input
-        id="confirmPassword"
-        type="password"
-        placeholder="Confirmez votre mot de passe"
-        required
-        minlength="6"
-      >
+        <label for="confirmPassword">Confirmer le mot de passe</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          placeholder="Confirmer le mot de passe"
+          autocomplete="new-password"
+        >
 
-      <button type="submit">
+      </div>
+
+      <button id="submitButton" type="submit" disabled>
         S'inscrire
       </button>
 
-      <button
-        type="button"
-        class="secondary"
-        id="loginButton"
-      >
+      <button id="modeButton" class="switch" type="button">
         Connexion
       </button>
 
-      <div
-        id="message"
-        class="message"
-      ></div>
+      <button id="logoutButton" type="button">
+        Se déconnecter
+      </button>
+
+      <div id="message" class="message"></div>
 
     </form>
-
   </div>
 
-</div>
+  <footer>
+    © 2026 KINSHASA MAKAMBO
+  </footer>
 
-<footer>
-  © 2026 KINSHASA MAKAMBO
-</footer>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
+  <script>
 
-const form = document.getElementById("signupForm");
-const message = document.getElementById("message");
+    /* =========================
+       SUPABASE
+       ========================= */
 
-form.addEventListener("submit", function(event) {
+    const SUPABASE_URL =
+      "https://uewceocdzvekuopgsmpg.supabase.co";
 
-  event.preventDefault();
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
 
-  const name =
-    document.getElementById("name").value.trim();
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
 
-  const phone =
-    document.getElementById("phone").value.trim();
 
-  const email =
-    document.getElementById("email").value.trim();
+    /* =========================
+       ELEMENTS
+       ========================= */
 
-  const password =
-    document.getElementById("password").value;
+    const form = document.getElementById("authForm");
 
-  const confirmPassword =
-    document.getElementById("confirmPassword").value;
+    const nameInput =
+      document.getElementById("name");
 
-  if (!name || !phone || !email || !password || !confirmPassword) {
-    message.style.color = "red";
-    message.textContent =
-      "Veuillez remplir tous les champs.";
-    return;
-  }
+    const phoneInput =
+      document.getElementById("phone");
 
-  if (password.length < 6) {
-    message.style.color = "red";
-    message.textContent =
-      "Le mot de passe doit contenir au moins 6 caractères.";
-    return;
-  }
+    const emailInput =
+      document.getElementById("email");
 
-  if (password !== confirmPassword) {
-    message.style.color = "red";
-    message.textContent =
-      "Les deux mots de passe ne correspondent pas.";
-    return;
-  }
+    const passwordInput =
+      document.getElementById("password");
 
-  message.style.color = "green";
-  message.textContent =
-    "Formulaire correct. Votre inscription peut continuer.";
+    const confirmPasswordInput =
+      document.getElementById("confirmPassword");
 
-});
+    const submitButton =
+      document.getElementById("submitButton");
 
-document.getElementById("loginButton")
-  .addEventListener("click", function() {
+    const modeButton =
+      document.getElementById("modeButton");
 
-    message.style.color = "#0756a3";
-    message.textContent =
-      "La connexion sera disponible après la connexion à la base de données.";
+    const logoutButton =
+      document.getElementById("logoutButton");
 
-  });
+    const message =
+      document.getElementById("message");
 
-</script>
+    const title =
+      document.getElementById("title");
+
+    const signupFields =
+      document.getElementById("signupFields");
+
+    const confirmField =
+      document.getElementById("confirmField");
+
+
+    let loginMode = false;
+
+
+    /* =========================
+       MESSAGE
+       ========================= */
+
+    function showMessage(text, color) {
+      message.textContent = text;
+      message.style.color = color;
+    }
+
+
+    /* =========================
+       VALIDATION
+       ========================= */
+
+    function checkForm() {
+
+      const email =
+        emailInput.value.trim();
+
+      const password =
+        passwordInput.value;
+
+      let valid =
+        email !== "" &&
+        password.length >= 6;
+
+      if (!loginMode) {
+
+        const name =
+          nameInput.value.trim();
+
+        const phone =
+          phoneInput.value.trim();
+
+        const confirmPassword =
+          confirmPasswordInput.value;
+
+        valid =
+          valid &&
+          name !== "" &&
+          phone !== "" &&
+          confirmPassword === password;
+
+      }
+
+      submitButton.disabled = !valid;
+    }
+
+
+    [
+      nameInput,
+      phoneInput,
+      emailInput,
+      passwordInput,
+      confirmPasswordInput
+    ].forEach(input => {
+
+      input.addEventListener(
+        "input",
+        checkForm
+      );
+
+    });
+
+
+    /* =========================
+       MODE CONNEXION / INSCRIPTION
+       ========================= */
+
+    modeButton.addEventListener(
+      "click",
+      function () {
+
+        loginMode = !loginMode;
+
+        showMessage("", "");
+
+        if (loginMode) {
+
+          title.textContent =
+            "Connexion";
+
+          submitButton.textContent =
+            "Se connecter";
+
+          modeButton.textContent =
+            "Créer un compte";
+
+          signupFields.style.display =
+            "none";
+
+          confirmField.style.display =
+            "none";
+
+          passwordInput.autocomplete =
+            "current-password";
+
+          confirmPasswordInput.value = "";
+
+        } else {
+
+          title.textContent =
+            "Créer un compte";
+
+          submitButton.textContent =
+            "S'inscrire";
+
+          modeButton.textContent =
+            "Connexion";
+
+          signupFields.style.display =
+            "block";
+
+          confirmField.style.display =
+            "block";
+
+          passwordInput.autocomplete =
+            "new-password";
+        }
+
+        checkForm();
+      }
+    );
+
+
+    /* =========================
+       INSCRIPTION / CONNEXION
+       ========================= */
+
+    form.addEventListener(
+      "submit",
+      async function (event) {
+
+        event.preventDefault();
+
+        submitButton.disabled = true;
+
+        showMessage(
+          "Veuillez patienter...",
+          "#0756a3"
+        );
+
+
+        const email =
+          emailInput.value.trim();
+
+        const password =
+          passwordInput.value;
+
+
+        /* INSCRIPTION */
+
+        if (!loginMode) {
+
+          const name =
+            nameInput.value.trim();
+
+          const phone =
+            phoneInput.value.trim();
+
+          const confirmPassword =
+            confirmPasswordInput.value;
+
+
+          if (password !== confirmPassword) {
+
+            showMessage(
+              "Les deux mots de passe ne correspondent pas.",
+              "red"
+            );
+
+            checkForm();
+            return;
+          }
+
+
+          const { data, error } =
+            await supabaseClient.auth.signUp({
+
+              email: email,
+
+              password: password,
+
+              options: {
+
+                data: {
+                  name: name,
+                  phone: phone
+                },
+
+                emailRedirectTo:
+                  window.location.origin
+
+              }
+
+            });
+
+
+          if (error) {
+
+            showMessage(
+              error.message,
+              "red"
+            );
+
+            checkForm();
+            return;
+          }
+
+
+          showMessage(
+            "Inscription réussie ! Vérifiez votre email pour confirmer votre compte.",
+            "green"
+          );
+
+          return;
+        }
+
+
+        /* CONNEXION */
+
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+
+            email: email,
+
+            password: password
+
+          });
+
+
+        if (error) {
+
+          showMessage(
+            error.message,
+            "red"
+          );
+
+          checkForm();
+          return;
+        }
+
+
+        showMessage(
+          "Connexion réussie !",
+          "green"
+        );
+
+        logoutButton.style.display =
+          "block";
+
+        submitButton.style.display =
+          "none";
+
+        modeButton.style.display =
+          "none";
+
+      }
+    );
+
+
+    /* =========================
+       DÉCONNEXION
+       ========================= */
+
+    logoutButton.addEventListener(
+      "click",
+      async function () {
+
+        const { error } =
+          await supabaseClient.auth.signOut();
+
+        if (error) {
+
+          showMessage(
+            error.message,
+            "red"
+          );
+
+          return;
+        }
+
+        loginMode = false;
+
+        title.textContent =
+          "Créer un compte";
+
+        submitButton.textContent =
+          "S'inscrire";
+
+        submitButton.style.display =
+          "block";
+
+        modeButton.style.display =
+          "block";
+
+        logoutButton.style.display =
+          "none";
+
+        signupFields.style.display =
+          "block";
+
+        confirmField.style.display =
+          "block";
+
+        form.reset();
+
+        showMessage(
+          "Vous êtes déconnecté.",
+          "green"
+        );
+
+        checkForm();
+      }
+    );
+
+
+    /* =========================
+       VÉRIFIER LA SESSION
+       ========================= */
+
+    async function checkSession() {
+
+      const { data } =
+        await supabaseClient.auth.getSession();
+
+      if (data.session) {
+
+        showMessage(
+          "Vous êtes déjà connecté.",
+          "green"
+        );
+
+        logoutButton.style.display =
+          "block";
+
+        submitButton.style.display =
+          "none";
+
+        modeButton.style.display =
+          "none";
+      }
+    }
+
+
+    checkSession();
+
+    checkForm();
+
+  </script>
 
 </body>
 </html>
