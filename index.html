@@ -1,623 +1,882 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KINSHASA MAKAMBO</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KINSHASA MAKAMBO</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f2f5f8;
-      color: #222;
-    }
-
-    header {
-      background: #0756a3;
-      color: white;
-      text-align: center;
-      padding: 25px 15px;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-
-    header p {
-      margin: 8px 0 0;
-    }
-
-    .container {
-      max-width: 450px;
-      margin: 40px auto;
-      padding: 25px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-
-    h2 {
-      text-align: center;
-      color: #0756a3;
-      margin-top: 0;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 13px;
-      margin-top: 7px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 20px;
-      border: none;
-      border-radius: 8px;
-      background: #0756a3;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      background: #aaa;
-      cursor: not-allowed;
-    }
-
-    .switch {
-      background: white;
-      color: #0756a3;
-      border: 1px solid #0756a3;
-      margin-top: 10px;
-    }
-
-    .message {
-      text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-
-    footer {
-      text-align: center;
-      padding: 25px;
-      color: #666;
-    }
-
-    #logoutButton {
-      display: none;
-      background: #c62828;
-    }
-  </style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f4f6f8;color:#17202a}
+.header{background:#0b5ed7;color:#fff;padding:18px;display:flex;justify-content:space-between;align-items:center}
+.header h1{font-size:20px}
+.menu-btn{background:#fff;color:#0b5ed7;border:0;border-radius:8px;padding:9px 12px;font-size:20px}
+.container{max-width:600px;margin:auto;padding:18px}
+.card{background:#fff;padding:20px;border-radius:14px;margin-bottom:16px;box-shadow:0 3px 12px rgba(0,0,0,.08)}
+.card h2{margin-bottom:15px;color:#0b5ed7}
+input,select{width:100%;padding:13px;margin:7px 0;border:1px solid #ddd;border-radius:8px;font-size:15px}
+button{border:0;border-radius:8px;padding:13px 16px;cursor:pointer;font-size:15px}
+.primary{width:100%;background:#0b5ed7;color:#fff;margin-top:8px}
+.green{background:#198754;color:#fff}
+.red{background:#dc3545;color:#fff}
+.gray{background:#6c757d;color:#fff}
+.menu{display:none;background:#fff;padding:10px;border-bottom:1px solid #ddd}
+.menu button{width:100%;text-align:left;margin:4px 0;background:#f1f3f5;color:#17202a}
+.page{display:none}
+.page.active{display:block}
+.message{padding:12px;margin:10px 0;border-radius:8px;display:none}
+.success{background:#d1e7dd;color:#0f5132}
+.error{background:#f8d7da;color:#842029}
+.balance{font-size:32px;font-weight:bold;color:#198754;margin:10px 0}
+.referral{background:#eef5ff;padding:15px;border-radius:10px;word-break:break-all;margin:10px 0}
+.history-item{border-bottom:1px solid #eee;padding:12px 0}
+.history-item:last-child{border-bottom:0}
+.stat{display:flex;justify-content:space-between;background:#f8f9fa;padding:14px;border-radius:10px;margin:8px 0}
+.logout{width:100%;margin-top:10px}
+.auth-box{margin-top:50px}
+.small{font-size:13px;color:#6c757d;margin-top:8px}
+.link-btn{margin-top:8px;width:100%}
+</style>
 </head>
 
 <body>
 
-  <header>
-    <h1>KINSHASA MAKAMBO</h1>
-    <p>Bienvenue sur votre plateforme</p>
-  </header>
+<div class="header">
+<h1>KINSHASA MAKAMBO</h1>
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+</div>
 
-  <div class="container">
-
-    <h2 id="title">Créer un compte</h2>
+<div id="menu" class="menu">
 
-    <form id="authForm">
+<button onclick="showPage('home')">🏠 Accueil</button>
+<button onclick="showPage('deposit')">➕ Dépôt</button>
+<button onclick="showPage('withdraw')">➖ Retrait</button>
+<button onclick="showPage('history')">📊 Historique</button>
+<button onclick="showPage('profile')">👤 Profil</button>
+<button onclick="showPage('team')">👥 Mon équipe</button>
+<button onclick="showPage('referral')">🔗 Parrainage</button>
+<button class="red logout" onclick="logout()">🔐 Déconnexion</button>
 
-      <div id="signupFields">
+</div>
 
-        <label for="name">Nom</label>
-        <input
-          type="text"
-          id="name"
-          placeholder="Votre nom"
-          autocomplete="name"
-        >
+<div id="authPage" class="container">
 
-        <label for="phone">Numéro de téléphone</label>
-        <input
-          type="tel"
-          id="phone"
-          placeholder="+243..."
-          autocomplete="tel"
-        >
+<div class="card auth-box">
 
-      </div>
+<h2 id="authTitle">Créer un compte</h2>
 
-      <label for="email">Email</label>
-      <input
-        type="email"
-        id="email"
-        placeholder="votre@email.com"
-        autocomplete="email"
-        required
-      >
+<div id="message" class="message"></div>
 
-      <label for="password">Mot de passe</label>
-      <input
-        type="password"
-        id="password"
-        placeholder="Mot de passe"
-        autocomplete="new-password"
-        required
-      >
+<div id="registerFields">
 
-      <div id="confirmField">
+<input id="name" type="text" placeholder="Nom complet">
+<input id="phone" type="tel" placeholder="Numéro de téléphone">
 
-        <label for="confirmPassword">Confirmer le mot de passe</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          placeholder="Confirmer le mot de passe"
-          autocomplete="new-password"
-        >
+</div>
 
-      </div>
+<input id="email" type="email" placeholder="Adresse email">
+<input id="password" type="password" placeholder="Mot de passe">
 
-      <button id="submitButton" type="submit" disabled>
-        S'inscrire
-      </button>
+<button id="submitButton" class="primary" onclick="submitAuth()">
+Créer mon compte
+</button>
 
-      <button id="modeButton" class="switch" type="button">
-        Connexion
-      </button>
+<button id="modeButton" class="gray link-btn" onclick="toggleAuthMode()">
+J'ai déjà un compte
+</button>
 
-      <button id="logoutButton" type="button">
-        Se déconnecter
-      </button>
+</div>
+</div>
 
-      <div id="message" class="message"></div>
 
-    </form>
-  </div>
+<div id="memberPage" class="container" style="display:none">
 
-  <footer>
-    © 2026 KINSHASA MAKAMBO
-  </footer>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div id="home" class="page active">
 
-  <script>
+<div class="card">
 
-    /* =========================
-       SUPABASE
-       ========================= */
+<h2>🏠 Bienvenue</h2>
 
-    const SUPABASE_URL =
-      "https://uewceocdzvekuopgsmpg.supabase.co";
+<p>Bonjour <strong id="welcomeName"></strong> 👋</p>
 
-    const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
+<p class="small">
+Bienvenue dans votre espace membre KINSHASA MAKAMBO.
+</p>
 
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-      );
+</div>
 
+<div class="card">
 
-    /* =========================
-       ELEMENTS
-       ========================= */
+<h2>💰 Mon solde</h2>
 
-    const form = document.getElementById("authForm");
+<div class="balance">
+<span id="balance">0.00</span> $
+</div>
 
-    const nameInput =
-      document.getElementById("name");
+<p class="small">Solde disponible</p>
 
-    const phoneInput =
-      document.getElementById("phone");
+</div>
 
-    const emailInput =
-      document.getElementById("email");
+<div class="card">
 
-    const passwordInput =
-      document.getElementById("password");
+<h2>📊 Résumé</h2>
 
-    const confirmPasswordInput =
-      document.getElementById("confirmPassword");
+<div class="stat">
+<span>👥 Mon équipe</span>
+<strong id="teamCountHome">0</strong>
+</div>
 
-    const submitButton =
-      document.getElementById("submitButton");
+<div class="stat">
+<span>💰 Bonus</span>
+<strong id="bonusHome">0 $</strong>
+</div>
 
-    const modeButton =
-      document.getElementById("modeButton");
+</div>
 
-    const logoutButton =
-      document.getElementById("logoutButton");
+</div>
 
-    const message =
-      document.getElementById("message");
 
-    const title =
-      document.getElementById("title");
+<div id="deposit" class="page">
 
-    const signupFields =
-      document.getElementById("signupFields");
+<div class="card">
 
-    const confirmField =
-      document.getElementById("confirmField");
+<h2>➕ Effectuer un dépôt</h2>
 
+<input id="depositAmount" type="number" min="1" placeholder="Montant en dollars">
 
-    let loginMode = false;
+<select id="depositMethod">
+<option value="">Choisir le moyen de paiement</option>
+<option>Mobile Money</option>
+<option>Airtel Money</option>
+<option>Orange Money</option>
+<option>M-Pesa</option>
+</select>
 
+<input id="depositReference" type="text" placeholder="Référence de paiement">
 
-    /* =========================
-       MESSAGE
-       ========================= */
+<button class="green primary" onclick="makeDeposit()">
+Envoyer la demande
+</button>
 
-    function showMessage(text, color) {
-      message.textContent = text;
-      message.style.color = color;
-    }
+</div>
 
+</div>
 
-    /* =========================
-       VALIDATION
-       ========================= */
 
-    function checkForm() {
+<div id="withdraw" class="page">
 
-      const email =
-        emailInput.value.trim();
+<div class="card">
 
-      const password =
-        passwordInput.value;
+<h2>➖ Demander un retrait</h2>
 
-      let valid =
-        email !== "" &&
-        password.length >= 6;
+<p>
+Solde disponible :
+<strong><span id="withdrawBalance">0</span> $</strong>
+</p>
 
-      if (!loginMode) {
+<input id="withdrawAmount" type="number" min="1" placeholder="Montant à retirer">
 
-        const name =
-          nameInput.value.trim();
+<select id="withdrawMethod">
+<option value="">Choisir le moyen de retrait</option>
+<option>Mobile Money</option>
+<option>Airtel Money</option>
+<option>Orange Money</option>
+<option>M-Pesa</option>
+</select>
 
-        const phone =
-          phoneInput.value.trim();
+<input id="withdrawNumber" type="text" placeholder="Numéro de téléphone">
 
-        const confirmPassword =
-          confirmPasswordInput.value;
+<button class="red primary" onclick="makeWithdraw()">
+Demander le retrait
+</button>
 
-        valid =
-          valid &&
-          name !== "" &&
-          phone !== "" &&
-          confirmPassword === password;
+</div>
 
-      }
+</div>
 
-      submitButton.disabled = !valid;
-    }
 
+<div id="history" class="page">
 
-    [
-      nameInput,
-      phoneInput,
-      emailInput,
-      passwordInput,
-      confirmPasswordInput
-    ].forEach(input => {
+<div class="card">
 
-      input.addEventListener(
-        "input",
-        checkForm
-      );
+<h2>📊 Mon historique</h2>
 
-    });
+<div id="historyList">
+<p class="small">Aucune opération pour le moment.</p>
+</div>
 
+</div>
 
-    /* =========================
-       MODE CONNEXION / INSCRIPTION
-       ========================= */
+</div>
 
-    modeButton.addEventListener(
-      "click",
-      function () {
 
-        loginMode = !loginMode;
+<div id="profile" class="page">
 
-        showMessage("", "");
+<div class="card">
 
-        if (loginMode) {
+<h2>👤 Mon profil</h2>
 
-          title.textContent =
-            "Connexion";
+<div class="stat">
+<span>Nom</span>
+<strong id="profileName">-</strong>
+</div>
 
-          submitButton.textContent =
-            "Se connecter";
+<div class="stat">
+<span>Téléphone</span>
+<strong id="profilePhone">-</strong>
+</div>
 
-          modeButton.textContent =
-            "Créer un compte";
+<div class="stat">
+<span>Email</span>
+<strong id="profileEmail">-</strong>
+</div>
 
-          signupFields.style.display =
-            "none";
+<div class="stat">
+<span>ID membre</span>
+<strong id="profileId">-</strong>
+</div>
 
-          confirmField.style.display =
-            "none";
+</div>
 
-          passwordInput.autocomplete =
-            "current-password";
+</div>
 
-          confirmPasswordInput.value = "";
 
-        } else {
+<div id="team" class="page">
 
-          title.textContent =
-            "Créer un compte";
+<div class="card">
 
-          submitButton.textContent =
-            "S'inscrire";
+<h2>👥 Mon équipe</h2>
 
-          modeButton.textContent =
-            "Connexion";
+<div class="stat">
+<span>Nombre de filleuls</span>
+<strong id="teamCount">0</strong>
+</div>
 
-          signupFields.style.display =
-            "block";
+<div class="stat">
+<span>Bonus de parrainage</span>
+<strong id="teamBonus">0 $</strong>
+</div>
 
-          confirmField.style.display =
-            "block";
+<p class="small">
+Partagez votre lien de parrainage pour inviter de nouveaux membres.
+</p>
 
-          passwordInput.autocomplete =
-            "new-password";
-        }
+</div>
 
-        checkForm();
-      }
-    );
+<div class="card">
 
+<h2>🔗 Votre lien</h2>
 
-    /* =========================
-       INSCRIPTION / CONNEXION
-       ========================= */
+<div class="referral" id="teamReferralLink">-</div>
 
-    form.addEventListener(
-      "submit",
-      async function (event) {
+<button class="primary" onclick="copyReferral()">
+📋 Copier mon lien
+</button>
 
-        event.preventDefault();
+</div>
 
-        submitButton.disabled = true;
+</div>
 
-        showMessage(
-          "Veuillez patienter...",
-          "#0756a3"
-        );
 
+<div id="referral" class="page">
 
-        const email =
-          emailInput.value.trim();
+<div class="card">
 
-        const password =
-          passwordInput.value;
+<h2>🔗 Mon parrainage</h2>
 
+<p>Invitez vos amis avec votre lien personnel :</p>
 
-        /* INSCRIPTION */
+<div class="referral" id="referralLink">-</div>
 
-        if (!loginMode) {
+<button class="primary" onclick="copyReferral()">
+📋 Copier mon lien
+</button>
 
-          const name =
-            nameInput.value.trim();
+</div>
 
-          const phone =
-            phoneInput.value.trim();
+<div class="card">
 
-          const confirmPassword =
-            confirmPasswordInput.value;
+<h2>📊 Statistiques</h2>
 
+<div class="stat">
+<span>👥 Filleuls</span>
+<strong id="referralCount">0</strong>
+</div>
 
-          if (password !== confirmPassword) {
+<div class="stat">
+<span>💰 Bonus</span>
+<strong id="referralBonus">0 $</strong>
+</div>
 
-            showMessage(
-              "Les deux mots de passe ne correspondent pas.",
-              "red"
-            );
+</div>
 
-            checkForm();
-            return;
-          }
+</div>
 
 
-          const { data, error } =
-            await supabaseClient.auth.signUp({
+<button class="red logout" onclick="logout()">
+🔐 Se déconnecter
+</button>
 
-              email: email,
+</div>
 
-              password: password,
 
-              options: {
+<script>
 
-                data: {
-                  name: name,
-                  phone: phone
-                },
+const SUPABASE_URL =
+"https://uewceocdzvekuopgsmpg.supabase.co";
 
-                emailRedirectTo:
-                  window.location.origin
+const SUPABASE_KEY =
+"sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
 
-              }
-
-            });
-
-
-          if (error) {
-
-            showMessage(
-              error.message,
-              "red"
-            );
-
-            checkForm();
-            return;
-          }
-
-
-          showMessage(
-  "Inscription réussie ! Vous pouvez maintenant utiliser votre compte.",
-  "green"
+const db = supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
 );
 
-logoutButton.style.display = "block";
-submitButton.style.display = "none";
-modeButton.style.display = "none";
+let registerMode = true;
+let currentUser = null;
+
+
+function showMessage(text,type){
+
+const box=document.getElementById("message");
+
+box.textContent=text;
+
+box.className="message "+
+(type==="green"?"success":"error");
+
+box.style.display="block";
+}
+
+
+function toggleMenu(){
+
+const menu=document.getElementById("menu");
+
+menu.style.display=
+menu.style.display==="block"
+?"none"
+:"block";
+}
+
+
+function showPage(page){
+
+document.querySelectorAll(".page").forEach(p=>{
+p.classList.remove("active");
+});
+
+const selected=document.getElementById(page);
+
+if(selected) selected.classList.add("active");
+
+document.getElementById("menu").style.display="none";
+}
+
+
+function toggleAuthMode(){
+
+registerMode=!registerMode;
+
+const title=document.getElementById("authTitle");
+const fields=document.getElementById("registerFields");
+const submit=document.getElementById("submitButton");
+const mode=document.getElementById("modeButton");
+
+if(registerMode){
+
+title.textContent="Créer un compte";
+fields.style.display="block";
+submit.textContent="Créer mon compte";
+mode.textContent="J'ai déjà un compte";
+
+}else{
+
+title.textContent="Connexion";
+fields.style.display="none";
+submit.textContent="Se connecter";
+mode.textContent="Créer un nouveau compte";
+
+}
+
+}
+
+
+async function submitAuth(){
+
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value;
+
+if(!email || !password){
+
+showMessage(
+"Veuillez remplir votre email et votre mot de passe.",
+"red"
+);
 
 return;
-          
-            
-        
-
-    
-        }
+}
 
 
-        /* CONNEXION */
+if(registerMode){
 
-        const { data, error } =
-          await supabaseClient.auth.signInWithPassword({
+const name=document.getElementById("name").value.trim();
+const phone=document.getElementById("phone").value.trim();
 
-            email: email,
+if(!name || !phone){
 
-            password: password
+showMessage(
+"Veuillez remplir votre nom et votre numéro.",
+"red"
+);
 
-          });
-
-
-        if (error) {
-
-          showMessage(
-            error.message,
-            "red"
-          );
-
-          checkForm();
-          return;
-        }
+return;
+}
 
 
-        showMessage(
-          "Connexion réussie !",
-          "green"
-        );
+const urlParams=
+new URLSearchParams(window.location.search);
 
-        logoutButton.style.display =
-          "block";
-
-        submitButton.style.display =
-          "none";
-
-        modeButton.style.display =
-          "none";
-
-      }
-    );
+const referrer=
+urlParams.get("ref") || "";
 
 
-    /* =========================
-       DÉCONNEXION
-       ========================= */
+const result=await db.auth.signUp({
 
-    logoutButton.addEventListener(
-      "click",
-      async function () {
+email:email,
 
-        const { error } =
-          await supabaseClient.auth.signOut();
+password:password,
 
-        if (error) {
+options:{
+data:{
+name:name,
+phone:phone,
+referrer:referrer
+}
+}
 
-          showMessage(
-            error.message,
-            "red"
-          );
-
-          return;
-        }
-
-        loginMode = false;
-
-        title.textContent =
-          "Créer un compte";
-
-        submitButton.textContent =
-          "S'inscrire";
-
-        submitButton.style.display =
-          "block";
-
-        modeButton.style.display =
-          "block";
-
-        logoutButton.style.display =
-          "none";
-
-        signupFields.style.display =
-          "block";
-
-        confirmField.style.display =
-          "block";
-
-        form.reset();
-
-        showMessage(
-          "Vous êtes déconnecté.",
-          "green"
-        );
-
-        checkForm();
-      }
-    );
+});
 
 
-    /* =========================
-       VÉRIFIER LA SESSION
-       ========================= */
+if(result.error){
 
-    async function checkSession() {
+showMessage(
+result.error.message,
+"red"
+);
 
-      const { data } =
-        await supabaseClient.auth.getSession();
-
-      if (data.session) {
-
-        showMessage(
-          "Vous êtes déjà connecté.",
-          "green"
-        );
-
-        logoutButton.style.display =
-          "block";
-
-        submitButton.style.display =
-          "none";
-
-        modeButton.style.display =
-          "none";
-      }
-    }
+return;
+}
 
 
-    checkSession();
+currentUser=result.data.user;
 
-    checkForm();
+showMessage(
+"Inscription réussie ! Vous pouvez maintenant utiliser votre compte.",
+"green"
+);
 
-  </script>
+document.getElementById("authPage").style.display="none";
+document.getElementById("memberPage").style.display="block";
+document.getElementById("menu").style.display="block";
+
+loadMember();
+
+return;
+
+}
+
+
+const result=
+await db.auth.signInWithPassword({
+email:email,
+password:password
+});
+
+
+if(result.error){
+
+showMessage(
+result.error.message,
+"red"
+);
+
+return;
+}
+
+
+currentUser=result.data.user;
+
+openMember();
+
+}
+
+
+function openMember(){
+
+document.getElementById("authPage").style.display="none";
+document.getElementById("memberPage").style.display="block";
+document.getElementById("menu").style.display="block";
+
+loadMember();
+
+}
+
+
+function loadMember(){
+
+if(!currentUser)return;
+
+const metadata=currentUser.user_metadata || {};
+
+const name=metadata.name || "Membre";
+const phone=metadata.phone || "-";
+
+document.getElementById("welcomeName").textContent=name;
+document.getElementById("profileName").textContent=name;
+document.getElementById("profilePhone").textContent=phone;
+document.getElementById("profileEmail").textContent=currentUser.email || "-";
+document.getElementById("profileId").textContent=currentUser.id;
+
+updateBalance();
+createReferralLink();
+loadHistory();
+loadTeam();
+
+}
+
+
+function balanceKey(){
+
+return "km_balance_"+currentUser.id;
+
+}
+
+
+function updateBalance(){
+
+let balance=Number(
+localStorage.getItem(balanceKey()) || 0
+);
+
+document.getElementById("balance").textContent=
+balance.toFixed(2);
+
+document.getElementById("withdrawBalance").textContent=
+balance.toFixed(2);
+
+}
+
+
+function makeDeposit(){
+
+const amount=Number(
+document.getElementById("depositAmount").value
+);
+
+const method=document.getElementById("depositMethod").value;
+
+const reference=document.getElementById("depositReference").value.trim();
+
+if(amount<=0){
+
+alert("Entrez un montant valide.");
+return;
+
+}
+
+if(!method){
+
+alert("Choisissez un moyen de paiement.");
+return;
+
+}
+
+let balance=Number(
+localStorage.getItem(balanceKey()) || 0
+);
+
+balance+=amount;
+
+localStorage.setItem(
+balanceKey(),
+balance
+);
+
+addHistory({
+
+type:"Dépôt",
+amount:amount,
+method:method,
+reference:reference,
+date:new Date().toLocaleString()
+
+});
+
+document.getElementById("depositAmount").value="";
+document.getElementById("depositMethod").value="";
+document.getElementById("depositReference").value="";
+
+updateBalance();
+
+alert("Votre demande de dépôt a été enregistrée.");
+
+showPage("history");
+
+}
+
+
+function makeWithdraw(){
+
+const amount=Number(
+document.getElementById("withdrawAmount").value
+);
+
+const method=document.getElementById("withdrawMethod").value;
+
+const number=document.getElementById("withdrawNumber").value.trim();
+
+let balance=Number(
+localStorage.getItem(balanceKey()) || 0
+);
+
+if(amount<=0){
+
+alert("Entrez un montant valide.");
+return;
+
+}
+
+if(amount>balance){
+
+alert("Votre solde est insuffisant.");
+return;
+
+}
+
+if(!method || !number){
+
+alert("Veuillez remplir tous les champs.");
+return;
+
+}
+
+balance-=amount;
+
+localStorage.setItem(
+balanceKey(),
+balance
+);
+
+addHistory({
+
+type:"Retrait",
+amount:amount,
+method:method,
+reference:number,
+date:new Date().toLocaleString()
+
+});
+
+document.getElementById("withdrawAmount").value="";
+document.getElementById("withdrawMethod").value="";
+document.getElementById("withdrawNumber").value="";
+
+updateBalance();
+
+alert("Votre demande de retrait a été enregistrée.");
+
+showPage("history");
+
+}
+
+
+function historyKey(){
+
+return "km_history_"+currentUser.id;
+
+}
+
+
+function addHistory(operation){
+
+let history=JSON.parse(
+localStorage.getItem(historyKey()) || "[]"
+);
+
+history.unshift(operation);
+
+localStorage.setItem(
+historyKey(),
+JSON.stringify(history)
+);
+
+loadHistory();
+
+}
+
+
+function loadHistory(){
+
+const box=document.getElementById("historyList");
+
+let history=JSON.parse(
+localStorage.getItem(historyKey()) || "[]"
+);
+
+if(!history.length){
+
+box.innerHTML=
+'<p class="small">Aucune opération pour le moment.</p>';
+
+return;
+
+}
+
+box.innerHTML="";
+
+history.forEach(item=>{
+
+const div=document.createElement("div");
+
+div.className="history-item";
+
+const color=
+item.type==="Dépôt"
+?"#198754"
+:"#dc3545";
+
+div.innerHTML=`
+
+<strong style="color:${color}">
+${item.type}
+</strong>
+
+<br>
+
+Montant :
+<strong>${Number(item.amount).toFixed(2)} $</strong>
+
+<br>
+
+Moyen :
+${item.method}
+
+<br>
+
+${item.reference
+?"Référence : "+item.reference+"<br>"
+:""}
+
+<span class="small">
+${item.date}
+</span>
+`;
+
+box.appendChild(div);
+
+});
+
+}
+
+
+function createReferralLink(){
+
+if(!currentUser)return;
+
+const link=
+"https://kinshasa-makambo.vercel.app/?ref="
++currentUser.id;
+
+document.getElementById("referralLink").textContent=link;
+document.getElementById("teamReferralLink").textContent=link;
+
+}
+
+
+async function copyReferral(){
+
+const link=
+"https://kinshasa-makambo.vercel.app/?ref="
++currentUser.id;
+
+try{
+
+await navigator.clipboard.writeText(link);
+
+alert("Lien de parrainage copié !");
+
+}catch(error){
+
+prompt("Copiez votre lien :",link);
+
+}
+
+}
+
+
+function loadTeam(){
+
+const count=0;
+const bonus=0;
+
+document.getElementById("teamCount").textContent=count;
+document.getElementById("teamCountHome").textContent=count;
+document.getElementById("referralCount").textContent=count;
+
+document.getElementById("teamBonus").textContent=
+bonus.toFixed(2)+" $";
+
+document.getElementById("referralBonus").textContent=
+bonus.toFixed(2)+" $";
+
+document.getElementById("bonusHome").textContent=
+bonus.toFixed(2)+" $";
+
+}
+
+
+async function logout(){
+
+await db.auth.signOut();
+
+currentUser=null;
+
+document.getElementById("memberPage").style.display="none";
+document.getElementById("authPage").style.display="block";
+document.getElementById("menu").style.display="none";
+
+registerMode=false;
+
+toggleAuthMode();
+
+document.getElementById("email").value="";
+document.getElementById("password").value="";
+
+}
+
+
+async function checkSession(){
+
+const result=await db.auth.getSession();
+
+if(result.data && result.data.session){
+
+currentUser=result.data.session.user;
+
+openMember();
+
+}
+
+}
+
+
+checkSession();
+
+</script>
 
 </body>
 </html>
