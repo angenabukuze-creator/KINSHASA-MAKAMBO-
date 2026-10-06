@@ -1,65 +1,63 @@
-async function submitWithdraw(){
-  const amount = Number(
-    document.getElementById("wdAmount").value
-  );
+async function submitDeposit(){
+  const amount = Number(document.getElementById("depAmount").value);
+  const ref = document.getElementById("depRef").value.trim();
 
   const operator = PAYMENTS[
-    Number(document.getElementById("wdOperator").value)
+    Number(document.getElementById("depOperator").value)
   ];
 
-  const number = document
-    .getElementById("wdNumber")
-    .value
-    .trim();
-
-  if(!user){
+  if (!user) {
     alert("Veuillez vous connecter.");
     return;
   }
 
-  if(amount < 2000){
-    alert("Le retrait minimum est de 2 000 FC.");
+  if (amount < 15000) {
+    alert("Le dépôt minimum est de 15 000 FC.");
     return;
   }
 
-  if(amount > Number(wallet?.balance || 0)){
-    alert("Solde insuffisant.");
-    return;
-  }
+  try {
+    // Recherche du moyen de paiement dans Supabase
+    const { data: paymentMethod, error: paymentError } = await sb
+      .from("kin_payment_methods")
+      .select("id")
+      .eq("number", operator.number)
+      .maybeSingle();
 
-  if(!number){
-    alert("Entrez votre numéro de réception.");
-    return;
-  }
+    if (paymentError) throw paymentError;
 
-  const fee = amount * 0.10;
-  const net = amount - fee;
+    if (!paymentMethod) {
+      throw new Error(
+        "Le moyen de paiement sélectionné n'est pas enregistré."
+      );
+    }
 
-  try{
+    // Création de la demande de dépôt
     const { error } = await sb
-      .from("kin_withdrawal_requests")
+      .from("kin_deposit_requests")
       .insert({
         user_id: user.id,
         amount: amount,
-        withdrawal_number: number,
+        payment_method_id: paymentMethod.id,
+        transaction_id: ref || null,
         status: "pending"
       });
 
-    if(error) throw error;
+    if (error) throw error;
 
     closeModal();
 
     alert(
-      "✅ Demande de retrait envoyée.\n\n" +
-      "Montant demandé : " + money(amount) + "\n" +
-      "Frais déclarés 10% : " + money(fee) + "\n" +
-      "Montant net indicatif : " + money(net) + "\n\n" +
-      "Votre demande sera vérifiée par l'administration."
+      "✅ Demande de dépôt envoyée avec succès.\n\n" +
+      "Montant : " + amount.toLocaleString("fr-FR") + " FC\n\n" +
+      "Votre demande est maintenant en attente de validation par l'administration."
     );
 
-  }catch(e){
+  } catch (e) {
+    console.error("DEPOT:", e);
+
     alert(
-      "❌ Impossible d'envoyer la demande.\n\n" +
+      "❌ Impossible d'envoyer le dépôt.\n\n" +
       e.message
     );
   }
