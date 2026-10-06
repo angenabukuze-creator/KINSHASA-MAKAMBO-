@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#09090b">
+<meta name="theme-color" content="#e50914">
+<link rel="manifest" href="/manifest.webmanifest">
 <title>KINSHASA BUSINESS 🇨🇩</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -27,9 +28,7 @@ body{
   color:var(--white);
   font-family:Arial,Helvetica,sans-serif;
 }
-button,input,select{
-  font:inherit;
-}
+button,input,select{font:inherit}
 button{cursor:pointer}
 .app{
   max-width:600px;
@@ -479,7 +478,9 @@ async function submitAuth(){
     return;
   }
 
-  const signup = !document.getElementById("signupFields").classList.contains("hidden");
+  const signup =
+    !document.getElementById("signupFields")
+      .classList.contains("hidden");
 
   document.getElementById("authBtn").disabled=true;
 
@@ -624,6 +625,7 @@ function renderHome(){
       <p>${esc(profile?.full_name || "Membre")} · KINSHASA BUSINESS</p>
       <div class="balance">${money(wallet?.balance)}</div>
       <div class="muted">Solde disponible</div>
+
       <div class="row" style="margin-top:15px">
         <div>
           <small class="muted">Gains cumulés</small>
@@ -724,6 +726,7 @@ async function requestKin(id){
     <p class="muted">
       L'attribution définitive doit être validée par le serveur/admin.
     </p>
+
     <button class="btn btn-red" onclick="closeModal()">
       Fermer
     </button>
@@ -928,6 +931,7 @@ async function openDeposit(){
   `);
 
   updatePaymentInfo();
+
   document.getElementById("depOperator")
     .addEventListener("change",updatePaymentInfo);
 }
@@ -944,6 +948,7 @@ function updatePaymentInfo(){
       <strong>${p.operator}</strong>
       <div class="number">${p.number}</div>
       <small>Nom : ${p.name} · Transfert</small>
+
       <button class="btn btn-dark"
         onclick="copyText('${p.number}')">
         Copier le numéro
@@ -953,11 +958,11 @@ function updatePaymentInfo(){
 }
 
 async function submitDeposit(){
-  const amount=Number(document.getElementById("depAmount").value);
+  const amount=Number(
+    document.getElementById("depAmount").value
+  );
+
   const ref=document.getElementById("depRef").value.trim();
-  const operator=PAYMENTS[
-    Number(document.getElementById("depOperator").value)
-  ];
 
   if(amount<15000){
     alert("Le dépôt minimum est de 15 000 FC.");
@@ -970,10 +975,8 @@ async function submitDeposit(){
       .insert({
         user_id:user.id,
         amount,
-        operator:operator.operator,
-        payment_number:operator.number,
-        payment_name:operator.name,
-        reference:ref || null,
+        payment_method_id:null,
+        transaction_id:ref || null,
         status:"pending"
       });
 
@@ -1111,6 +1114,7 @@ async function renderAdmin(){
         <span class="muted">Compte</span>
         <b>ADMIN</b>
       </div>
+
       <div class="stat">
         <span class="muted">Email</span>
         <b class="small">${esc(user.email)}</b>
@@ -1128,6 +1132,7 @@ async function renderAdmin(){
 
     <div class="card">
       <h3>Paramètres</h3>
+
       <p class="muted">
         Les modifications sensibles doivent passer
         par des fonctions serveur sécurisées.
@@ -1160,11 +1165,14 @@ async function loadAdminData(){
       (m.data||[]).map(x=>`
         <div class="member">
           <b>${esc(x.full_name || "Membre")}</b>
+
           <div class="muted small">
             ${esc(x.id)}
           </div>
+
           <div style="margin-top:5px">
-            Rôle : <b>${esc(x.role || "member")}</b>
+            Rôle :
+            <b>${esc(x.role || "member")}</b>
           </div>
         </div>
       `).join("") ||
@@ -1184,10 +1192,13 @@ async function loadAdminData(){
       (d.data||[]).map(x=>`
         <div class="member">
           <b>${money(x.amount)}</b>
+
           <div>${esc(x.operator||"")}</div>
+
           <div class="small muted">
             ${esc(x.payment_number||"")}
           </div>
+
           <div class="small">
             Référence : ${esc(x.reference||"—")}
           </div>
@@ -1209,10 +1220,12 @@ async function loadAdminData(){
       (w.data||[]).map(x=>`
         <div class="member">
           <b>${money(x.amount)}</b>
+
           <div>
             Net après frais :
             <b>${money(x.net_amount)}</b>
           </div>
+
           <div>${esc(x.operator||"")}</div>
           <div>${esc(x.payment_number||"")}</div>
         </div>
@@ -1223,8 +1236,13 @@ async function loadAdminData(){
 
 function showModal(html){
   document.getElementById("modal").innerHTML=`
-    <div class="modal" onclick="if(event.target===this)closeModal()">
-      <div class="modal-box">${html}</div>
+    <div class="modal"
+      onclick="if(event.target===this)closeModal()">
+
+      <div class="modal-box">
+        ${html}
+      </div>
+
     </div>
   `;
 }
@@ -1244,9 +1262,11 @@ async function copyText(text){
 
 async function logout(){
   await sb.auth.signOut();
+
   user=null;
   profile=null;
   wallet=null;
+
   document.getElementById("app").classList.add("hidden");
   document.getElementById("auth").classList.remove("hidden");
 }
@@ -1263,6 +1283,14 @@ sb.auth.onAuthStateChange(async(event,session)=>{
 });
 
 loadUser();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  });
+}
 </script>
 
 </body>
