@@ -1509,6 +1509,71 @@ async function openWithdraw(){
 }
 
 async function submitWithdraw(){
+  const amount = Number(
+    document.getElementById("wdAmount").value
+  );
+
+  const operator = PAYMENTS[
+    Number(document.getElementById("wdOperator").value)
+  ];
+
+  const number = document
+    .getElementById("wdNumber")
+    .value
+    .trim();
+
+  if(!user){
+    alert("Veuillez vous connecter.");
+    return;
+  }
+
+  if(amount < 2000){
+    alert("Le retrait minimum est de 2 000 FC.");
+    return;
+  }
+
+  if(amount > Number(wallet?.balance || 0)){
+    alert("Solde insuffisant.");
+    return;
+  }
+
+  if(!number){
+    alert("Entrez votre numéro de réception.");
+    return;
+  }
+
+  const fee = amount * 0.10;
+  const net = amount - fee;
+
+  try{
+    const { error } = await sb
+      .from("kin_withdrawal_requests")
+      .insert({
+        user_id: user.id,
+        amount: amount,
+        withdrawal_number: number,
+        status: "pending"
+      });
+
+    if(error) throw error;
+
+    closeModal();
+
+    alert(
+      "✅ Demande de retrait envoyée.\n\n" +
+      "Montant demandé : " + money(amount) + "\n" +
+      "Frais déclarés 10% : " + money(fee) + "\n" +
+      "Montant net indicatif : " + money(net) + "\n\n" +
+      "Votre demande sera vérifiée par l'administration."
+    );
+
+  }catch(e){
+    alert(
+      "❌ Impossible d'envoyer la demande.\n\n" +
+      e.message
+    );
+  }
+}
 
   const amount =
     Number(
