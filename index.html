@@ -296,8 +296,7 @@ textarea{
   color:white;
   border:0;
   border-radius:50%;
-  width:35px;
-  height:35px;
+  width:35px;height:35px;
 }
 
 .stat{
@@ -461,19 +460,11 @@ function msg(text,type="ok"){
 
 function showAuth(type){
   const login = type==="login";
-
-  document.getElementById("loginTab")
-    .classList.toggle("active",login);
-
-  document.getElementById("signupTab")
-    .classList.toggle("active",!login);
-
-  document.getElementById("signupFields")
-    .classList.toggle("hidden",login);
-
+  document.getElementById("loginTab").classList.toggle("active",login);
+  document.getElementById("signupTab").classList.toggle("active",!login);
+  document.getElementById("signupFields").classList.toggle("hidden",login);
   document.getElementById("authBtn").textContent =
     login ? "Se connecter" : "Créer mon compte";
-
   document.getElementById("authMsg").innerHTML="";
 }
 
@@ -488,15 +479,12 @@ async function submitAuth(){
     return;
   }
 
-  const signup =
-    !document.getElementById("signupFields")
-      .classList.contains("hidden");
+  const signup = !document.getElementById("signupFields").classList.contains("hidden");
 
   document.getElementById("authBtn").disabled=true;
 
   try{
     if(signup){
-
       const {data,error} = await sb.auth.signUp({
         email,
         password,
@@ -506,7 +494,6 @@ async function submitAuth(){
       if(error) throw error;
 
       if(data.user){
-
         await sb.from("profiles").upsert({
           id:data.user.id,
           full_name:name || "Membre",
@@ -520,34 +507,24 @@ async function submitAuth(){
         });
 
         document.getElementById("authMsg").innerHTML =
-          msg(
-            "Inscription réussie ! Vous pouvez maintenant utiliser votre compte."
-          );
+          msg("Inscription réussie ! Vous pouvez maintenant utiliser votre compte.");
       }
-
     }else{
-
       const {error} = await sb.auth.signInWithPassword({
-        email,
-        password
+        email,password
       });
 
       if(error) throw error;
     }
-
   }catch(e){
-
     document.getElementById("authMsg").innerHTML =
       msg(e.message || "Une erreur est survenue","err");
-
   }finally{
-
     document.getElementById("authBtn").disabled=false;
   }
 }
 
 async function githubLogin(){
-
   const {error} = await sb.auth.signInWithOAuth({
     provider:"github",
     options:{redirectTo:location.href}
@@ -560,34 +537,24 @@ async function githubLogin(){
 }
 
 async function loadUser(){
-
   const {data} = await sb.auth.getUser();
-
   user = data.user;
 
   if(!user){
-    document.getElementById("auth")
-      .classList.remove("hidden");
-
-    document.getElementById("app")
-      .classList.add("hidden");
-
+    document.getElementById("auth").classList.remove("hidden");
+    document.getElementById("app").classList.add("hidden");
     return;
   }
 
   await loadData();
 
-  document.getElementById("auth")
-    .classList.add("hidden");
-
-  document.getElementById("app")
-    .classList.remove("hidden");
+  document.getElementById("auth").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
 
   page("home");
 }
 
 async function loadData(){
-
   if(!user)return;
 
   const p = await sb
@@ -619,17 +586,14 @@ async function loadData(){
 }
 
 function navActive(name){
-
   document.querySelectorAll(".nav button")
     .forEach(x=>x.classList.remove("active"));
 
   const el=document.getElementById("nav-"+name);
-
   if(el)el.classList.add("active");
 }
 
 function page(name){
-
   currentPage=name;
 
   if(name==="admin" && !isAdmin){
@@ -640,8 +604,7 @@ function page(name){
     name==="products" ? "products" :
     name==="tasks" ? "tasks" :
     name==="team" ? "team" :
-    name==="profile" ? "profile" :
-    "home"
+    name==="profile" ? "profile" : "home"
   );
 
   if(name==="home")renderHome();
@@ -653,310 +616,152 @@ function page(name){
 }
 
 function renderHome(){
-
   const c=document.getElementById("content");
 
   c.innerHTML=`
-
     <section class="hero">
-
       <h1>Bienvenue 🇨🇩</h1>
-
-      <p>
-        ${esc(profile?.full_name || "Membre")}
-        · KINSHASA BUSINESS
-      </p>
-
-      <div class="balance">
-        ${money(wallet?.balance)}
-      </div>
-
-      <div class="muted">
-        Solde disponible
-      </div>
-
+      <p>${esc(profile?.full_name || "Membre")} · KINSHASA BUSINESS</p>
+      <div class="balance">${money(wallet?.balance)}</div>
+      <div class="muted">Solde disponible</div>
       <div class="row" style="margin-top:15px">
-
         <div>
-          <small class="muted">
-            Gains cumulés
-          </small>
-
-          <div>
-            <b>${money(wallet?.total_earnings)}</b>
-          </div>
+          <small class="muted">Gains cumulés</small>
+          <div><b>${money(wallet?.total_earnings)}</b></div>
         </div>
-
         <div>🇨🇩</div>
-
       </div>
-
     </section>
 
     <div class="notice">
-
-      📢 Bienvenue sur
-      <b>KINSHASA BUSINESS</b>.
-
-      Les montants de gains affichés correspondent
-      aux paramètres déclarés des produits
-      et ne constituent pas une garantie de rendement.
-
+      📢 Bienvenue sur <b>KINSHASA BUSINESS</b>.
+      Les montants de gains affichés correspondent aux paramètres déclarés
+      des produits et ne constituent pas une garantie de rendement.
     </div>
 
     <div class="grid">
-
-      <button class="action"
-        onclick="openDeposit()">
-
-        <span>＋</span>
-        <b>Dépôt</b>
-
+      <button class="action" onclick="openDeposit()">
+        <span>＋</span><b>Dépôt</b>
       </button>
 
-      <button class="action"
-        onclick="openWithdraw()">
-
-        <span>↗</span>
-        <b>Retrait</b>
-
+      <button class="action" onclick="openWithdraw()">
+        <span>↗</span><b>Retrait</b>
       </button>
 
-      <button class="action"
-        onclick="page('tasks')">
-
-        <span>✓</span>
-        <b>Pointage</b>
-
+      <button class="action" onclick="page('tasks')">
+        <span>✓</span><b>Pointage</b>
       </button>
 
-      <button class="action"
-        onclick="page('team')">
-
-        <span>♧</span>
-        <b>Équipe</b>
-
+      <button class="action" onclick="page('team')">
+        <span>♧</span><b>Équipe</b>
       </button>
-
     </div>
 
     <h2>Nos KIN</h2>
 
     ${PLANS.slice(0,3).map(planMini).join("")}
 
-    <button class="btn btn-red"
-      onclick="page('products')">
-
+    <button class="btn btn-red" onclick="page('products')">
       Voir tous les KIN
-
     </button>
-
   `;
 }
 
 function planMini(p){
-
   return `
-
   <div class="plan">
-
     <div class="plan-top">
-
-      <div class="kin">
-        ${p.id}
-      </div>
-
-      <div class="price">
-        ${money(p.price)}
-      </div>
-
+      <div class="kin">${p.id}</div>
+      <div class="price">${money(p.price)}</div>
     </div>
-
-    <div class="gain">
-      Gain affiché : ${money(p.gain)} / jour
-    </div>
-
-    <span class="tag">
-      ${p.days} jours
-    </span>
-
-    <span class="tag">
-      Maximum : ${p.max}
-    </span>
-
-  </div>
-
-  `;
+    <div class="gain">Gain affiché : ${money(p.gain)} / jour</div>
+    <span class="tag">${p.days} jours</span>
+    <span class="tag">Maximum : ${p.max}</span>
+  </div>`;
 }
 
 function renderProducts(){
-
   document.getElementById("content").innerHTML=`
-
     <h2>Produits KIN</h2>
 
     <div class="notice">
-
-      Les montants ci-dessous sont les paramètres
-      déclarés des produits.
-
+      Les montants ci-dessous sont les paramètres déclarés des produits.
       Ils ne constituent pas une promesse de rendement.
-
     </div>
 
     ${PLANS.map(p=>`
-
       <div class="plan">
-
         <div class="plan-top">
-
-          <div class="kin">
-            ${p.id}
-          </div>
-
-          <div class="price">
-            ${money(p.price)}
-          </div>
-
+          <div class="kin">${p.id}</div>
+          <div class="price">${money(p.price)}</div>
         </div>
 
         <div class="gain">
-
-          Gain affiché :
-          ${money(p.gain)} / jour
-
+          Gain affiché : ${money(p.gain)} / jour
         </div>
 
-        <span class="tag">
-          ${p.days} jours
-        </span>
-
-        <span class="tag">
-          Maximum ${p.max} position(s)
-        </span>
+        <span class="tag">${p.days} jours</span>
+        <span class="tag">Maximum ${p.max} position(s)</span>
 
         <button class="btn btn-red"
           onclick="requestKin('${p.id}')">
-
           Demander ${p.id}
-
         </button>
-
       </div>
-
     `).join("")}
-
   `;
 }
 
 async function requestKin(id){
-
   const p=PLANS.find(x=>x.id===id);
-
   if(!p)return;
 
   showModal(`
-
-    <button class="close"
-      onclick="closeModal()">
-      ×
-    </button>
-
-    <h2>
-      Demande ${p.id}
-    </h2>
-
-    <p>
-      Prix :
-      <b>${money(p.price)}</b>
-    </p>
-
-    <p>
-      Gain affiché/jour :
-      <b>${money(p.gain)}</b>
-    </p>
-
+    <button class="close" onclick="closeModal()">×</button>
+    <h2>Demande ${p.id}</h2>
+    <p>Prix : <b>${money(p.price)}</b></p>
+    <p>Gain affiché/jour : <b>${money(p.gain)}</b></p>
     <p class="muted">
-
-      L'attribution définitive doit être
-      validée par le serveur/admin.
-
+      L'attribution définitive doit être validée par le serveur/admin.
     </p>
-
-    <button class="btn btn-red"
-      onclick="closeModal()">
-
+    <button class="btn btn-red" onclick="closeModal()">
       Fermer
-
     </button>
-
   `);
 }
 
 function renderTasks(){
-
   document.getElementById("content").innerHTML=`
-
-    <h2>
-      Tâches & Pointage
-    </h2>
+    <h2>Tâches & Pointage</h2>
 
     <div class="card center">
-
-      <div style="font-size:45px">
-        ✓
-      </div>
-
-      <h3>
-        Pointage quotidien
-      </h3>
-
+      <div style="font-size:45px">✓</div>
+      <h3>Pointage quotidien</h3>
       <p class="muted">
         1 pointage maximum par jour.
       </p>
-
       <p>
         Récompense déclarée :
-        <b style="color:var(--green)">
-          20 FC
-        </b>
+        <b style="color:var(--green)">20 FC</b>
       </p>
 
-      <button class="btn btn-red"
-        onclick="checkin()">
-
+      <button class="btn btn-red" onclick="checkin()">
         Faire mon pointage
-
       </button>
-
     </div>
 
     <div class="card">
-
-      <h3>
-        Horaires
-      </h3>
-
-      <p class="muted">
-        Lundi à dimanche
-      </p>
-
-      <b>
-        08:00 – 19:00
-      </b>
-
+      <h3>Horaires</h3>
+      <p class="muted">Lundi à dimanche</p>
+      <b>08:00 – 19:00</b>
     </div>
-
   `;
 }
 
 async function checkin(){
-
-  const today =
-    new Date().toISOString().slice(0,10);
+  const today=new Date().toISOString().slice(0,10);
 
   try{
-
     const {data,error}=await sb
       .from("kin_daily_checkins")
       .insert({
@@ -968,209 +773,107 @@ async function checkin(){
       .single();
 
     if(error){
-
       if(error.code==="23505"){
-
-        alert(
-          "Vous avez déjà effectué votre pointage aujourd'hui."
-        );
-
+        alert("Vous avez déjà effectué votre pointage aujourd'hui.");
       }else{
-
         alert(
           "Pointage enregistré/à valider côté serveur : "+
           error.message
         );
-
       }
-
       return;
     }
 
-    alert(
-      "Pointage enregistré. La récompense doit être créditée côté serveur."
-    );
-
+    alert("Pointage enregistré. La récompense doit être créditée côté serveur.");
   }catch(e){
-
     alert(e.message);
-
   }
 }
 
 function renderTeam(){
-
   const code =
-    "KIN"+
-    user.id
-      .replaceAll("-","")
-      .slice(0,8)
-      .toUpperCase();
+    "KIN"+user.id.replaceAll("-","").slice(0,8).toUpperCase();
 
   const link =
-    location.origin+
-    location.pathname+
-    "?ref="+
-    code;
+    location.origin+location.pathname+"?ref="+code;
 
   document.getElementById("content").innerHTML=`
-
-    <h2>
-      Mon équipe
-    </h2>
+    <h2>Mon équipe</h2>
 
     <div class="card">
-
-      <h3>
-        Mon code de parrainage
-      </h3>
-
-      <div style="
-        font-size:24px;
-        font-weight:900;
-        margin:12px 0">
-
+      <h3>Mon code de parrainage</h3>
+      <div style="font-size:24px;font-weight:900;margin:12px 0">
         ${code}
-
       </div>
 
       <button class="btn btn-red"
         onclick="copyText('${code}')">
-
         Copier le code
-
       </button>
-
     </div>
 
     <div class="card">
-
-      <h3>
-        Mon lien
-      </h3>
-
-      <input
-        value="${esc(link)}"
-        readonly>
+      <h3>Mon lien</h3>
+      <input value="${esc(link)}" readonly>
 
       <button class="btn btn-dark"
         onclick="copyText('${esc(link)}')">
-
         Copier le lien
-
       </button>
-
     </div>
 
     <div class="card">
-
-      <h3>
-        Commission déclarée
-      </h3>
-
-      <p>
-        1er niveau :
-        <b>30%</b>
-      </p>
-
-      <p>
-        2e niveau :
-        <b>2%</b>
-      </p>
-
-      <p>
-        3e niveau :
-        <b>1%</b>
-      </p>
-
+      <h3>Commission déclarée</h3>
+      <p>1er niveau : <b>30%</b></p>
+      <p>2e niveau : <b>2%</b></p>
+      <p>3e niveau : <b>1%</b></p>
     </div>
 
     <div class="card">
+      <h3>Groupes officiels</h3>
 
-      <h3>
-        Groupes officiels
-      </h3>
-
-      <a
-        href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps"
-        target="_blank">
-
-        <button class="btn btn-green">
-          WhatsApp
-        </button>
-
+      <a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps"
+         target="_blank">
+        <button class="btn btn-green">WhatsApp</button>
       </a>
 
-      <a
-        href="https://t.me/francscongolais"
-        target="_blank">
-
-        <button class="btn btn-dark">
-          Telegram
-        </button>
-
+      <a href="https://t.me/francscongolais"
+         target="_blank">
+        <button class="btn btn-dark">Telegram</button>
       </a>
-
     </div>
-
   `;
 }
 
 function renderProfile(){
-
   document.getElementById("content").innerHTML=`
-
-    <h2>
-      Mon profil
-    </h2>
+    <h2>Mon profil</h2>
 
     <div class="card">
-
-      <h3>
-        ${esc(profile?.full_name || "Membre")}
-      </h3>
-
-      <p class="muted">
-        ${esc(user.email)}
-      </p>
-
+      <h3>${esc(profile?.full_name || "Membre")}</h3>
+      <p class="muted">${esc(user.email)}</p>
       <p>
-
         Statut :
-
-        <b>
-          ${isAdmin ? "Administrateur" : "Membre"}
-        </b>
-
+        <b>${isAdmin ? "Administrateur" : "Membre"}</b>
       </p>
-
     </div>
 
     <div class="card">
-
-      <h3>
-        Services
-      </h3>
+      <h3>Services</h3>
 
       <button class="btn btn-dark"
         onclick="openDeposit()">
-
         💰 Déposer
-
       </button>
 
       <button class="btn btn-dark"
         onclick="openWithdraw()">
-
         💸 Retirer
-
       </button>
 
       <button class="btn btn-dark"
         onclick="page('team')">
-
         👥 Mon équipe
-
       </button>
 
       ${
@@ -1184,866 +887,388 @@ function renderProfile(){
 
       <button class="btn btn-danger"
         onclick="logout()">
-
         Se déconnecter
-
       </button>
-
     </div>
-
   `;
 }
 
 async function openDeposit(){
-
   showModal(`
-
-    <button class="close"
-      onclick="closeModal()">
-      ×
-    </button>
-
-    <h2>
-      💰 Dépôt
-    </h2>
+    <button class="close" onclick="closeModal()">×</button>
+    <h2>💰 Dépôt</h2>
 
     <div class="notice">
-
-      Dépôt minimum :
-      <b>15 000 FC</b>
-
+      Dépôt minimum : <b>15 000 FC</b>
     </div>
 
-    <label>
-      Montant
-    </label>
+    <label>Montant</label>
+    <input id="depAmount" type="number"
+      min="15000" placeholder="Ex : 15000">
 
-    <input
-      id="depAmount"
-      type="number"
-      min="15000"
-      placeholder="Ex : 15000">
-
-    <label>
-      Opérateur
-    </label>
-
+    <label>Opérateur</label>
     <select id="depOperator">
-
       ${PAYMENTS.map((p,i)=>`
-
         <option value="${i}">
-
-          ${p.operator}
-          —
-          ${p.number}
-          —
-          ${p.name}
-
+          ${p.operator} — ${p.number} — ${p.name}
         </option>
-
       `).join("")}
-
     </select>
 
     <div id="paymentInfo"></div>
 
-    <label>
-      Référence du transfert
-    </label>
-
-    <input
-      id="depRef"
+    <label>Référence du transfert</label>
+    <input id="depRef"
       placeholder="Référence ou nom du transfert">
 
     <button class="btn btn-red"
       onclick="submitDeposit()">
-
       Envoyer la demande
-
     </button>
-
   `);
 
   updatePaymentInfo();
-
-  document
-    .getElementById("depOperator")
-    .addEventListener(
-      "change",
-      updatePaymentInfo
-    );
+  document.getElementById("depOperator")
+    .addEventListener("change",updatePaymentInfo);
 }
 
 function updatePaymentInfo(){
-
-  const s =
-    document.getElementById("depOperator");
-
-  const box =
-    document.getElementById("paymentInfo");
-
+  const s=document.getElementById("depOperator");
+  const box=document.getElementById("paymentInfo");
   if(!s||!box)return;
 
-  const p =
-    PAYMENTS[Number(s.value)];
+  const p=PAYMENTS[Number(s.value)];
 
   box.innerHTML=`
-
     <div class="pay">
-
-      <strong>
-        ${p.operator}
-      </strong>
-
-      <div class="number">
-        ${p.number}
-      </div>
-
-      <small>
-        Nom : ${p.name} · Transfert
-      </small>
-
+      <strong>${p.operator}</strong>
+      <div class="number">${p.number}</div>
+      <small>Nom : ${p.name} · Transfert</small>
       <button class="btn btn-dark"
         onclick="copyText('${p.number}')">
-
         Copier le numéro
-
       </button>
-
     </div>
-
   `;
 }
 
-/* =====================================================
-   DÉPÔT CORRIGÉ
-   ===================================================== */
-
 async function submitDeposit(){
+  const amount=Number(document.getElementById("depAmount").value);
+  const ref=document.getElementById("depRef").value.trim();
+  const operator=PAYMENTS[
+    Number(document.getElementById("depOperator").value)
+  ];
 
-  const amount =
-    Number(
-      document.getElementById("depAmount").value
-    );
-
-  const ref =
-    document.getElementById("depRef")
-      .value
-      .trim();
-
-  const operator =
-    PAYMENTS[
-      Number(
-        document.getElementById("depOperator").value
-      )
-    ];
-
-  if(!user){
-
-    alert(
-      "Veuillez vous connecter."
-    );
-
-    return;
-  }
-
-  if(amount < 15000){
-
-    alert(
-      "Le dépôt minimum est de 15 000 FC."
-    );
-
+  if(amount<15000){
+    alert("Le dépôt minimum est de 15 000 FC.");
     return;
   }
 
   try{
-
-    /*
-      On récupère l'identifiant réel
-      du moyen de paiement dans Supabase.
-    */
-
-    const {
-      data:paymentMethod,
-      error:paymentError
-    } = await sb
-      .from("kin_payment_methods")
-      .select("id")
-      .eq("number",operator.number)
-      .maybeSingle();
-
-    if(paymentError)
-      throw paymentError;
-
-    if(!paymentMethod){
-
-      throw new Error(
-        "Le moyen de paiement sélectionné n'est pas enregistré dans la base."
-      );
-
-    }
-
-    /*
-      La table utilise :
-      payment_method_id
-      transaction_id
-      status
-    */
-
-    const {error} = await sb
+    const {error}=await sb
       .from("kin_deposit_requests")
       .insert({
-
         user_id:user.id,
-
-        amount:amount,
-
-        payment_method_id:
-          paymentMethod.id,
-
-        transaction_id:
-          ref || null,
-
+        amount,
+        operator:operator.operator,
+        payment_number:operator.number,
+        payment_name:operator.name,
+        reference:ref || null,
         status:"pending"
-
       });
 
-    if(error)
-      throw error;
+    if(error)throw error;
 
     closeModal();
 
     alert(
-      "✅ Demande de dépôt envoyée.\n\n"+
-      "Montant : "+
-      money(amount)+
-      "\n\n"+
-      "Votre demande est maintenant en attente de validation par l'administration."
+      "Demande de dépôt envoyée. " +
+      "La validation sera effectuée par l'administration."
     );
-
   }catch(e){
-
     alert(
-      "❌ Impossible d'envoyer le dépôt.\n\n"+
-      (e.message || "Erreur inconnue")
+      "Impossible d'envoyer la demande : "+e.message
     );
-
   }
 }
 
 async function openWithdraw(){
-
   showModal(`
-
-    <button class="close"
-      onclick="closeModal()">
-      ×
-    </button>
-
-    <h2>
-      💸 Retrait
-    </h2>
+    <button class="close" onclick="closeModal()">×</button>
+    <h2>💸 Retrait</h2>
 
     <div class="notice">
-
-      Minimum :
-      <b>2 000 FC</b>
-
-      <br>
-
-      Frais automatiques déclarés :
-      <b>10%</b>
-
+      Minimum : <b>2 000 FC</b><br>
+      Frais automatiques déclarés : <b>10%</b>
     </div>
 
     <p>
-
       Solde actuel :
       <b>${money(wallet?.balance)}</b>
-
     </p>
 
-    <label>
-      Montant demandé
-    </label>
+    <label>Montant demandé</label>
+    <input id="wdAmount" type="number"
+      min="2000" placeholder="Ex : 2000">
 
-    <input
-      id="wdAmount"
-      type="number"
-      min="2000"
-      placeholder="Ex : 2000">
-
-    <label>
-      Opérateur
-    </label>
-
+    <label>Opérateur</label>
     <select id="wdOperator">
-
       ${PAYMENTS.map((p,i)=>`
-
         <option value="${i}">
           ${p.operator}
         </option>
-
       `).join("")}
-
     </select>
 
-    <label>
-      Votre numéro de réception
-    </label>
-
-    <input
-      id="wdNumber"
+    <label>Votre numéro de réception</label>
+    <input id="wdNumber"
       placeholder="Numéro où recevoir le retrait">
 
     <button class="btn btn-red"
       onclick="submitWithdraw()">
-
       Envoyer la demande
-
     </button>
-
   `);
 }
 
+/* =========================================================
+   RETRAIT CORRIGÉ
+   La demande utilise uniquement les colonnes connues :
+   user_id, amount, withdrawal_number, status
+   Le dépôt ci-dessus n'est pas modifié.
+   ========================================================= */
+
 async function submitWithdraw(){
+  const amount = Number(
+    document.getElementById("wdAmount").value
+  );
 
-  const amount =
-    Number(
-      document.getElementById("wdAmount").value
-    );
+  const number = document
+    .getElementById("wdNumber")
+    .value
+    .trim();
 
-  const operator =
-    PAYMENTS[
-      Number(
-        document.getElementById("wdOperator").value
-      )
-    ];
-
-  const number =
-    document.getElementById("wdNumber")
-      .value
-      .trim();
-
-  if(amount < 2000){
-
-    alert(
-      "Le retrait minimum est de 2 000 FC."
-    );
-
+  if(!user){
+    alert("Veuillez vous connecter.");
     return;
   }
 
-  if(
-    amount >
-    Number(wallet?.balance || 0)
-  ){
+  if(amount < 2000){
+    alert("Le retrait minimum est de 2 000 FC.");
+    return;
+  }
 
-    alert(
-      "Solde insuffisant."
-    );
-
+  if(amount > Number(wallet?.balance || 0)){
+    alert("Solde insuffisant.");
     return;
   }
 
   if(!number){
-
-    alert(
-      "Entrez votre numéro de réception."
-    );
-
+    alert("Entrez votre numéro de réception.");
     return;
   }
 
-  const fee =
-    amount * 0.10;
-
-  const net =
-    amount - fee;
-
   try{
-
     const {error}=await sb
       .from("kin_withdrawal_requests")
       .insert({
-
         user_id:user.id,
-
-        amount,
-
-        fee,
-
-        net_amount:net,
-
-        operator:operator.operator,
-
-        payment_number:number,
-
+        amount:amount,
+        withdrawal_number:number,
         status:"pending"
-
       });
 
-    if(error)
-      throw error;
+    if(error) throw error;
 
     closeModal();
 
     alert(
-
-      "Demande envoyée.\n\n"+
-      "Montant : "+
+      "✅ Demande de retrait envoyée !\n\n"+
+      "Montant demandé : "+
       money(amount)+
-      "\n"+
-      "Frais 10% : "+
-      money(fee)+
-      "\n"+
-      "Net : "+
-      money(net)
-
+      "\n\n"+
+      "Frais déclarés : 10%\n\n"+
+      "Votre demande est maintenant en attente de validation par l'administration."
     );
-
   }catch(e){
-
     alert(
-      "Impossible d'envoyer la demande : "+
-      e.message
+      "❌ Impossible d'envoyer la demande.\n\n"+
+      (e.message || "Erreur inconnue")
     );
-
   }
 }
 
 async function renderAdmin(){
-
   if(!isAdmin){
-
     page("profile");
-
     return;
   }
 
-  const c =
-    document.getElementById("content");
+  const c=document.getElementById("content");
 
   c.innerHTML=`
-
-    <h2 class="admin-title">
-      ⚙ Administration
-    </h2>
+    <h2 class="admin-title">⚙ Administration</h2>
 
     <div class="notice">
-
-      Les opérations financières sensibles
-      doivent être validées côté serveur
-      et auditées.
-
+      Les opérations financières sensibles doivent être
+      validées côté serveur et auditées.
     </div>
 
     <div class="grid">
-
       <div class="stat">
-
-        <span class="muted">
-          Compte
-        </span>
-
-        <b>
-          ADMIN
-        </b>
-
+        <span class="muted">Compte</span>
+        <b>ADMIN</b>
       </div>
-
       <div class="stat">
-
-        <span class="muted">
-          Email
-        </span>
-
-        <b class="small">
-          ${esc(user.email)}
-        </b>
-
+        <span class="muted">Email</span>
+        <b class="small">${esc(user.email)}</b>
       </div>
-
     </div>
 
-    <h2>
-      Membres
-    </h2>
+    <h2>Membres</h2>
+    <div id="members">Chargement...</div>
 
-    <div id="members">
-      Chargement...
-    </div>
+    <h2>Dépôts en attente</h2>
+    <div id="deposits">Chargement...</div>
 
-    <h2>
-      Dépôts en attente
-    </h2>
-
-    <div id="deposits">
-      Chargement...
-    </div>
-
-    <h2>
-      Retraits en attente
-    </h2>
-
-    <div id="withdrawals">
-      Chargement...
-    </div>
+    <h2>Retraits en attente</h2>
+    <div id="withdrawals">Chargement...</div>
 
     <div class="card">
-
-      <h3>
-        Paramètres
-      </h3>
-
+      <h3>Paramètres</h3>
       <p class="muted">
-
-        Les modifications sensibles
-        doivent passer par des fonctions
-        serveur sécurisées.
-
+        Les modifications sensibles doivent passer
+        par des fonctions serveur sécurisées.
       </p>
 
-      <p>
-        Nom :
-        <b>KINSHASA BUSINESS</b>
-      </p>
-
-      <p>
-        Retrait minimum :
-        <b>2 000 FC</b>
-      </p>
-
-      <p>
-        Dépôt minimum :
-        <b>15 000 FC</b>
-      </p>
-
-      <p>
-        Pointage :
-        <b>20 FC / jour</b>
-      </p>
-
+      <p>Nom : <b>KINSHASA BUSINESS</b></p>
+      <p>Retrait minimum : <b>2 000 FC</b></p>
+      <p>Dépôt minimum : <b>15 000 FC</b></p>
+      <p>Pointage : <b>20 FC / jour</b></p>
     </div>
-
   `;
 
   await loadAdminData();
 }
 
 async function loadAdminData(){
+  const members=document.getElementById("members");
+  const deposits=document.getElementById("deposits");
+  const withdrawals=document.getElementById("withdrawals");
 
-  const members =
-    document.getElementById("members");
-
-  const deposits =
-    document.getElementById("deposits");
-
-  const withdrawals =
-    document.getElementById("withdrawals");
-
-  const m =
-    await sb
-      .from("profiles")
-      .select("*")
-      .order(
-        "created_at",
-        {ascending:false}
-      );
+  const m=await sb
+    .from("profiles")
+    .select("*")
+    .order("created_at",{ascending:false});
 
   if(m.error){
-
-    members.innerHTML =
-      msg(
-        m.error.message,
-        "err"
-      );
-
+    members.innerHTML=msg(m.error.message,"err");
   }else{
-
     members.innerHTML =
-
-      (m.data||[])
-        .map(x=>`
-
-          <div class="member">
-
-            <b>
-              ${esc(
-                x.full_name ||
-                "Membre"
-              )}
-            </b>
-
-            <div class="muted small">
-
-              ${esc(x.id)}
-
-            </div>
-
-            <div style="margin-top:5px">
-
-              Rôle :
-
-              <b>
-                ${esc(
-                  x.role ||
-                  "member"
-                )}
-              </b>
-
-            </div>
-
+      (m.data||[]).map(x=>`
+        <div class="member">
+          <b>${esc(x.full_name || "Membre")}</b>
+          <div class="muted small">
+            ${esc(x.id)}
           </div>
-
-        `)
-        .join("")
-
-      ||
-
-      `<div class="muted">
-        Aucun membre trouvé.
-      </div>`;
-
+          <div style="margin-top:5px">
+            Rôle : <b>${esc(x.role || "member")}</b>
+          </div>
+        </div>
+      `).join("") ||
+      `<div class="muted">Aucun membre trouvé.</div>`;
   }
 
-  const d =
-    await sb
-      .from("kin_deposit_requests")
-      .select("*")
-      .eq(
-        "status",
-        "pending"
-      )
-      .order(
-        "created_at",
-        {ascending:false}
-      );
+  const d=await sb
+    .from("kin_deposit_requests")
+    .select("*")
+    .eq("status","pending")
+    .order("created_at",{ascending:false});
 
   if(d.error){
-
-    deposits.innerHTML =
-      msg(
-        d.error.message,
-        "err"
-      );
-
+    deposits.innerHTML=msg(d.error.message,"err");
   }else{
-
     deposits.innerHTML =
-
-      (d.data||[])
-        .map(x=>`
-
-          <div class="member">
-
-            <b>
-              ${money(x.amount)}
-            </b>
-
-            <div class="small">
-
-              Moyen de paiement :
-              ${esc(
-                x.payment_method_id ||
-                ""
-              )}
-
-            </div>
-
-            <div class="small muted">
-
-              Transaction :
-              ${esc(
-                x.transaction_id ||
-                "—"
-              )}
-
-            </div>
-
-            <div class="small">
-
-              Statut :
-              <b>
-                ${esc(
-                  x.status ||
-                  "pending"
-                )}
-              </b>
-
-            </div>
-
+      (d.data||[]).map(x=>`
+        <div class="member">
+          <b>${money(x.amount)}</b>
+          <div>${esc(x.operator||"")}</div>
+          <div class="small muted">
+            ${esc(x.payment_number||"")}
           </div>
-
-        `)
-        .join("")
-
-      ||
-
-      `<div class="muted">
-        Aucun dépôt en attente.
-      </div>`;
-
+          <div class="small">
+            Référence : ${esc(x.reference||"—")}
+          </div>
+        </div>
+      `).join("") ||
+      `<div class="muted">Aucun dépôt en attente.</div>`;
   }
 
-  const w =
-    await sb
-      .from("kin_withdrawal_requests")
-      .select("*")
-      .eq(
-        "status",
-        "pending"
-      )
-      .order(
-        "created_at",
-        {ascending:false}
-      );
+  const w=await sb
+    .from("kin_withdrawal_requests")
+    .select("*")
+    .eq("status","pending")
+    .order("created_at",{ascending:false});
 
   if(w.error){
-
-    withdrawals.innerHTML =
-      msg(
-        w.error.message,
-        "err"
-      );
-
+    withdrawals.innerHTML=msg(w.error.message,"err");
   }else{
-
     withdrawals.innerHTML =
-
-      (w.data||[])
-        .map(x=>`
-
-          <div class="member">
-
-            <b>
-              ${money(x.amount)}
-            </b>
-
-            <div>
-              Net après frais :
-              <b>
-                ${money(x.net_amount)}
-              </b>
-            </div>
-
-            <div>
-              ${esc(
-                x.operator ||
-                ""
-              )}
-            </div>
-
-            <div>
-              ${esc(
-                x.payment_number ||
-                ""
-              )}
-            </div>
-
+      (w.data||[]).map(x=>`
+        <div class="member">
+          <b>${money(x.amount)}</b>
+          <div>
+            Net après frais :
+            <b>${money(x.net_amount)}</b>
           </div>
-
-        `)
-        .join("")
-
-      ||
-
-      `<div class="muted">
-        Aucun retrait en attente.
-      </div>`;
-
+          <div>${esc(x.operator||"")}</div>
+          <div>${esc(x.payment_number||"")}</div>
+        </div>
+      `).join("") ||
+      `<div class="muted">Aucun retrait en attente.</div>`;
   }
 }
 
 function showModal(html){
-
-  document.getElementById("modal")
-    .innerHTML=`
-
-      <div class="modal"
-        onclick="if(event.target===this)closeModal()">
-
-        <div class="modal-box">
-
-          ${html}
-
-        </div>
-
-      </div>
-
-    `;
-
+  document.getElementById("modal").innerHTML=`
+    <div class="modal" onclick="if(event.target===this)closeModal()">
+      <div class="modal-box">${html}</div>
+    </div>
+  `;
 }
 
 function closeModal(){
-
-  document.getElementById("modal")
-    .innerHTML="";
-
+  document.getElementById("modal").innerHTML="";
 }
 
 async function copyText(text){
-
   try{
-
-    await navigator.clipboard
-      .writeText(text);
-
+    await navigator.clipboard.writeText(text);
     alert("Copié !");
-
   }catch(e){
-
     alert(text);
-
   }
 }
 
 async function logout(){
-
   await sb.auth.signOut();
-
   user=null;
   profile=null;
   wallet=null;
-
-  document.getElementById("app")
-    .classList.add("hidden");
-
-  document.getElementById("auth")
-    .classList.remove("hidden");
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("auth").classList.remove("hidden");
 }
 
-sb.auth.onAuthStateChange(
-  async(event,session)=>{
-
-    if(
-      event==="SIGNED_IN" &&
-      session
-    ){
-
-      setTimeout(
-        loadUser,
-        100
-      );
-
-    }
-
-    if(
-      event==="SIGNED_OUT"
-    ){
-
-      document.getElementById("app")
-        .classList.add("hidden");
-
-      document.getElementById("auth")
-        .classList.remove("hidden");
-
-    }
-
+sb.auth.onAuthStateChange(async(event,session)=>{
+  if(event==="SIGNED_IN" && session){
+    setTimeout(loadUser,100);
   }
-);
+
+  if(event==="SIGNED_OUT"){
+    document.getElementById("app").classList.add("hidden");
+    document.getElementById("auth").classList.remove("hidden");
+  }
+});
 
 loadUser();
 </script>
