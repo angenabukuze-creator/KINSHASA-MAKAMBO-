@@ -152,11 +152,11 @@ return String(v??"")
 function msg(t,type="ok"){return `<div class="msg ${type}">${esc(t)}</div>`}
 
 function referralCode(){
-return "KKIN"+user.id.replaceAll("-","").slice(0,8).toUpperCase();
+return "KIN"+user.id.replaceAll("-","").slice(0,8).toUpperCase();
 }
 
 function referralLink(){
-return "https://kin-rdcbusiness.vercel.app/?ref="+referralCode();
+return "https://kinshasa-makambo.vercel.app/?ref="+referralCode();
 }
 
 function showAuth(type){
@@ -195,7 +195,7 @@ if(error)throw error;
 
 if(data.user){
 
-const code="KKIN"+data.user.id.replaceAll("-","").slice(0,8).toUpperCase();
+const code="KIN"+data.user.id.replaceAll("-","").slice(0,8).toUpperCase();
 
 let r=await sb.from("profiles").upsert({
 id:data.user.id,
