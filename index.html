@@ -1,388 +1,479 @@
-<!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#09090b">
-<title>KINSHASA BUSINESS 🇨🇩</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-:root{--red:#e50914;--black:#09090b;--dark:#141417;--dark2:#1d1d22;--white:#fff;--gray:#a8a8b3;--line:#303038;--green:#19c37d;--yellow:#f5c542}
-*{box-sizing:border-box}body{margin:0;background:var(--black);color:#fff;font-family:Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
-.app{max-width:700px;min-height:100vh;margin:auto;padding-bottom:85px}header{position:sticky;top:0;z-index:20;background:rgba(9,9,11,.97);border-bottom:1px solid var(--line);padding:14px 16px}
-.logo{display:flex;align-items:center;gap:10px}.flag{font-size:30px}.logo strong{font-size:19px}.logo small{display:block;color:var(--gray);margin-top:3px}
-main{padding:15px}.hidden{display:none!important}.card,.member,.transaction,.setting{background:var(--dark);border:1px solid var(--line);border-radius:16px;padding:14px;margin:9px 0}
-.hero{background:linear-gradient(145deg,#300308,#111116);border:1px solid #64121a;border-radius:22px;padding:20px;margin-bottom:14px}.hero h1{margin:0 0 7px;font-size:27px}.balance{font-size:30px;font-weight:800;margin:13px 0 4px}
-.muted{color:var(--gray)}.notice{border-left:4px solid var(--red);background:#18181c;padding:12px;border-radius:12px;margin-bottom:14px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.action{background:var(--dark);border:1px solid var(--line);border-radius:16px;padding:16px 10px;color:#fff;text-align:center}.action b{display:block;margin-top:7px}.action span{font-size:25px}
-h2{font-size:20px;margin:18px 0 10px}h3{margin:0 0 8px}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.plan{background:var(--dark);border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:12px}.plan-top{display:flex;justify-content:space-between}.kin{font-size:22px;font-weight:900}.price{font-size:21px;font-weight:800}.gain{color:var(--green);font-weight:700;margin:9px 0}.tag{display:inline-block;background:#2a2a30;border-radius:20px;padding:5px 9px;font-size:12px;margin:3px}
-.btn{width:100%;border:0;border-radius:13px;padding:12px;font-weight:800;margin-top:8px}.btn-red{background:var(--red);color:#fff}.btn-dark{background:#29292f;color:#fff;border:1px solid #3a3a42}.btn-green{background:var(--green);color:#06150f}.btn-yellow{background:var(--yellow);color:#111}.btn-danger{background:#551018;color:#ffb8bd}
-input,select,textarea{width:100%;background:#0f0f12;color:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;margin:5px 0 9px}label{display:block;font-size:13px;color:#ccc;margin-top:8px}
-.nav{position:fixed;z-index:30;bottom:0;left:50%;transform:translateX(-50%);width:min(700px,100%);background:#111114;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 5px calc(8px + env(safe-area-inset-bottom))}
-.nav button{background:none;border:0;color:#999;padding:5px;font-size:11px}.nav button.active{color:#fff}.nav span{display:block;font-size:21px}
-.auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}.auth-box{width:100%;max-width:430px;background:var(--dark);border:1px solid var(--line);border-radius:24px;padding:22px}.auth-logo{text-align:center;margin-bottom:20px}.tabs{display:grid;grid-template-columns:1fr 1fr;background:#0c0c0f;border-radius:12px;padding:4px;margin-bottom:15px}.tabs button{border:0;background:none;color:#aaa;padding:10px;border-radius:9px}.tabs button.active{background:var(--red);color:#fff}
-.msg{padding:10px;border-radius:10px;margin:8px 0}.msg.ok{background:#103c2b;color:#8ff0c4}.msg.err{background:#42151a;color:#ffb9be}.small{font-size:12px}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:50;display:flex;align-items:flex-end;justify-content:center}.modal-box{width:min(700px,100%);background:#151519;border-radius:22px 22px 0 0;padding:18px;max-height:92vh;overflow:auto}.close{float:right;background:#29292f;color:#fff;border:0;border-radius:50%;width:35px;height:35px}
-.admin-head{background:linear-gradient(145deg,#310308,#151519);border:1px solid #6a151c;border-radius:18px;padding:16px}.admin-tabs{display:flex;gap:7px;overflow:auto;margin:12px 0}.admin-tabs button{white-space:nowrap;background:#24242a;color:#ddd;border:1px solid var(--line);padding:9px 12px;border-radius:10px}.admin-tabs button.active{background:var(--red);color:#fff}
-.badge{display:inline-block;border-radius:20px;padding:4px 8px;font-size:11px;font-weight:bold}.pending{background:#594800;color:#ffe77d}.approved{background:#103c2b;color:#8ff0c4}.rejected,.blocked{background:#42151a;color:#ffb9be}.active-b{background:#103c2b;color:#8ff0c4}
-.statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.stat{background:#111115;border:1px solid var(--line);padding:12px;border-radius:13px}.stat b{display:block;font-size:18px;margin-top:3px}
-.tx-type{font-weight:900}.tx-depot{color:#45e09c}.tx-retrait{color:#ff6870}.tx-revenu{color:#56a8ff}.tx-commission{color:#c68cff}.tx-bonus{color:#f5c542}
-</style>
-</head>
-<body>
-
-<div id="auth" class="auth">
-<div class="auth-box">
-<div class="auth-logo"><div class="flag">🇨🇩</div><h1>KINSHASA BUSINESS</h1><div class="muted">République démocratique du Congo</div></div>
-<div class="tabs"><button id="loginTab" class="active" onclick="showAuth('login')">Connexion</button><button id="signupTab" onclick="showAuth('signup')">Inscription</button></div>
-<div id="authMsg"></div>
-<label>Email</label><input id="email" type="email" placeholder="Votre email">
-<label>Mot de passe</label><input id="password" type="password" placeholder="Mot de passe">
-<div id="signupFields" class="hidden"><label>Nom</label><input id="name" placeholder="Votre nom"></div>
-<button id="authBtn" class="btn btn-red" onclick="submitAuth()">Se connecter</button>
-</div>
-</div>
-
-<div id="app" class="app hidden">
-<header><div class="logo"><div class="flag">🇨🇩</div><div><strong>KINSHASA BUSINESS</strong><small>République démocratique du Congo</small></div></div></header>
-<main id="content"></main>
-<nav class="nav">
-<button id="nav-home" onclick="page('home')"><span>⌂</span>Accueil</button>
-<button id="nav-products" onclick="page('products')"><span>▣</span>Produits</button>
-<button id="nav-tasks" onclick="page('tasks')"><span>✓</span>Tâches</button>
-<button id="nav-team" onclick="page('team')"><span>♧</span>Équipe</button>
-<button id="nav-profile" onclick="page('profile')"><span>●</span>Profil</button>
-</nav>
-</div>
-<div id="modal"></div>
+<!-- =========================================================
+     HISTORIQUE DES TRANSACTIONS — ESPACE MEMBRE UNIQUEMENT
+     Ne modifie pas l'administration
+     ========================================================= -->
 
 <script>
-const SUPABASE_URL="https://uewceocdzvekuopgsmpg.supabase.co";
-const SUPABASE_KEY="sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const ADMIN_EMAIL="angenabukuze@gmail.com";
+(function(){
 
-const PAYMENTS=[
-{operator:"AIRTEL MONEY",number:"973087965",name:"YVETTE"},
-{operator:"ORANGE MONEY",number:"899532643",name:"JEANCQUELINE"},
-{operator:"M-PESA",number:"0861823718",name:"REGINA"}
-];
+  function ajouterHistoriqueMembre(){
 
-const PLANS=[
-{id:"KIN1",price:15000,gain:2000,days:60,max:1},
-{id:"KIN2",price:30000,gain:4400,days:60,max:2},
-{id:"KIN3",price:80000,gain:12300,days:60,max:3},
-{id:"KIN4",price:150000,gain:24000,days:60,max:3},
-{id:"KIN5",price:300000,gain:52000,days:60,max:5},
-{id:"KIN6",price:600000,gain:120000,days:60,max:2},
-{id:"KIN7",price:1500000,gain:330000,days:60,max:2}
-];
+    /* Ne rien afficher dans l'administration */
+    if(typeof isAdmin !== "undefined" && isAdmin) return;
 
-let user=null,profile=null,wallet=null,isAdmin=false,currentPage="home",adminSection="dashboard";
+    const grids = document.querySelectorAll(".grid");
+    if(!grids.length) return;
 
-const money=n=>Number(n||0).toLocaleString("fr-FR")+" FC";
-function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-function msg(t,c="ok"){return `<div class="msg ${c}">${esc(t)}</div>`}
+    /* Évite les doublons */
+    if(document.getElementById("btnHistoriqueMembre")) return;
 
-function showAuth(t){
-let l=t==="login";
-loginTab.classList.toggle("active",l);signupTab.classList.toggle("active",!l);
-signupFields.classList.toggle("hidden",l);
-authBtn.textContent=l?"Se connecter":"Créer mon compte";
-authMsg.innerHTML="";
-}
+    /* On ajoute le bouton dans le premier bloc d'actions membre */
+    const grid = grids[0];
 
-async function submitAuth(){
-let email=document.getElementById("email").value.trim(),password=document.getElementById("password").value,name=document.getElementById("name").value.trim();
-let signup=!signupFields.classList.contains("hidden");
-if(!email||!password){authMsg.innerHTML=msg("Email et mot de passe obligatoires","err");return}
-authBtn.disabled=true;
-try{
-if(signup){
-let r=await sb.auth.signUp({email,password,options:{data:{name}}});if(r.error)throw r.error;
-if(r.data.user){
-await sb.from("profiles").upsert({id:r.data.user.id,full_name:name||"Membre",role:"member"});
-await sb.from("kin_wallets").upsert({user_id:r.data.user.id,balance:2000,total_earnings:0});
-authMsg.innerHTML=msg("Inscription réussie !");
-}
-}else{
-let r=await sb.auth.signInWithPassword({email,password});if(r.error)throw r.error;
-}
-}catch(e){authMsg.innerHTML=msg(e.message,"err")}finally{authBtn.disabled=false}
-}
+    const bouton = document.createElement("button");
+    bouton.id = "btnHistoriqueMembre";
+    bouton.className = "action";
+    bouton.innerHTML = `
+      <span>🧾</span>
+      <b>Historique</b>
+    `;
 
-async function loadUser(){
-let r=await sb.auth.getUser();user=r.data.user;
-if(!user){auth.classList.remove("hidden");app.classList.add("hidden");return}
-await loadData();auth.classList.add("hidden");app.classList.remove("hidden");page("home");
-}
+    bouton.onclick = afficherHistoriqueMembre;
 
-async function loadData(){
-let p=await sb.from("profiles").select("*").eq("id",user.id).maybeSingle();
-profile=p.data||{id:user.id,full_name:user.user_metadata?.name||"Membre",role:"member"};
-isAdmin=profile.role==="admin"||user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
-let w=await sb.from("kin_wallets").select("*").eq("user_id",user.id).maybeSingle();
-wallet=w.data||{balance:2000,total_earnings:0};
-}
+    grid.appendChild(bouton);
+  }
 
-function page(n){
-if(n==="admin"&&!isAdmin)n="profile";currentPage=n;
-document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
-let el=document.getElementById("nav-"+(n==="products"?"products":n==="tasks"?"tasks":n==="team"?"team":n==="profile"?"profile":"home"));if(el)el.classList.add("active");
-if(n==="home")renderHome();if(n==="products")renderProducts();if(n==="tasks")renderTasks();if(n==="team")renderTeam();if(n==="profile")renderProfile();if(n==="admin")renderAdmin();
-}
 
-function renderHome(){
-content.innerHTML=`<section class="hero"><h1>Bienvenue 🇨🇩</h1><p>${esc(profile?.full_name||"Membre")}</p><div class="balance">${money(wallet?.balance)}</div><div class="muted">Solde disponible</div><hr><b>Gains cumulés : ${money(wallet?.total_earnings)}</b></section>
-<div class="notice">Les gains affichés sont des paramètres déclarés et ne constituent pas une garantie de rendement.</div>
-<div class="grid"><button class="action" onclick="openDeposit()"><span>＋</span><b>Dépôt</b></button><button class="action" onclick="openWithdraw()"><span>↗</span><b>Retrait</b></button><button class="action" onclick="page('tasks')"><span>✓</span><b>Pointage</b></button><button class="action" onclick="page('team')"><span>♧</span><b>Équipe</b></button></div>
-<h2>Nos KIN</h2>${PLANS.slice(0,3).map(planHTML).join("")}<button class="btn btn-red" onclick="page('products')">Voir tous les KIN</button>`;
-}
+  async function afficherHistoriqueMembre(){
 
-function planHTML(p){return `<div class="plan"><div class="plan-top"><b class="kin">${p.id}</b><b class="price">${money(p.price)}</b></div><div class="gain">Gain affiché : ${money(p.gain)} / jour</div><span class="tag">${p.days} jours</span><span class="tag">Maximum ${p.max}</span></div>`}
+    if(typeof user === "undefined" || !user){
+      alert("Veuillez vous connecter.");
+      return;
+    }
 
-function renderProducts(){content.innerHTML=`<h2>Produits KIN</h2>${PLANS.map(planHTML).join("")}`}
+    let lignes = [];
 
-function renderTasks(){content.innerHTML=`<h2>Pointage</h2><div class="card"><h3>Pointage quotidien</h3><p class="muted">1 pointage par jour · récompense déclarée 20 FC</p><button class="btn btn-red" onclick="checkin()">Faire mon pointage</button></div><div class="card"><b>Horaires</b><p class="muted">Lundi à dimanche · 08:00–19:00</p></div>`}
+    /* =====================================================
+       1. TRANSACTIONS DU PORTEFEUILLE
+       ===================================================== */
 
-async function checkin(){
-let today=new Date().toISOString().slice(0,10),r=await sb.from("kin_daily_checkins").insert({user_id:user.id,checkin_date:today,reward:20});
-if(r.error)alert(r.error.code==="23505"?"Pointage déjà effectué aujourd'hui.":r.error.message);else alert("Pointage enregistré.");
-}
+    try{
 
-function renderTeam(){
-let code="KIN"+user.id.replaceAll("-","").slice(0,8).toUpperCase(),link=location.origin+location.pathname+"?ref="+code;
-content.innerHTML=`<h2>Mon équipe</h2><div class="card"><h3>Code</h3><b style="font-size:24px">${code}</b><button class="btn btn-red" onclick="copyText('${code}')">Copier</button></div><div class="card"><h3>Lien de parrainage</h3><input value="${esc(link)}" readonly><button class="btn btn-dark" onclick="copyText('${esc(link)}')">Copier le lien</button></div><div class="card"><b>Commissions déclarées</b><p>1er niveau : 30%</p><p>2e niveau : 2%</p><p>3e niveau : 1%</p></div><div class="card"><b>Assistance</b><a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps" target="_blank"><button class="btn btn-green">WhatsApp</button></a><a href="https://t.me/francscongolais" target="_blank"><button class="btn btn-dark">Telegram</button></a></div>`;
-}
+      const r = await sb
+        .from("kin_transactions")
+        .select("*")
+        .eq("user_id",user.id)
+        .order("created_at",{ascending:false});
 
-function renderProfile(){
-content.innerHTML=`<h2>Mon profil</h2><div class="card"><h3>${esc(profile?.full_name||"Membre")}</h3><p class="muted">${esc(user.email)}</p><p>Statut : <b>${isAdmin?"Administrateur":"Membre"}</b></p></div><div class="card"><button class="btn btn-dark" onclick="openDeposit()">💰 Dépôt</button><button class="btn btn-dark" onclick="openWithdraw()">💸 Retrait</button><button class="btn btn-dark" onclick="page('team')">👥 Équipe</button>${isAdmin?`<button class="btn btn-red" onclick="page('admin')">⚙ Administration</button>`:""}<button class="btn btn-danger" onclick="logout()">Déconnexion</button></div>`;
-}
+      if(!r.error && Array.isArray(r.data)){
 
-function showModal(h){modal.innerHTML=`<div class="modal" onclick="if(event.target===this)closeModal()"><div class="modal-box">${h}</div></div>`}
-function closeModal(){modal.innerHTML=""}
-async function copyText(t){try{await navigator.clipboard.writeText(t);alert("Copié !")}catch(e){alert(t)}}
+        r.data.forEach(x => {
 
-async function openDeposit(){
-showModal(`<button class="close" onclick="closeModal()">×</button><h2>💰 Dépôt</h2><p>Minimum : <b>15 000 FC</b></p><label>Montant</label><input id="depAmount" type="number" min="15000"><label>Opérateur</label><select id="depOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator} — ${p.number} — ${p.name}</option>`).join("")}</select><label>Référence</label><input id="depRef" placeholder="Référence du transfert"><button class="btn btn-red" onclick="submitDeposit()">Envoyer la demande</button>`);
-}
+          lignes.push({
+            date:x.created_at,
+            type:x.type || x.transaction_type || "Transaction",
+            montant:Number(x.amount || 0),
+            statut:x.status || "effectué",
+            description:
+              x.description ||
+              x.note ||
+              x.label ||
+              "Transaction"
+          });
 
-async function submitDeposit(){
-let amount=Number(document.getElementById("depAmount").value),p=PAYMENTS[Number(document.getElementById("depOperator").value)],ref=document.getElementById("depRef").value.trim();
-if(amount<15000)return alert("Dépôt minimum : 15 000 FC");
-let r=await sb.from("kin_deposit_requests").insert({user_id:user.id,amount,operator:p.operator,payment_number:p.number,payment_name:p.name,reference:ref||null,status:"pending"});
-if(r.error)alert(r.error.message);else{closeModal();alert("Demande de dépôt envoyée.");}
-}
+        });
 
-async function openWithdraw(){
-showModal(`<button class="close" onclick="closeModal()">×</button><h2>💸 Retrait</h2><p>Minimum : <b>2 000 FC</b></p><label>Montant</label><input id="wdAmount" type="number" min="2000"><label>Opérateur</label><select id="wdOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator}</option>`).join("")}</select><label>Numéro de réception</label><input id="wdNumber"><button class="btn btn-red" onclick="submitWithdraw()">Envoyer la demande</button>`);
-}
+      }
 
-async function submitWithdraw(){
-let amount=Number(document.getElementById("wdAmount").value),p=PAYMENTS[Number(document.getElementById("wdOperator").value)],number=document.getElementById("wdNumber").value.trim();
-if(amount<2000)return alert("Retrait minimum : 2 000 FC");
-if(amount>Number(wallet?.balance||0))return alert("Solde insuffisant");
-if(!number)return alert("Entrez le numéro de réception");
-let fee=amount*.10,net=amount-fee;
-let r=await sb.from("kin_withdrawal_requests").insert({user_id:user.id,amount,fee,net_amount:net,operator:p.operator,payment_number:number,status:"pending"});
-if(r.error)alert(r.error.message);else{closeModal();alert("Demande de retrait envoyée.");}
-}
+    }catch(e){
+      console.log("Historique transactions:",e);
+    }
 
-/* ================= ADMINISTRATION RICHE ================= */
 
-function renderAdmin(){
-if(!isAdmin)return page("profile");
-content.innerHTML=`<div class="admin-head"><h2>⚙️ ADMINISTRATION</h2><div class="muted">Contrôle complet de KINSHASA BUSINESS</div></div>
-<div class="admin-tabs">
-<button onclick="adminSection='dashboard';renderAdmin()" class="${adminSection==='dashboard'?'active':''}">Vue générale</button>
-<button onclick="adminSection='members';renderAdmin()" class="${adminSection==='members'?'active':''}">👥 Membres</button>
-<button onclick="adminSection='transactions';renderAdmin()" class="${adminSection==='transactions'?'active':''}">📒 Transactions</button>
-<button onclick="adminSection='deposits';renderAdmin()" class="${adminSection==='deposits'?'active':''}">💰 Dépôts</button>
-<button onclick="adminSection='withdrawals';renderAdmin()" class="${adminSection==='withdrawals'?'active':''}">💸 Retraits</button>
-<button onclick="adminSection='payments';renderAdmin()" class="${adminSection==='payments'?'active':''}">📱 Paiements</button>
-<button onclick="adminSection='support';renderAdmin()" class="${adminSection==='support'?'active':''}">🆘 Assistance</button>
-<button onclick="adminSection='settings';renderAdmin()" class="${adminSection==='settings'?'active':''}">⚙️ Réglages</button>
-</div><div id="adminBody">Chargement...</div>`;
-if(adminSection==="dashboard")adminDashboard();
-if(adminSection==="members")adminMembers();
-if(adminSection==="transactions")adminTransactions();
-if(adminSection==="deposits")adminDeposits();
-if(adminSection==="withdrawals")adminWithdrawals();
-if(adminSection==="payments")adminPayments();
-if(adminSection==="support")adminSupport();
-if(adminSection==="settings")adminSettings();
-}
+    /* =====================================================
+       2. DÉPÔTS
+       ===================================================== */
 
-async function adminDashboard(){
-let [m,d,w]=await Promise.all([
-sb.from("profiles").select("*"),
-sb.from("kin_deposit_requests").select("*"),
-sb.from("kin_withdrawal_requests").select("*")
-]);
-let members=m.data||[],deps=d.data||[],withs=w.data||[];
-adminBody.innerHTML=`<div class="statgrid"><div class="stat">Membres<b>${members.length}</b></div><div class="stat">Dépôts<b>${deps.length}</b></div><div class="stat">Retraits<b>${withs.length}</b></div><div class="stat">Admin<b>ACTIF</b></div></div>
-<div class="card"><h3>Actions rapides</h3><button class="btn btn-red" onclick="adminSection='members';renderAdmin()">Gérer les membres</button><button class="btn btn-green" onclick="adminSection='deposits';renderAdmin()">Valider les dépôts</button><button class="btn btn-yellow" onclick="adminSection='withdrawals';renderAdmin()">Traiter les retraits</button><button class="btn btn-dark" onclick="adminSection='transactions';renderAdmin()">Historique transactions</button></div>`;
-}
+    try{
 
-async function adminMembers(){
-let r=await sb.from("profiles").select("*").order("created_at",{ascending:false});
-if(r.error){adminBody.innerHTML=msg(r.error.message,"err");return}
-let rows=r.data||[];
-adminBody.innerHTML=`<h2>👥 Tous les membres (${rows.length})</h2><input id="memberSearch" placeholder="Rechercher nom, code ou ID..." oninput="filterMembers()"><div id="memberList">${rows.map(memberCard).join("")||'<p class="muted">Aucun membre.</p>'}</div>`;
-window.ADMIN_MEMBERS=rows;
-}
+      const r = await sb
+        .from("kin_deposit_requests")
+        .select("*")
+        .eq("user_id",user.id)
+        .order("created_at",{ascending:false});
 
-function memberCard(x){
-let blocked=x.status==="blocked"||x.is_blocked===true;
-return `<div class="member member-row" data-search="${esc((x.full_name||"")+" "+(x.referral_code||"")+" "+x.id)}">
-<div class="row"><div><b>${esc(x.full_name||"Membre")}</b><div class="small muted">${esc(x.referral_code||"Sans code")}</div></div><span class="badge ${blocked?"blocked":"active-b"}">${blocked?"BLOQUÉ":"ACTIF"}</span></div>
-<div class="small muted">ID : ${esc(x.id)}</div>
-<div class="grid" style="margin-top:8px">
-<button class="btn btn-dark" onclick="memberActions('${x.id}')">⚙ Gérer</button>
-<button class="btn ${blocked?'btn-green':'btn-danger'}" onclick="toggleBlock('${x.id}',${!blocked})">${blocked?"Débloquer":"Bloquer"}</button>
-</div></div>`;
-}
+      if(!r.error && Array.isArray(r.data)){
 
-function filterMembers(){
-let q=document.getElementById("memberSearch").value.toLowerCase();
-document.querySelectorAll(".member-row").forEach(x=>x.style.display=x.dataset.search.toLowerCase().includes(q)?"block":"none");
-}
+        r.data.forEach(x => {
 
-async function memberActions(id){
-let r=await sb.from("profiles").select("*").eq("id",id).maybeSingle();if(r.error||!r.data)return alert("Membre introuvable");
-let x=r.data;
-showModal(`<button class="close" onclick="closeModal()">×</button><h2>👤 ${esc(x.full_name||"Membre")}</h2><p class="small">ID : ${esc(id)}</p>
-<label>Nouveau code membre</label><input id="newCode" value="${esc(x.referral_code||"")}">
-<button class="btn btn-dark" onclick="changeMemberCode('${id}')">Enregistrer le code</button>
-<label>Ajustement du solde</label><input id="balanceAmount" type="number" placeholder="+5000 ou -5000"><label>Motif obligatoire</label><input id="balanceReason" placeholder="Motif de l'opération"><button class="btn btn-red" onclick="adjustBalance('${id}')">Modifier le solde</button>
-<label>Attribuer un KIN</label><select id="assignKin">${PLANS.map(p=>`<option value="${p.id}">${p.id} — ${money(p.price)}</option>`).join("")}</select><button class="btn btn-green" onclick="assignKin('${id}')">Attribuer</button>
-<button class="btn btn-yellow" onclick="resetPassword('${id}')">🔐 Envoyer réinitialisation mot de passe</button>`);
-}
+          lignes.push({
+            date:x.created_at,
+            type:"Dépôt",
+            montant:Number(x.amount || 0),
+            statut:x.status || "pending",
+            description:
+              "Dépôt " +
+              (x.operator ? x.operator : "")
+          });
 
-async function toggleBlock(id,block){
-let r=await sb.from("profiles").update({status:block?"blocked":"active",is_blocked:block}).eq("id",id);
-if(r.error){alert("Action refusée : "+r.error.message);return}
-renderAdmin();
-}
+        });
 
-async function changeMemberCode(id){
-let code=document.getElementById("newCode").value.trim();
-if(!code)return alert("Code obligatoire");
-let r=await sb.from("profiles").update({referral_code:code}).eq("id",id);
-if(r.error)alert(r.error.message);else{closeModal();alert("Code modifié.");adminSection="members";renderAdmin()}
-}
+      }
 
-async function adjustBalance(id){
-let amount=Number(document.getElementById("balanceAmount").value),reason=document.getElementById("balanceReason").value.trim();
-if(!amount||!reason)return alert("Montant et motif obligatoires");
-let w=await sb.from("kin_wallets").select("balance").eq("user_id",id).maybeSingle();
-if(w.error)return alert(w.error.message);
-let newBalance=Number(w.data?.balance||0)+amount;
-if(newBalance<0)return alert("Le solde ne peut pas devenir négatif.");
-let r=await sb.from("kin_wallets").update({balance:newBalance}).eq("user_id",id);
-if(r.error)alert(r.error.message);else{
-await sb.from("kin_transactions").insert({user_id:id,type:amount>0?"bonus":"adjustment",amount:Math.abs(amount),description:reason});
-closeModal();alert("Solde modifié.");adminSection="members";renderAdmin();
-}
-}
+    }catch(e){
+      console.log("Historique dépôts:",e);
+    }
 
-async function assignKin(id){
-let kin=document.getElementById("assignKin").value,p=PLANS.find(x=>x.id===kin);
-if(!p)return;
-let r=await sb.from("kin_purchases").insert({user_id:id,kin_id:kin,price:p.price,status:"active"});
-if(r.error)alert(r.error.message);else{closeModal();alert("Demande d'attribution enregistrée.");}
-}
 
-async function resetPassword(id){
-let r=await sb.from("profiles").select("email").eq("id",id).maybeSingle();
-if(r.data?.email){
-let x=await sb.auth.resetPasswordForEmail(r.data.email,{redirectTo:location.origin});
-if(x.error)alert(x.error.message);else alert("Lien de réinitialisation envoyé.");
-}else alert("L'email du membre n'est pas disponible dans profiles. Utilise l'email du compte Authentification Supabase.");
-}
+    /* =====================================================
+       3. RETRAITS
+       ===================================================== */
 
-/* Transactions : historique complet d'un compte */
-async function adminTransactions(){
-let r=await sb.from("kin_transactions").select("*").order("created_at",{ascending:false});
-if(r.error){adminBody.innerHTML=msg("Table des transactions indisponible : "+r.error.message,"err");return}
-let rows=r.data||[];
-adminBody.innerHTML=`<h2>📒 Historique des transactions</h2><div class="notice">Dépôt · Retrait · Bonus · Revenus · Commissions · Ajustements</div>
-${rows.map(transactionCard).join("")||'<p class="muted">Aucune transaction enregistrée.</p>'}`;
-}
+    try{
 
-function transactionCard(x){
-let t=(x.type||"").toLowerCase();
-let cls=t.includes("deposit")||t.includes("depot")?"tx-depot":t.includes("withdraw")||t.includes("retrait")?"tx-retrait":t.includes("commission")?"tx-commission":t.includes("revenue")||t.includes("revenu")?"tx-revenu":t.includes("bonus")?"tx-bonus":"";
-return `<div class="transaction"><div class="row"><b class="tx-type ${cls}">${esc(x.type||"transaction")}</b><b>${money(x.amount)}</b></div><div class="small muted">Compte : ${esc(x.user_id||"—")}</div><div class="small muted">${x.created_at?new Date(x.created_at).toLocaleString("fr-FR"):"—"}</div><div>${esc(x.description||x.note||"")}</div></div>`;
-}
+      const r = await sb
+        .from("kin_withdrawal_requests")
+        .select("*")
+        .eq("user_id",user.id)
+        .order("created_at",{ascending:false});
 
-/* Dépôts : tous les statuts + boutons */
-async function adminDeposits(){
-let r=await sb.from("kin_deposit_requests").select("*").order("created_at",{ascending:false});
-if(r.error){adminBody.innerHTML=msg(r.error.message,"err");return}
-adminBody.innerHTML=`<h2>💰 Tous les dépôts</h2>${(r.data||[]).map(x=>requestCard(x,"deposit")).join("")||'<p class="muted">Aucun dépôt.</p>'}`;
-}
+      if(!r.error && Array.isArray(r.data)){
 
-/* Retraits : tous les statuts + boutons */
-async function adminWithdrawals(){
-let r=await sb.from("kin_withdrawal_requests").select("*").order("created_at",{ascending:false});
-if(r.error){adminBody.innerHTML=msg(r.error.message,"err");return}
-adminBody.innerHTML=`<h2>💸 Tous les retraits</h2>${(r.data||[]).map(x=>requestCard(x,"withdrawal")).join("")||'<p class="muted">Aucun retrait.</p>'}`;
-}
+        r.data.forEach(x => {
 
-function requestCard(x,type){
-let status=x.status||"pending",pending=status==="pending";
-return `<div class="transaction"><div class="row"><b>${type==="deposit"?"DÉPÔT":"RETRAIT"}</b><span class="badge ${status==="pending"?"pending":status==="approved"||status==="validated"?"approved":"rejected"}">${esc(status)}</span></div>
-<h3>${money(x.amount)}</h3><div class="small muted">Compte : ${esc(x.user_id||"—")}</div><div class="small">Opérateur : ${esc(x.operator||"—")}</div><div class="small">Numéro : ${esc(x.payment_number||x.withdrawal_number||"—")}</div><div class="small">Référence : ${esc(x.reference||"—")}</div><div class="small muted">${x.created_at?new Date(x.created_at).toLocaleString("fr-FR"):"—"}</div>
-${pending?`<div class="grid"><button class="btn btn-green" onclick="validateRequest('${x.id}','${type}')">✅ Valider</button><button class="btn btn-danger" onclick="rejectRequest('${x.id}','${type}')">❌ Rejeter</button></div>`:""}</div>`;
-}
+          lignes.push({
+            date:x.created_at,
+            type:"Retrait",
+            montant:Number(x.amount || 0),
+            statut:x.status || "pending",
+            description:
+              "Retrait " +
+              (x.operator ? x.operator : "")
+          });
 
-async function validateRequest(id,type){
-if(!confirm("Confirmer la validation ?"))return;
-let table=type==="deposit"?"kin_deposit_requests":"kin_withdrawal_requests";
-let r=await sb.from(table).update({status:"approved"}).eq("id",id).eq("status","pending");
-if(r.error)alert(r.error.message);else{alert("Statut validé.");type==="deposit"?adminDeposits():adminWithdrawals()}
-}
+        });
 
-async function rejectRequest(id,type){
-if(!confirm("Confirmer le rejet ?"))return;
-let table=type==="deposit"?"kin_deposit_requests":"kin_withdrawal_requests";
-let r=await sb.from(table).update({status:"rejected"}).eq("id",id).eq("status","pending");
-if(r.error)alert(r.error.message);else{alert("Demande rejetée.");type==="deposit"?adminDeposits():adminWithdrawals()}
-}
+      }
 
-function adminPayments(){
-adminBody.innerHTML=`<h2>📱 Moyens de paiement</h2><div class="notice">Ces numéros servent aux dépôts. Tu peux gérer les opérateurs ici.</div>
-${PAYMENTS.map((p,i)=>`<div class="setting"><b>${p.operator}</b><p>Numéro : <b>${p.number}</b></p><p>Nom : ${p.name}</p><button class="btn btn-dark" onclick="editPayment(${i})">Modifier</button></div>`).join("")}
-<button class="btn btn-green" onclick="addPayment()">＋ Ajouter un opérateur</button>`;
-}
+    }catch(e){
+      console.log("Historique retraits:",e);
+    }
 
-function editPayment(i){
-let p=PAYMENTS[i];
-showModal(`<button class="close" onclick="closeModal()">×</button><h2>Modifier ${p.operator}</h2><label>Opérateur</label><input id="op" value="${p.operator}"><label>Numéro</label><input id="num" value="${p.number}"><label>Nom</label><input id="pname" value="${p.name}"><button class="btn btn-red" onclick="savePayment(${i})">Enregistrer</button>`);
-}
-function savePayment(i){
-PAYMENTS[i]={operator:op.value.trim(),number:num.value.trim(),name:pname.value.trim()};closeModal();adminPayments();alert("Modification locale enregistrée. Pour la rendre permanente pour tous les membres, elle doit être enregistrée dans kin_payment_methods.");
-}
-function addPayment(){
-showModal(`<button class="close" onclick="closeModal()">×</button><h2>Ajouter opérateur</h2><label>Opérateur</label><input id="newop"><label>Numéro</label><input id="newnum"><label>Nom</label><input id="newname"><button class="btn btn-green" onclick="PAYMENTS.push({operator:newop.value,number:newnum.value,name:newname.value});closeModal();adminPayments()">Ajouter</button>`);
-}
 
-function adminSupport(){
-adminBody.innerHTML=`<h2>🆘 Assistance</h2><div class="card"><h3>Groupes officiels</h3><label>WhatsApp</label><input id="wa" value="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps"><label>Telegram</label><input id="tg" value="https://t.me/francscongolais"><label>Service client</label><input id="support" placeholder="Numéro ou lien"><button class="btn btn-red" onclick="saveSupport()">Enregistrer</button></div><div class="notice">Ces contacts peuvent servir en cas de problème de dépôt, retrait ou compte.</div>`;
-}
-function saveSupport(){alert("Paramètres d'assistance préparés. Pour une sauvegarde permanente, ils doivent être enregistrés dans kin_settings.");}
+    /* =====================================================
+       TRI PAR DATE
+       ===================================================== */
 
-function adminSettings(){
-adminBody.innerHTML=`<h2>⚙️ Configuration</h2><div class="setting"><h3>Plateforme</h3><label>Nom</label><input value="KINSHASA BUSINESS"><label>Minimum dépôt</label><input value="15000" type="number"><label>Minimum retrait</label><input value="2000" type="number"><label>Bonus inscription</label><input value="2000" type="number"><label>Frais retrait %</label><input value="10" type="number"><button class="btn btn-red" onclick="alert('Paramètres affichés. Leur sauvegarde permanente doit passer par kin_settings.')">Enregistrer</button></div>
-${PLANS.map(p=>`<div class="setting"><h3>${p.id}</h3><p>Prix : ${money(p.price)}</p><p>Gain affiché : ${money(p.gain)}/jour</p><p>Durée : ${p.days} jours</p><p>Maximum : ${p.max}</p><button class="btn btn-dark" onclick="alert('La modification permanente de ${p.id} doit être enregistrée côté serveur.')">Modifier ${p.id}</button></div>`).join("")}
-<div class="setting"><h3>Parrainage</h3><p>30% · 2% · 1%</p></div>`;
-}
+    lignes.sort(function(a,b){
 
-async function logout(){await sb.auth.signOut();user=null;profile=null;wallet=null;app.classList.add("hidden");auth.classList.remove("hidden")}
-sb.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_IN"&&session)setTimeout(loadUser,100);if(event==="SIGNED_OUT"){app.classList.add("hidden");auth.classList.remove("hidden")}});
-loadUser();
+      return new Date(b.date || 0) -
+             new Date(a.date || 0);
+
+    });
+
+
+    /* =====================================================
+       AFFICHAGE
+       ===================================================== */
+
+    let contenu = "";
+
+    if(!lignes.length){
+
+      contenu = `
+        <div class="member" style="text-align:center;padding:25px">
+          <div style="font-size:38px">🧾</div>
+          <h3>Aucune transaction</h3>
+          <p class="muted">
+            Votre historique apparaîtra ici.
+          </p>
+        </div>
+      `;
+
+    }else{
+
+      contenu = lignes.map(function(x){
+
+        const montant =
+          Number(x.montant || 0);
+
+        let couleur = "#aaa";
+
+        if(x.statut === "approved" ||
+           x.statut === "validated" ||
+           x.statut === "validé" ||
+           x.statut === "completed" ||
+           x.statut === "effectué"){
+
+          couleur = "#52d68a";
+
+        }
+
+        if(x.statut === "rejected" ||
+           x.statut === "refused" ||
+           x.statut === "rejeté"){
+
+          couleur = "#ff5964";
+
+        }
+
+        if(x.statut === "pending" ||
+           x.statut === "en attente"){
+
+          couleur = "#ffc857";
+
+        }
+
+        let signe = "";
+
+        if(
+          String(x.type).toLowerCase().includes("dépôt") ||
+          String(x.type).toLowerCase().includes("gain") ||
+          String(x.type).toLowerCase().includes("commission")
+        ){
+
+          signe = "+";
+
+        }else if(
+          String(x.type).toLowerCase().includes("retrait")
+        ){
+
+          signe = "-";
+
+        }
+
+        let dateTexte = "Date inconnue";
+
+        if(x.date){
+
+          try{
+
+            dateTexte =
+              new Date(x.date).toLocaleString(
+                "fr-FR",
+                {
+                  day:"2-digit",
+                  month:"2-digit",
+                  year:"numeric",
+                  hour:"2-digit",
+                  minute:"2-digit"
+                }
+              );
+
+          }catch(e){}
+
+        }
+
+        return `
+          <div class="member"
+               style="
+                 margin:10px 0;
+                 border-left:4px solid ${couleur};
+               ">
+
+            <div style="
+              display:flex;
+              justify-content:space-between;
+              align-items:center;
+              gap:10px;
+            ">
+
+              <div>
+
+                <b>
+                  ${escapeHistorique(x.type)}
+                </b>
+
+                <div class="muted small">
+                  ${escapeHistorique(x.description)}
+                </div>
+
+              </div>
+
+              <div style="
+                text-align:right;
+                font-weight:900;
+                color:${couleur};
+              ">
+
+                ${signe}${moneyHistorique(montant)}
+
+              </div>
+
+            </div>
+
+            <div class="small muted"
+                 style="margin-top:8px">
+
+              📅 ${escapeHistorique(dateTexte)}
+
+            </div>
+
+            <div style="margin-top:6px">
+
+              <span style="
+                display:inline-block;
+                padding:4px 9px;
+                border-radius:20px;
+                background:${couleur}22;
+                color:${couleur};
+                font-size:12px;
+                font-weight:700;
+              ">
+                ${escapeHistorique(
+                  traduireStatutHistorique(x.statut)
+                )}
+              </span>
+
+            </div>
+
+          </div>
+        `;
+
+      }).join("");
+
+    }
+
+
+    /* =====================================================
+       MODALE
+       ===================================================== */
+
+    const modal =
+      document.getElementById("modal");
+
+    if(modal){
+
+      modal.innerHTML = `
+        <div class="modal"
+             onclick="
+               if(event.target===this)
+               this.parentElement.innerHTML=''
+             ">
+
+          <div class="modal-box">
+
+            <button
+              class="close"
+              onclick="
+                document.getElementById('modal').innerHTML=''
+              ">
+              ×
+            </button>
+
+            <h2 style="
+              color:#ff5964;
+              margin-top:5px;
+            ">
+              🧾 Historique des transactions
+            </h2>
+
+            <p class="muted">
+              Tous vos dépôts, retraits et transactions.
+            </p>
+
+            <hr>
+
+            ${contenu}
+
+          </div>
+
+        </div>
+      `;
+
+    }
+
+  }
+
+
+  function traduireStatutHistorique(statut){
+
+    const s = String(statut || "")
+      .toLowerCase();
+
+    if(
+      s === "pending" ||
+      s === "en attente"
+    ){
+
+      return "⏳ En attente";
+
+    }
+
+    if(
+      s === "approved" ||
+      s === "validated" ||
+      s === "validé"
+    ){
+
+      return "✅ Validé";
+
+    }
+
+    if(
+      s === "rejected" ||
+      s === "refused" ||
+      s === "rejeté"
+    ){
+
+      return "❌ Rejeté";
+
+    }
+
+    if(
+      s === "completed" ||
+      s === "effectué"
+    ){
+
+      return "✅ Effectué";
+
+    }
+
+    return statut || "Transaction";
+
+  }
+
+
+  function moneyHistorique(n){
+
+    return Number(n || 0)
+      .toLocaleString("fr-FR") + " FC";
+
+  }
+
+
+  function escapeHistorique(value){
+
+    return String(value ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+
+  }
+
+
+  /* =====================================================
+     AJOUT AUTOMATIQUE DU BOUTON
+     ===================================================== */
+
+  const ancienPage = window.page;
+
+  if(typeof ancienPage === "function"){
+
+    window.page = function(name){
+
+      const resultat = ancienPage.apply(this,arguments);
+
+      setTimeout(function(){
+
+        if(name !== "admin"){
+          ajouterHistoriqueMembre();
+        }
+
+      },300);
+
+      return resultat;
+
+    };
+
+  }
+
+
+  /* Premier chargement */
+  setTimeout(ajouterHistoriqueMembre,1500);
+
+
+})();
 </script>
-</body>
-</html>
