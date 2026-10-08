@@ -1,3 +1,14 @@
+<!-- VERSION FINALE KINSHASA BUSINESS
+     IMPORTANT : cette version ajoute l'espace ADMIN riche :
+     membres, blocage/déblocage, dépôts, retraits, transactions,
+     bonus, revenus, commissions, KIN, paiements, WhatsApp,
+     Telegram, service client, paramètres et journal.
+     
+     Les actions financières sensibles appellent les RPC Supabase
+     sécurisées admin_* ; elles doivent exister côté Supabase pour
+     autoriser réellement les modifications.
+-->
+
 <!doctype html>
 <html lang="fr">
 <head>
@@ -12,94 +23,74 @@
 :root{
 --red:#e50914;--black:#09090b;--dark:#141417;--dark2:#1d1d22;
 --white:#fff;--gray:#a8a8b3;--line:#303038;--green:#19c37d;
---yellow:#f5c542;--blue:#287cff;
+--yellow:#f5c542;--blue:#2787f5;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--black);color:white;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:var(--black);color:#fff;font-family:Arial,Helvetica,sans-serif}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
-.app{max-width:600px;min-height:100vh;margin:auto;padding-bottom:82px}
-header{position:sticky;top:0;z-index:20;background:rgba(9,9,11,.96);
-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 16px}
+.hidden{display:none!important}
+.app{max-width:650px;min-height:100vh;margin:auto;padding-bottom:90px}
+header{position:sticky;top:0;z-index:20;background:rgba(9,9,11,.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 16px}
 .logo{display:flex;align-items:center;gap:10px}
-.flag{font-size:30px}.logo strong{font-size:19px}
-.logo small{display:block;color:var(--gray);margin-top:3px}
-main{padding:15px}.hidden{display:none!important}
-.card{background:var(--dark);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
-.hero{background:linear-gradient(145deg,#260307,#111116 65%);
-border:1px solid #5c1117;border-radius:22px;padding:20px;margin-bottom:14px}
-.hero h1{margin:0 0 7px;font-size:27px}.hero p{margin:0;color:#d2d2d7}
-.balance{font-size:30px;font-weight:800;margin:13px 0 4px}
+.flag{font-size:30px}.logo strong{font-size:19px}.logo small{display:block;color:var(--gray);margin-top:3px}
+main{padding:15px}
+.card,.member,.tx,.setting{background:var(--dark);border:1px solid var(--line);border-radius:17px;padding:15px;margin:9px 0}
+.hero{background:linear-gradient(145deg,#350308,#111116 65%);border:1px solid #65121a;border-radius:22px;padding:20px;margin-bottom:14px}
+.hero h1{margin:0 0 7px;font-size:27px}
+.balance{font-size:30px;font-weight:900;margin:13px 0 4px}
 .muted{color:var(--gray)}
-.notice{border-left:4px solid var(--red);background:#18181c;padding:12px;
-border-radius:12px;margin-bottom:14px;color:#ddd}
+.notice{border-left:4px solid var(--red);background:#18181c;padding:12px;border-radius:12px;margin-bottom:14px}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.action{background:var(--dark);border:1px solid var(--line);border-radius:16px;
-padding:16px 10px;color:white;text-align:center}
-.action b{display:block;margin-top:7px}.action span{font-size:25px}
-h2{font-size:20px;margin:18px 0 10px}h3{margin:0 0 8px}
+.action{background:var(--dark);border:1px solid var(--line);border-radius:16px;padding:16px 10px;color:white;text-align:center}
+.action span{font-size:25px}.action b{display:block;margin-top:7px}
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.plan{background:var(--dark);border:1px solid var(--line);border-radius:18px;
-padding:17px;margin-bottom:12px}
-.plan-top{display:flex;justify-content:space-between;align-items:center}
-.kin{font-size:22px;font-weight:900}.price{font-size:21px;font-weight:800}
-.gain{color:var(--green);font-weight:700;margin:9px 0}
-.tag{display:inline-block;background:#2a2a30;color:#ddd;border-radius:20px;
-padding:5px 9px;font-size:12px;margin:3px 3px 0 0}
-.btn{width:100%;border:0;border-radius:13px;padding:13px;font-weight:800;margin-top:9px}
-.btn-red{background:var(--red);color:white}.btn-dark{background:#29292f;color:white;border:1px solid #3a3a42}
-.btn-green{background:var(--green);color:#06150f}
-.btn-danger{background:#471016;color:#ffb8bd}
-.btn-blue{background:var(--blue);color:white}
+h2{font-size:20px;margin:18px 0 10px}h3{margin:0 0 8px}
+.btn{width:100%;border:0;border-radius:13px;padding:12px;font-weight:800;margin-top:8px}
+.btn-red{background:var(--red);color:#fff}.btn-green{background:var(--green);color:#06150f}
+.btn-dark{background:#29292f;color:#fff;border:1px solid #3a3a42}
+.btn-danger{background:#501017;color:#ffbdc1}
+.btn-blue{background:var(--blue);color:#fff}
 .btn-yellow{background:var(--yellow);color:#111}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-input,select{width:100%;background:#0f0f12;color:white;border:1px solid var(--line);
-border-radius:12px;padding:13px;outline:none;margin:5px 0 9px}
+.btn:disabled{opacity:.45}
+input,select,textarea{width:100%;background:#0f0f12;color:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;margin:5px 0 9px}
+textarea{min-height:90px}
 label{display:block;font-size:13px;color:#c9c9cf;margin-top:8px}
-textarea{width:100%;min-height:90px;background:#0f0f12;color:white;
-border:1px solid var(--line);border-radius:12px;padding:13px}
-.pay{border:1px solid var(--line);border-radius:14px;padding:13px;margin:8px 0;background:#111115}
-.pay strong{font-size:16px}.pay .number{font-size:20px;font-weight:900;margin:5px 0}
-.pay small{color:#aaa}
-.nav{position:fixed;z-index:30;bottom:0;left:50%;transform:translateX(-50%);
-width:min(600px,100%);background:#111114;border-top:1px solid var(--line);
-display:grid;grid-template-columns:repeat(5,1fr);padding:8px 5px calc(8px + env(safe-area-inset-bottom))}
+.tag{display:inline-block;background:#292930;color:#ddd;border-radius:20px;padding:5px 9px;font-size:12px;margin:3px}
+.plan{background:var(--dark);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
+.plan-top{display:flex;justify-content:space-between;align-items:center}
+.kin{font-size:22px;font-weight:900}.price{font-size:20px;font-weight:900}
+.gain{color:var(--green);font-weight:800;margin:9px 0}
+.stat{background:#111115;border:1px solid var(--line);padding:13px;border-radius:14px}
+.stat b{font-size:18px;display:block}
+.admin-title{color:#ff5a62;font-weight:900}
+.small{font-size:12px}
+.center{text-align:center}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:12px;font-weight:800}
+.status.pending{background:#493b0b;color:#ffe27a}
+.status.approved{background:#0d3d2b;color:#7ff0bb}
+.status.rejected{background:#45151a;color:#ff9da4}
+.status.blocked{background:#45151a;color:#ff9da4}
+.status.active{background:#0d3d2b;color:#7ff0bb}
+.tabs-admin{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:12px}
+.tabs-admin button{background:#202026;color:#bbb;border:1px solid var(--line);border-radius:11px;padding:10px}
+.tabs-admin button.active{background:var(--red);color:#fff}
+.nav{position:fixed;z-index:30;bottom:0;left:50%;transform:translateX(-50%);width:min(650px,100%);background:#111114;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 5px calc(8px + env(safe-area-inset-bottom))}
 .nav button{background:none;border:0;color:#9999a2;font-size:11px;padding:6px 2px}
-.nav button.active{color:white}.nav span{display:block;font-size:21px;margin-bottom:2px}
+.nav button.active{color:#fff}.nav span{display:block;font-size:21px;margin-bottom:2px}
 .auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
-.auth-box{width:100%;max-width:430px;background:var(--dark);border:1px solid var(--line);
-border-radius:24px;padding:22px}.auth-logo{text-align:center;margin-bottom:20px}
-.auth-logo .flag{font-size:45px}.auth-logo h1{margin:7px 0}
+.auth-box{width:100%;max-width:430px;background:var(--dark);border:1px solid var(--line);border-radius:24px;padding:22px}
+.auth-logo{text-align:center;margin-bottom:20px}.auth-logo .flag{font-size:45px}.auth-logo h1{margin:7px 0}
 .tabs{display:grid;grid-template-columns:1fr 1fr;background:#0c0c0f;border-radius:12px;padding:4px;margin-bottom:15px}
 .tabs button{border:0;background:none;color:#aaa;padding:10px;border-radius:9px}
-.tabs button.active{background:var(--red);color:white}
+.tabs button.active{background:var(--red);color:#fff}
 .msg{padding:10px;border-radius:10px;margin:8px 0;font-size:14px}
 .msg.ok{background:#103c2b;color:#8ff0c4}.msg.err{background:#42151a;color:#ffb9be}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:50;
-display:flex;align-items:flex-end;justify-content:center}
-.modal-box{width:min(600px,100%);background:#151519;border-radius:22px 22px 0 0;
-padding:18px;max-height:90vh;overflow:auto}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.modal-box{width:min(650px,100%);background:#151519;border-radius:22px 22px 0 0;padding:18px;max-height:92vh;overflow:auto}
 .close{float:right;background:#29292f;color:white;border:0;border-radius:50%;width:35px;height:35px}
-.stat{background:#111115;border:1px solid var(--line);padding:13px;border-radius:14px}
-.stat b{font-size:19px;display:block}.admin-title{color:#ff5a62;font-weight:900}
-.member{border:1px solid var(--line);border-radius:14px;padding:12px;margin:8px 0}
-.small{font-size:12px}.center{text-align:center}
 hr{border:0;border-top:1px solid var(--line);margin:16px 0}
-.admin-tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:12px 0}
-.admin-tabs button{background:#24242a;color:#bbb;border:1px solid var(--line);
-border-radius:10px;padding:11px;font-weight:bold}
-.admin-tabs button.active{background:var(--red);color:white}
-.status{display:inline-block;border-radius:20px;padding:4px 8px;font-size:11px;font-weight:bold}
-.status.pending{background:#4b3c09;color:#ffd95c}
-.status.approved{background:#103c2b;color:#70e0af}
-.status.rejected{background:#42151a;color:#ff9fa6}
-.status.blocked{background:#42151a;color:#ff9fa6}
-.status.active{background:#103c2b;color:#70e0af}
-.tx{border:1px solid var(--line);background:#111115;border-radius:14px;padding:12px;margin:8px 0}
-.tx-title{display:flex;justify-content:space-between;gap:8px}
-.tx-amount{font-size:18px;font-weight:900}
-.admin-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.admin-action-grid button{margin-top:0}
+a{text-decoration:none;color:inherit}
 @media(min-width:601px){.nav{border-radius:18px 18px 0 0}}
 </style>
 </head>
@@ -130,6 +121,9 @@ border-radius:10px;padding:11px;font-weight:bold}
 <div id="signupFields" class="hidden">
 <label>Nom</label>
 <input id="name" type="text" placeholder="Votre nom">
+
+<label>Code de parrainage</label>
+<input id="referralCode" type="text" placeholder="KINXXXXXXXX">
 </div>
 
 <button id="authBtn" class="btn btn-red" onclick="submitAuth()">Se connecter</button>
@@ -158,6 +152,7 @@ border-radius:10px;padding:11px;font-weight:bold}
 <button id="nav-team" onclick="page('team')"><span>♧</span>Équipe</button>
 <button id="nav-profile" onclick="page('profile')"><span>●</span>Profil</button>
 </nav>
+
 </div>
 
 <div id="modal"></div>
@@ -185,46 +180,45 @@ const PLANS=[
 {id:"KIN7",price:1500000,gain:330000,days:60,max:2}
 ];
 
-let user=null;
-let profile=null;
-let wallet=null;
-let currentPage="home";
-let isAdmin=false;
+let user=null,profile=null,wallet=null,currentPage="home",isAdmin=false;
 let adminTab="dashboard";
 
 const money=n=>Number(n||0).toLocaleString("fr-FR")+" FC";
 
 function esc(v){
 return String(v??"")
-.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-.replaceAll('"',"&quot;").replaceAll("'","&#039;");
+.replaceAll("&","&amp;").replaceAll("<","&lt;")
+.replaceAll(">","&gt;").replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
 }
 
-function msg(text,type="ok"){
-return `<div class="msg ${type}">${esc(text)}</div>`;
+function msg(t,type="ok"){return `<div class="msg ${type}">${esc(t)}</div>`}
+
+function codeFor(id){
+return "KIN"+String(id).replaceAll("-","").slice(0,8).toUpperCase();
 }
 
 function showAuth(type){
 const login=type==="login";
-document.getElementById("loginTab").classList.toggle("active",login);
-document.getElementById("signupTab").classList.toggle("active",!login);
-document.getElementById("signupFields").classList.toggle("hidden",login);
-document.getElementById("authBtn").textContent=login?"Se connecter":"Créer mon compte";
-document.getElementById("authMsg").innerHTML="";
+loginTab.classList.toggle("active",login);
+signupTab.classList.toggle("active",!login);
+signupFields.classList.toggle("hidden",login);
+authBtn.textContent=login?"Se connecter":"Créer mon compte";
+authMsg.innerHTML="";
 }
 
 async function submitAuth(){
 const email=document.getElementById("email").value.trim();
 const password=document.getElementById("password").value;
 const name=document.getElementById("name").value.trim();
+const ref=document.getElementById("referralCode").value.trim().toUpperCase();
+const signup=!signupFields.classList.contains("hidden");
 
 if(!email||!password){
-document.getElementById("authMsg").innerHTML=msg("Email et mot de passe obligatoires","err");
-return;
+authMsg.innerHTML=msg("Email et mot de passe obligatoires","err");return;
 }
 
-const signup=!document.getElementById("signupFields").classList.contains("hidden");
-document.getElementById("authBtn").disabled=true;
+authBtn.disabled=true;
 
 try{
 if(signup){
@@ -235,32 +229,33 @@ if(error)throw error;
 
 if(data.user){
 await sb.from("profiles").upsert({
-id:data.user.id,full_name:name||"Membre",role:"member"
+id:data.user.id,
+full_name:name||"Membre",
+role:"member",
+referral_code:codeFor(data.user.id),
+referred_by_code:ref||null
 });
 
 await sb.from("kin_wallets").upsert({
 user_id:data.user.id,balance:2000,total_earnings:0
 });
 
-document.getElementById("authMsg").innerHTML=
-msg("Inscription réussie ! Vous pouvez maintenant utiliser votre compte.");
+authMsg.innerHTML=msg("Inscription réussie ! Vous pouvez maintenant utiliser votre compte.");
 }
 }else{
 const {error}=await sb.auth.signInWithPassword({email,password});
 if(error)throw error;
 }
 }catch(e){
-document.getElementById("authMsg").innerHTML=msg(e.message||"Une erreur est survenue","err");
-}finally{
-document.getElementById("authBtn").disabled=false;
-}
+authMsg.innerHTML=msg(e.message||"Erreur","err");
+}finally{authBtn.disabled=false}
 }
 
 async function githubLogin(){
 const {error}=await sb.auth.signInWithOAuth({
 provider:"github",options:{redirectTo:location.href}
 });
-if(error)document.getElementById("authMsg").innerHTML=msg(error.message,"err");
+if(error)authMsg.innerHTML=msg(error.message,"err");
 }
 
 async function loadUser(){
@@ -268,16 +263,14 @@ const {data}=await sb.auth.getUser();
 user=data.user;
 
 if(!user){
-document.getElementById("auth").classList.remove("hidden");
-document.getElementById("app").classList.add("hidden");
+auth.classList.remove("hidden");
+app.classList.add("hidden");
 return;
 }
 
 await loadData();
-
-document.getElementById("auth").classList.add("hidden");
-document.getElementById("app").classList.remove("hidden");
-
+auth.classList.add("hidden");
+app.classList.remove("hidden");
 page("home");
 }
 
@@ -287,32 +280,25 @@ if(!user)return;
 const p=await sb.from("profiles").select("*").eq("id",user.id).maybeSingle();
 
 profile=p.data||{
-id:user.id,
-full_name:user.user_metadata?.name||"Membre",
-role:"member"
+id:user.id,full_name:user.user_metadata?.name||"Membre",role:"member"
 };
 
-isAdmin=profile.role==="admin"||
-user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
+isAdmin=profile.role==="admin"||user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
 
-const w=await sb.from("kin_wallets")
-.select("*").eq("user_id",user.id).maybeSingle();
+const w=await sb.from("kin_wallets").select("*").eq("user_id",user.id).maybeSingle();
 
 wallet=w.data||{balance:2000,total_earnings:0};
 }
 
 function navActive(name){
 document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
-const el=document.getElementById("nav-"+name);
-if(el)el.classList.add("active");
+const e=document.getElementById("nav-"+name);
+if(e)e.classList.add("active");
 }
 
 function page(name){
 currentPage=name;
-
-if(name==="admin"&&!isAdmin){
-name="profile";
-}
+if(name==="admin"&&!isAdmin)name="profile";
 
 navActive(
 name==="products"?"products":
@@ -330,9 +316,7 @@ if(name==="admin")renderAdmin();
 }
 
 function renderHome(){
-const c=document.getElementById("content");
-
-c.innerHTML=`
+content.innerHTML=`
 <section class="hero">
 <h1>Bienvenue 🇨🇩</h1>
 <p>${esc(profile?.full_name||"Membre")} · KINSHASA BUSINESS</p>
@@ -345,9 +329,7 @@ c.innerHTML=`
 </section>
 
 <div class="notice">
-📢 Bienvenue sur <b>KINSHASA BUSINESS</b>.
-Les montants affichés correspondent aux paramètres déclarés des produits
-et ne constituent pas une garantie de rendement.
+📢 Les montants affichés correspondent aux paramètres déclarés des produits et ne constituent pas une garantie de rendement.
 </div>
 
 <div class="grid">
@@ -364,47 +346,41 @@ ${PLANS.slice(0,3).map(planMini).join("")}
 }
 
 function planMini(p){
-return`
-<div class="plan">
+return `<div class="plan">
 <div class="plan-top"><div class="kin">${p.id}</div><div class="price">${money(p.price)}</div></div>
 <div class="gain">Gain affiché : ${money(p.gain)} / jour</div>
 <span class="tag">${p.days} jours</span>
-<span class="tag">Maximum : ${p.max}</span>
+<span class="tag">Maximum ${p.max}</span>
 </div>`;
 }
 
 function renderProducts(){
-document.getElementById("content").innerHTML=`
+content.innerHTML=`
 <h2>Produits KIN</h2>
-<div class="notice">
-Les montants sont les paramètres déclarés des produits et ne constituent pas une promesse de rendement.
-</div>
+<div class="notice">Paramètres déclarés des produits.</div>
 ${PLANS.map(p=>`
 <div class="plan">
 <div class="plan-top"><div class="kin">${p.id}</div><div class="price">${money(p.price)}</div></div>
 <div class="gain">Gain affiché : ${money(p.gain)} / jour</div>
 <span class="tag">${p.days} jours</span>
-<span class="tag">Maximum ${p.max} position(s)</span>
+<span class="tag">Maximum ${p.max}</span>
 <button class="btn btn-red" onclick="requestKin('${p.id}')">Demander ${p.id}</button>
 </div>`).join("")}`;
 }
 
-async function requestKin(id){
+function requestKin(id){
 const p=PLANS.find(x=>x.id===id);
-if(!p)return;
-
 showModal(`
 <button class="close" onclick="closeModal()">×</button>
-<h2>Demande ${p.id}</h2>
+<h2>${p.id}</h2>
 <p>Prix : <b>${money(p.price)}</b></p>
-<p>Gain affiché/jour : <b>${money(p.gain)}</b></p>
-<p class="muted">L'attribution définitive doit être validée par le serveur/admin.</p>
-<button class="btn btn-red" onclick="closeModal()">Fermer</button>
-`);
+<p>Gain affiché : <b>${money(p.gain)}/jour</b></p>
+<div class="notice">La demande doit être validée par l'administration.</div>
+<button class="btn btn-red" onclick="closeModal()">Fermer</button>`);
 }
 
 function renderTasks(){
-document.getElementById("content").innerHTML=`
+content.innerHTML=`
 <h2>Tâches & Pointage</h2>
 <div class="card center">
 <div style="font-size:45px">✓</div>
@@ -413,49 +389,44 @@ document.getElementById("content").innerHTML=`
 <p>Récompense déclarée : <b style="color:var(--green)">20 FC</b></p>
 <button class="btn btn-red" onclick="checkin()">Faire mon pointage</button>
 </div>
-<div class="card"><h3>Horaires</h3><p class="muted">Lundi à dimanche</p><b>08:00 – 19:00</b></div>
-`;
+<div class="card"><h3>Horaires</h3><p class="muted">Lundi à dimanche</p><b>08:00 – 19:00</b></div>`;
 }
 
 async function checkin(){
 const today=new Date().toISOString().slice(0,10);
-try{
 const {error}=await sb.from("kin_daily_checkins").insert({
 user_id:user.id,checkin_date:today,reward:20
-}).select().single();
-
+});
 if(error){
-if(error.code==="23505")alert("Vous avez déjà effectué votre pointage aujourd'hui.");
-else alert(error.message);
+alert(error.code==="23505"?"Pointage déjà effectué aujourd'hui.":error.message);
 return;
 }
 alert("Pointage enregistré.");
-}catch(e){alert(e.message)}
 }
 
 function renderTeam(){
-const code="KIN"+user.id.replaceAll("-","").slice(0,8).toUpperCase();
+const code=profile?.referral_code||codeFor(user.id);
 const link=location.origin+location.pathname+"?ref="+code;
 
-document.getElementById("content").innerHTML=`
+content.innerHTML=`
 <h2>Mon équipe</h2>
 <div class="card">
-<h3>Mon code de parrainage</h3>
-<div style="font-size:24px;font-weight:900;margin:12px 0">${code}</div>
-<button class="btn btn-red" onclick="copyText('${code}')">Copier le code</button>
+<h3>Code de parrainage</h3>
+<div style="font-size:24px;font-weight:900;margin:12px 0">${esc(code)}</div>
+<button class="btn btn-red" onclick="copyText('${esc(code)}')">Copier</button>
 </div>
 
 <div class="card">
-<h3>Mon lien</h3>
+<h3>Lien de parrainage</h3>
 <input value="${esc(link)}" readonly>
 <button class="btn btn-dark" onclick="copyText('${esc(link)}')">Copier le lien</button>
 </div>
 
 <div class="card">
-<h3>Commission déclarée</h3>
-<p>1er niveau : <b>30%</b></p>
-<p>2e niveau : <b>2%</b></p>
-<p>3e niveau : <b>1%</b></p>
+<h3>Commissions déclarées</h3>
+<p>Niveau 1 : <b>30%</b></p>
+<p>Niveau 2 : <b>2%</b></p>
+<p>Niveau 3 : <b>1%</b></p>
 </div>
 
 <div class="card">
@@ -464,21 +435,18 @@ document.getElementById("content").innerHTML=`
 <button class="btn btn-green">WhatsApp</button></a>
 <a href="https://t.me/francscongolais" target="_blank">
 <button class="btn btn-dark">Telegram</button></a>
-</div>
-`;
+</div>`;
 }
 
 function renderProfile(){
-document.getElementById("content").innerHTML=`
+content.innerHTML=`
 <h2>Mon profil</h2>
 <div class="card">
 <h3>${esc(profile?.full_name||"Membre")}</h3>
 <p class="muted">${esc(user.email)}</p>
 <p>Statut : <b>${isAdmin?"Administrateur":"Membre"}</b></p>
 </div>
-
 <div class="card">
-<h3>Services</h3>
 <button class="btn btn-dark" onclick="openDeposit()">💰 Déposer</button>
 <button class="btn btn-dark" onclick="openWithdraw()">💸 Retirer</button>
 <button class="btn btn-dark" onclick="page('team')">👥 Mon équipe</button>
@@ -491,20 +459,17 @@ async function openDeposit(){
 showModal(`
 <button class="close" onclick="closeModal()">×</button>
 <h2>💰 Dépôt</h2>
-<div class="notice">Dépôt minimum : <b>15 000 FC</b></div>
+<div class="notice">Minimum : <b>15 000 FC</b></div>
 <label>Montant</label>
-<input id="depAmount" type="number" min="15000" placeholder="Ex : 15000">
+<input id="depAmount" type="number" min="15000">
 <label>Opérateur</label>
-<select id="depOperator">
-${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator} — ${p.number} — ${p.name}</option>`).join("")}
-</select>
+<select id="depOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator} — ${p.number} — ${p.name}</option>`).join("")}</select>
 <div id="paymentInfo"></div>
-<label>Référence du transfert</label>
-<input id="depRef" placeholder="Référence ou nom du transfert">
-<button class="btn btn-red" onclick="submitDeposit()">Envoyer la demande</button>
-`);
+<label>Référence</label>
+<input id="depRef" placeholder="Référence du transfert">
+<button class="btn btn-red" onclick="submitDeposit()">Envoyer la demande</button>`);
 updatePaymentInfo();
-document.getElementById("depOperator").addEventListener("change",updatePaymentInfo);
+depOperator.addEventListener("change",updatePaymentInfo);
 }
 
 function updatePaymentInfo(){
@@ -513,780 +478,688 @@ const box=document.getElementById("paymentInfo");
 if(!s||!box)return;
 const p=PAYMENTS[Number(s.value)];
 box.innerHTML=`
-<div class="pay">
-<strong>${p.operator}</strong>
-<div class="number">${p.number}</div>
-<small>Nom : ${p.name} · Transfert</small>
-<button class="btn btn-dark" onclick="copyText('${p.number}')">Copier le numéro</button>
+<div class="card">
+<b>${p.operator}</b>
+<div style="font-size:20px;font-weight:900;margin:5px 0">${p.number}</div>
+<div class="muted">Nom : ${p.name} · transfert</div>
+<button class="btn btn-dark" onclick="copyText('${p.number}')">Copier</button>
 </div>`;
 }
 
 async function submitDeposit(){
 const amount=Number(document.getElementById("depAmount").value);
 const ref=document.getElementById("depRef").value.trim();
-const operator=PAYMENTS[Number(document.getElementById("depOperator").value)];
+const p=PAYMENTS[Number(document.getElementById("depOperator").value)];
 
-if(amount<15000){alert("Le dépôt minimum est de 15 000 FC.");return}
+if(amount<15000){alert("Minimum 15 000 FC.");return}
 
-try{
 const {error}=await sb.from("kin_deposit_requests").insert({
-user_id:user.id,amount,operator:operator.operator,
-payment_number:operator.number,payment_name:operator.name,
-reference:ref||null,status:"pending"
+user_id:user.id,amount,operator:p.operator,payment_number:p.number,
+payment_name:p.name,reference:ref||null,status:"pending"
 });
-if(error)throw error;
+
+if(error){alert(error.message);return}
 closeModal();
-alert("Demande de dépôt envoyée. La validation sera effectuée par l'administration.");
-}catch(e){alert("Impossible d'envoyer la demande : "+e.message)}
+alert("Demande de dépôt envoyée.");
 }
 
 async function openWithdraw(){
 showModal(`
 <button class="close" onclick="closeModal()">×</button>
 <h2>💸 Retrait</h2>
-<div class="notice">Minimum : <b>2 000 FC</b><br>Frais déclarés : <b>10%</b></div>
-<p>Solde actuel : <b>${money(wallet?.balance)}</b></p>
-<label>Montant demandé</label>
-<input id="wdAmount" type="number" min="2000" placeholder="Ex : 2000">
+<div class="notice">Minimum : <b>2 000 FC</b> · Frais déclarés : <b>10%</b></div>
+<label>Montant</label>
+<input id="wdAmount" type="number" min="2000">
 <label>Opérateur</label>
-<select id="wdOperator">
-${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator}</option>`).join("")}
-</select>
-<label>Votre numéro de réception</label>
+<select id="wdOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator}</option>`).join("")}</select>
+<label>Numéro de réception</label>
 <input id="wdNumber" placeholder="Numéro où recevoir le retrait">
-<button class="btn btn-red" onclick="submitWithdraw()">Envoyer la demande</button>
-`);
+<button class="btn btn-red" onclick="submitWithdraw()">Envoyer la demande</button>`);
 }
 
 async function submitWithdraw(){
 const amount=Number(document.getElementById("wdAmount").value);
-const operator=PAYMENTS[Number(document.getElementById("wdOperator").value)];
 const number=document.getElementById("wdNumber").value.trim();
+const p=PAYMENTS[Number(document.getElementById("wdOperator").value)];
 
 if(amount<2000){alert("Le retrait minimum est de 2 000 FC.");return}
 if(amount>Number(wallet?.balance||0)){alert("Solde insuffisant.");return}
-if(!number){alert("Entrez votre numéro de réception.");return}
+if(!number){alert("Entrez le numéro de réception.");return}
 
-const fee=amount*0.10;
-const net=amount-fee;
+const fee=amount*.10,net=amount-fee;
 
-try{
 const {error}=await sb.from("kin_withdrawal_requests").insert({
 user_id:user.id,amount,fee,net_amount:net,
-operator:operator.operator,payment_number:number,status:"pending"
+operator:p.operator,payment_number:number,status:"pending"
 });
-if(error)throw error;
+
+if(error){alert(error.message);return}
 closeModal();
-alert("Demande envoyée.\n\nMontant : "+money(amount)+
-"\nFrais 10% : "+money(fee)+"\nNet : "+money(net));
-}catch(e){alert("Impossible d'envoyer la demande : "+e.message)}
+alert("Demande de retrait envoyée.");
 }
 
-/* =========================================================
-   ADMINISTRATION COMPLÈTE
-========================================================= */
+/* ================= ADMIN ================= */
 
 function renderAdmin(){
 if(!isAdmin){page("profile");return}
 
-const c=document.getElementById("content");
-
-c.innerHTML=`
-<h2 class="admin-title">⚙ Administration KINSHASA BUSINESS</h2>
+content.innerHTML=`
+<h2 class="admin-title">⚙ Administration complète</h2>
 
 <div class="notice">
-🔐 Espace administrateur. Les actions financières sensibles doivent
-être contrôlées côté serveur avant d'être considérées comme définitives.
+🔐 Espace réservé à l'administrateur.
 </div>
 
 <div class="grid">
-<div class="stat"><span class="muted">Administrateur</span><b>ADMIN</b></div>
-<div class="stat"><span class="muted">Email</span><b class="small">${esc(user.email)}</b></div>
+<div class="stat"><span class="muted">Administrateur</span><b>ACTIF</b></div>
+<div class="stat"><span class="muted">Membre connecté</span><b>${esc(user.email)}</b></div>
 </div>
 
-<div class="admin-tabs">
+<div class="tabs-admin">
 <button class="${adminTab==="dashboard"?"active":""}" onclick="adminTab='dashboard';renderAdmin()">📊 Tableau</button>
 <button class="${adminTab==="members"?"active":""}" onclick="adminTab='members';renderAdmin()">👥 Membres</button>
 <button class="${adminTab==="deposits"?"active":""}" onclick="adminTab='deposits';renderAdmin()">💰 Dépôts</button>
 <button class="${adminTab==="withdrawals"?"active":""}" onclick="adminTab='withdrawals';renderAdmin()">💸 Retraits</button>
-<button class="${adminTab==="transactions"?"active":""}" onclick="adminTab='transactions';renderAdmin()">📒 Transactions</button>
+<button class="${adminTab==="transactions"?"active":""}" onclick="adminTab='transactions';renderAdmin()">🧾 Transactions</button>
 <button class="${adminTab==="payments"?"active":""}" onclick="adminTab='payments';renderAdmin()">📱 Paiements</button>
-<button class="${adminTab==="support"?"active":""}" onclick="adminTab='support';renderAdmin()">🆘 Assistance</button>
+<button class="${adminTab==="groups"?"active":""}" onclick="adminTab='groups';renderAdmin()">📢 Groupes</button>
 <button class="${adminTab==="settings"?"active":""}" onclick="adminTab='settings';renderAdmin()">⚙️ Paramètres</button>
 </div>
 
-<div id="adminContent">Chargement...</div>
-`;
+<div id="adminArea">Chargement...</div>`;
 
 loadAdminTab();
 }
 
 async function loadAdminTab(){
-const box=document.getElementById("adminContent");
-if(!box)return;
+const a=document.getElementById("adminArea");
+if(!a)return;
 
 if(adminTab==="dashboard"){
-box.innerHTML=`
+a.innerHTML=`
 <div class="card">
-<h3>📊 Centre de contrôle</h3>
-<p class="muted">Gestion générale de la plateforme.</p>
-<div class="admin-action-grid">
-<button class="btn btn-dark" onclick="adminTab='members';renderAdmin()">👥 Membres</button>
-<button class="btn btn-dark" onclick="adminTab='transactions';renderAdmin()">📒 Transactions</button>
-<button class="btn btn-dark" onclick="adminTab='deposits';renderAdmin()">💰 Dépôts</button>
-<button class="btn btn-dark" onclick="adminTab='withdrawals';renderAdmin()">💸 Retraits</button>
-</div>
-</div>
-
-<div class="card">
-<h3>🛡️ Sécurité</h3>
-<p>• Contrôle administrateur</p>
-<p>• Historique des transactions</p>
-<p>• Statuts en attente / validé / rejeté</p>
-<p>• Aucun mot de passe membre affiché</p>
-</div>
-
-<div class="card">
-<h3>📱 Assistance rapide</h3>
-<a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps" target="_blank">
-<button class="btn btn-green">Ouvrir WhatsApp</button></a>
-<a href="https://t.me/francscongolais" target="_blank">
-<button class="btn btn-dark">Ouvrir Telegram</button></a>
+<h3>Centre de contrôle</h3>
+<button class="btn btn-red" onclick="adminTab='members';renderAdmin()">👥 Gérer les membres</button>
+<button class="btn btn-dark" onclick="adminTab='deposits';renderAdmin()">💰 Valider les dépôts</button>
+<button class="btn btn-dark" onclick="adminTab='withdrawals';renderAdmin()">💸 Valider les retraits</button>
+<button class="btn btn-dark" onclick="adminTab='transactions';renderAdmin()">🧾 Voir toutes les transactions</button>
+<button class="btn btn-dark" onclick="adminTab='payments';renderAdmin()">📱 Gérer les opérateurs</button>
+<button class="btn btn-dark" onclick="adminTab='groups';renderAdmin()">📢 Assistance / groupes</button>
+<button class="btn btn-dark" onclick="adminTab='settings';renderAdmin()">⚙️ Configuration</button>
 </div>`;
 return;
 }
 
-if(adminTab==="members"){
-await adminMembers(box);return;
+if(adminTab==="members"){await adminMembers(a);return}
+if(adminTab==="deposits"){await adminRequests(a,"kin_deposit_requests","Dépôts");return}
+if(adminTab==="withdrawals"){await adminRequests(a,"kin_withdrawal_requests","Retraits");return}
+if(adminTab==="transactions"){await adminTransactions(a);return}
+if(adminTab==="payments"){adminPayments(a);return}
+if(adminTab==="groups"){adminGroups(a);return}
+if(adminTab==="settings"){adminSettings(a);return}
 }
 
-if(adminTab==="deposits"){
-await adminDeposits(box);return;
-}
-
-if(adminTab==="withdrawals"){
-await adminWithdrawals(box);return;
-}
-
-if(adminTab==="transactions"){
-await adminTransactions(box);return;
-}
-
-if(adminTab==="payments"){
-adminPayments(box);return;
-}
-
-if(adminTab==="support"){
-adminSupport(box);return;
-}
-
-if(adminTab==="settings"){
-adminSettings(box);return;
-}
-}
-
-/* MEMBRES */
-async function adminMembers(box){
-box.innerHTML=`<div class="card"><h3>👥 Membres inscrits</h3><p class="muted">Chargement...</p></div>`;
-
+async function adminMembers(a){
 const r=await sb.from("profiles").select("*").order("created_at",{ascending:false});
 
-if(r.error){
-box.innerHTML=msg(r.error.message,"err");return;
-}
+if(r.error){a.innerHTML=msg(r.error.message,"err");return}
 
-const members=r.data||[];
+a.innerHTML=`
+<h2>Tous les membres</h2>
+<input id="memberSearch" placeholder="Rechercher nom / code / téléphone" oninput="filterMembers()">
+<div id="memberList"></div>`;
 
-box.innerHTML=`
-<div class="card">
-<h3>👥 ${members.length} membre(s)</h3>
-<input id="memberSearch" placeholder="Rechercher un membre..." oninput="filterMembers()">
-<div id="memberList">
-${members.map(memberCard).join("")||"<p class='muted'>Aucun membre.</p>"}
-</div>
-</div>`;
-}
-
-function memberCard(x){
-const blocked=
-x.status==="blocked"||x.is_blocked===true||x.suspended===true;
-
-return`
-<div class="member member-item"
-data-search="${esc((x.full_name||"")+" "+(x.email||"")+" "+x.id)}">
-
-<div class="tx-title">
-<div>
-<b>${esc(x.full_name||"Membre")}</b>
-<div class="small muted">${esc(x.email||"Email via Auth")}</div>
-</div>
-<span class="status ${blocked?"blocked":"active"}">${blocked?"BLOQUÉ":"ACTIF"}</span>
-</div>
-
-<hr>
-
-<div class="small muted">ID</div>
-<div class="small">${esc(x.id)}</div>
-
-<div style="margin-top:8px">
-Rôle : <b>${esc(x.role||"member")}</b>
-</div>
-
-${x.referral_code?`<div>Code : <b>${esc(x.referral_code)}</b></div>`:""}
-
-<div class="admin-action-grid" style="margin-top:10px">
-<button class="btn ${blocked?"btn-green":"btn-danger"}"
-onclick="toggleMemberBlock('${x.id}',${blocked})">
-${blocked?"Débloquer":"Bloquer"}
-</button>
-
-<button class="btn btn-dark"
-onclick="memberActions('${x.id}','${esc(x.full_name||"Membre")}')">
-Gérer
-</button>
-</div>
-
-<button class="btn btn-yellow"
-onclick="resetMemberPassword('${x.id}')">
-🔑 Réinitialiser le mot de passe
-</button>
-</div>`;
+window.ADMIN_MEMBERS=r.data||[];
+filterMembers();
 }
 
 function filterMembers(){
 const q=(document.getElementById("memberSearch")?.value||"").toLowerCase();
-document.querySelectorAll(".member-item").forEach(el=>{
-el.style.display=el.dataset.search.toLowerCase().includes(q)?"block":"none";
-});
-}
 
-async function toggleMemberBlock(id,blocked){
-alert(
-blocked
-?"Le déblocage doit être effectué par une fonction serveur sécurisée."
-:"Le blocage doit être effectué par une fonction serveur sécurisée."
+const list=(window.ADMIN_MEMBERS||[]).filter(x=>
+JSON.stringify(x).toLowerCase().includes(q)
 );
+
+document.getElementById("memberList").innerHTML=list.map(x=>`
+<div class="member">
+<div class="row">
+<div><b>${esc(x.full_name||"Membre")}</b></div>
+<div class="status ${x.status==="blocked"?"blocked":"active"}">
+${x.status==="blocked"?"BLOQUÉ":"ACTIF"}
+</div>
+</div>
+
+<div class="small muted">ID : ${esc(x.id)}</div>
+<div>Email : ${esc(x.email||"Non disponible")}</div>
+<div>Code : <b>${esc(x.referral_code||codeFor(x.id))}</b></div>
+<div>Rôle : <b>${esc(x.role||"member")}</b></div>
+
+<div class="grid" style="margin-top:8px">
+<button class="btn btn-dark" onclick="adminMemberDetails('${x.id}')">Détails</button>
+<button class="btn ${x.status==="blocked"?"btn-green":"btn-danger"}"
+onclick="adminBlock('${x.id}',${x.status==="blocked"})">
+${x.status==="blocked"?"Débloquer":"Bloquer"}
+</button>
+</div>
+
+<button class="btn btn-yellow" onclick="adminResetPassword('${x.id}')">
+🔑 Réinitialiser mot de passe
+</button>
+
+<button class="btn btn-blue" onclick="adminAdjust('${x.id}')">
+💰 Ajuster le solde
+</button>
+
+<button class="btn btn-dark" onclick="adminAssignKin('${x.id}')">
+⭐ Attribuer un KIN
+</button>
+
+<button class="btn btn-dark" onclick="adminBonus('${x.id}')">
+🎁 Ajouter un bonus
+</button>
+
+<button class="btn btn-dark" onclick="adminIncome('${x.id}')">
+📈 Ajouter un revenu
+</button>
+
+<button class="btn btn-dark" onclick="adminCommission('${x.id}')">
+♧ Ajouter une commission
+</button>
+</div>`).join("")||`<div class="muted">Aucun membre.</div>`;
 }
 
-async function resetMemberPassword(id){
-alert("Un lien sécurisé de réinitialisation doit être envoyé par Supabase Auth. Aucun mot de passe n'est affiché à l'administrateur.");
-}
+async function adminMemberDetails(id){
+const m=(window.ADMIN_MEMBERS||[]).find(x=>x.id===id);
+if(!m)return;
 
-function memberActions(id,name){
 showModal(`
 <button class="close" onclick="closeModal()">×</button>
-<h2>👤 ${esc(name)}</h2>
-<p class="muted">Gestion du membre</p>
-<button class="btn btn-dark" onclick="closeModal();adminTab='transactions';renderAdmin()">
-📒 Voir ses transactions
-</button>
-<button class="btn btn-dark" onclick="closeModal()">
-💰 Modifier le solde
-</button>
-<button class="btn btn-dark" onclick="closeModal()">
-🎯 Attribuer un KIN
-</button>
-<button class="btn btn-danger" onclick="closeModal()">
-Fermer
-</button>
-`);
+<h2>👤 Membre</h2>
+<div class="card">
+<p><b>Nom :</b> ${esc(m.full_name||"—")}</p>
+<p><b>Email :</b> ${esc(m.email||"Non disponible")}</p>
+<p><b>ID :</b> ${esc(m.id)}</p>
+<p><b>Code :</b> ${esc(m.referral_code||codeFor(m.id))}</p>
+<p><b>Rôle :</b> ${esc(m.role||"member")}</p>
+<p><b>Statut :</b> ${esc(m.status||"active")}</p>
+</div>
+<button class="btn btn-dark" onclick="closeModal()">Fermer</button>`);
 }
 
-/* DEPOTS */
-async function adminDeposits(box){
-box.innerHTML=`<div class="card"><h3>💰 Dépôts</h3>Chargement...</div>`;
+async function adminBlock(id,currentlyBlocked){
+const fn=currentlyBlocked?"admin_unblock_member":"admin_block_member";
+const {error}=await sb.rpc(fn,{p_user_id:id});
+if(error){
+alert("Action refusée : "+error.message);
+return;
+}
+alert(currentlyBlocked?"Membre débloqué.":"Membre bloqué.");
+adminTab="members";renderAdmin();
+}
 
-const r=await sb.from("kin_deposit_requests")
-.select("*").order("created_at",{ascending:false});
+async function adminResetPassword(id){
+const m=(window.ADMIN_MEMBERS||[]).find(x=>x.id===id);
 
-if(r.error){box.innerHTML=msg(r.error.message,"err");return}
+if(!m?.email){
+alert("L'email de ce membre n'est pas disponible dans le profil.");
+return;
+}
 
-const rows=r.data||[];
+if(!confirm("Envoyer un lien sécurisé de réinitialisation à ce membre ?"))return;
 
-box.innerHTML=`
-<div class="card">
-<h3>💰 Toutes les demandes de dépôt</h3>
-<p class="muted">${rows.length} transaction(s)</p>
-${rows.map(x=>`
+const {error}=await sb.auth.resetPasswordForEmail(m.email,{
+redirectTo:location.origin
+});
+
+if(error)alert(error.message);
+else alert("Lien de réinitialisation envoyé.");
+}
+
+function adminAdjust(id){
+showModal(`
+<button class="close" onclick="closeModal()">×</button>
+<h2>💰 Ajuster le solde</h2>
+<div class="notice">Utilisez un montant positif pour ajouter et négatif pour retirer.</div>
+<label>Montant</label>
+<input id="adjAmount" type="number" placeholder="Ex : 5000 ou -5000">
+<label>Motif obligatoire</label>
+<textarea id="adjReason" placeholder="Motif de l'opération"></textarea>
+<button class="btn btn-blue" onclick="saveAdminAdjustment('${id}')">Enregistrer</button>`);
+}
+
+async function saveAdminAdjustment(id){
+const amount=Number(document.getElementById("adjAmount").value);
+const reason=document.getElementById("adjReason").value.trim();
+
+if(!amount||!reason){alert("Montant et motif obligatoires.");return}
+
+const {error}=await sb.rpc("admin_adjust_balance",{
+p_user_id:id,p_amount:amount,p_reason:reason
+});
+
+if(error){alert("Impossible : "+error.message);return}
+
+closeModal();
+alert("Solde modifié et opération enregistrée.");
+}
+
+function adminBonus(id){
+showModal(`
+<button class="close" onclick="closeModal()">×</button>
+<h2>🎁 Bonus</h2>
+<label>Montant</label>
+<input id="bonusAmount" type="number" min="1">
+<label>Motif</label>
+<textarea id="bonusReason" placeholder="Motif du bonus"></textarea>
+<button class="btn btn-green" onclick="saveAdminTransaction('${id}','bonus')">Ajouter le bonus</button>`);
+}
+
+function adminIncome(id){
+showModal(`
+<button class="close" onclick="closeModal()">×</button>
+<h2>📈 Revenu</h2>
+<label>Montant</label>
+<input id="bonusAmount" type="number" min="1">
+<label>Motif</label>
+<textarea id="bonusReason" placeholder="Motif du revenu"></textarea>
+<button class="btn btn-green" onclick="saveAdminTransaction('${id}','income')">Ajouter le revenu</button>`);
+}
+
+function adminCommission(id){
+showModal(`
+<button class="close" onclick="closeModal()">×</button>
+<h2>♧ Commission</h2>
+<label>Montant</label>
+<input id="bonusAmount" type="number" min="1">
+<label>Motif</label>
+<textarea id="bonusReason" placeholder="Motif de la commission"></textarea>
+<button class="btn btn-green" onclick="saveAdminTransaction('${id}','commission')">Ajouter la commission</button>`);
+}
+
+async function saveAdminTransaction(id,type){
+const amount=Number(document.getElementById("bonusAmount").value);
+const reason=document.getElementById("bonusReason").value.trim();
+
+if(amount<=0||!reason){alert("Montant et motif obligatoires.");return}
+
+const rpc={
+bonus:"admin_add_bonus",
+income:"admin_add_income",
+commission:"admin_add_commission"
+}[type];
+
+const {error}=await sb.rpc(rpc,{
+p_user_id:id,p_amount:amount,p_reason:reason
+});
+
+if(error){alert("Impossible : "+error.message);return}
+
+closeModal();
+alert("Transaction enregistrée.");
+}
+
+function adminAssignKin(id){
+showModal(`
+<button class="close" onclick="closeModal()">×</button>
+<h2>⭐ Attribuer un KIN</h2>
+<select id="assignKin">
+${PLANS.map(x=>`<option value="${x.id}">${x.id} — ${money(x.price)}</option>`).join("")}
+</select>
+<label>Motif</label>
+<textarea id="kinReason" placeholder="Motif de l'attribution"></textarea>
+<button class="btn btn-red" onclick="saveAdminKin('${id}')">Attribuer</button>`);
+}
+
+async function saveAdminKin(id){
+const kin=document.getElementById("assignKin").value;
+const reason=document.getElementById("kinReason").value.trim();
+
+if(!reason){alert("Motif obligatoire.");return}
+
+const {error}=await sb.rpc("admin_assign_kin",{
+p_user_id:id,p_kin_id:kin,p_reason:reason
+});
+
+if(error){alert("Impossible : "+error.message);return}
+
+closeModal();
+alert(kin+" attribué.");
+}
+
+async function adminRequests(a,table,title){
+const r=await sb.from(table).select("*").order("created_at",{ascending:false});
+
+if(r.error){a.innerHTML=msg(r.error.message,"err");return}
+
+a.innerHTML=`
+<h2>${title}</h2>
+${(r.data||[]).map(x=>`
 <div class="tx">
-<div class="tx-title">
-<div class="tx-amount">${money(x.amount)}</div>
-<span class="status ${statusClass(x.status)}">${statusLabel(x.status)}</span>
+<div class="row">
+<b>${money(x.amount)}</b>
+<span class="status ${x.status==="approved"||x.status==="validated"?"approved":x.status==="rejected"?"rejected":"pending"}">
+${esc(x.status||"pending")}
+</span>
 </div>
-<p>👤 ${esc(x.user_id||"")}</p>
-<p>📱 ${esc(x.operator||"")} — ${esc(x.payment_number||"")}</p>
-<p>🧾 Référence : ${esc(x.reference||"—")}</p>
-<p class="small muted">📅 ${dateTime(x.created_at)}</p>
 
-${x.status==="pending"?`
-<div class="admin-action-grid">
-<button class="btn btn-green" onclick="validateDeposit('${x.id}')">✅ Valider</button>
-<button class="btn btn-danger" onclick="rejectDeposit('${x.id}')">❌ Rejeter</button>
-</div>`:""}
-</div>`).join("")||"<p class='muted'>Aucun dépôt.</p>"}
-</div>`;
+<p class="small">Date : ${esc(x.created_at||"—")}</p>
+<p>Utilisateur : <b>${esc(x.user_id)}</b></p>
+<p>Opérateur : ${esc(x.operator||"—")}</p>
+<p>Numéro : <b>${esc(x.payment_number||x.withdrawal_number||"—")}</b></p>
+<p>Référence : ${esc(x.reference||"—")}</p>
+${x.net_amount!=null?`<p>Net : <b>${money(x.net_amount)}</b></p>`:""}
+
+<div class="grid">
+<button class="btn btn-green" onclick="adminRequestAction('${table}','${x.id}','approved')">✅ Valider</button>
+<button class="btn btn-danger" onclick="adminRequestAction('${table}','${x.id}','rejected')">❌ Rejeter</button>
+</div>
+</div>`).join("")||`<div class="muted">Aucune opération.</div>`}`;
 }
 
-/* RETRAITS */
-async function adminWithdrawals(box){
-box.innerHTML=`<div class="card"><h3>💸 Retraits</h3>Chargement...</div>`;
+async function adminRequestAction(table,id,status){
+const fn=table==="kin_deposit_requests"
+?"admin_set_deposit_status":"admin_set_withdrawal_status";
 
-const r=await sb.from("kin_withdrawal_requests")
-.select("*").order("created_at",{ascending:false});
+const {error}=await sb.rpc(fn,{
+p_request_id:id,p_status:status,p_note:"Décision administrative"
+});
 
-if(r.error){box.innerHTML=msg(r.error.message,"err");return}
+if(error){
+alert("Action impossible : "+error.message);
+return;
+}
 
-const rows=r.data||[];
+alert(status==="approved"?"Opération validée.":"Opération rejetée.");
+renderAdmin();
+}
 
-box.innerHTML=`
-<div class="card">
-<h3>💸 Toutes les demandes de retrait</h3>
-<p class="muted">${rows.length} transaction(s)</p>
+async function adminTransactions(a){
+const r=await sb.from("kin_transactions").select("*").order("created_at",{ascending:false});
 
-${rows.map(x=>`
+if(r.error){
+a.innerHTML=`
+<h2>🧾 Transactions</h2>
+<div class="notice">La table des transactions n'est pas encore accessible : ${esc(r.error.message)}</div>`;
+return;
+}
+
+a.innerHTML=`
+<h2>🧾 Toutes les transactions</h2>
+<div class="notice">Dépôts · retraits · bonus · revenus · commissions · ajustements.</div>
+${(r.data||[]).map(x=>`
 <div class="tx">
-<div class="tx-title">
-<div class="tx-amount">${money(x.amount)}</div>
-<span class="status ${statusClass(x.status)}">${statusLabel(x.status)}</span>
+<div class="row">
+<b>${esc(x.type||"transaction")}</b>
+<b>${money(x.amount)}</b>
 </div>
-<p>👤 ${esc(x.user_id||"")}</p>
-<p>📱 ${esc(x.operator||"")}</p>
-<p>📞 Réception : <b>${esc(x.payment_number||x.withdrawal_number||"—")}</b></p>
-<p>Frais : ${money(x.fee||Number(x.amount||0)*.10)}</p>
-<p>Net : <b>${money(x.net_amount||Number(x.amount||0)*.90)}</b></p>
-<p class="small muted">📅 ${dateTime(x.created_at)}</p>
-
-${x.status==="pending"?`
-<div class="admin-action-grid">
-<button class="btn btn-green" onclick="validateWithdrawal('${x.id}')">✅ Valider</button>
-<button class="btn btn-danger" onclick="rejectWithdrawal('${x.id}')">❌ Rejeter</button>
-</div>`:""}
-</div>`).join("")||"<p class='muted'>Aucun retrait.</p>"}
-</div>`;
+<div class="small muted">Utilisateur : ${esc(x.user_id||"—")}</div>
+<div class="small muted">Date : ${esc(x.created_at||"—")}</div>
+<div>${esc(x.description||x.reason||"")}</div>
+</div>`).join("")||`<div class="muted">Aucune transaction.</div>`}`;
 }
 
-/* =========================================================
-   RUBRIQUE TRANSACTIONS
-========================================================= */
-
-async function adminTransactions(box){
-box.innerHTML=`
-<div class="card">
-<h3>📒 Transactions</h3>
-<p class="muted">Chargement de l'historique...</p>
-</div>`;
-
-const [tx,dep,wd,check] = await Promise.all([
-sb.from("kin_transactions").select("*").order("created_at",{ascending:false}).limit(200),
-sb.from("kin_deposit_requests").select("*").order("created_at",{ascending:false}).limit(200),
-sb.from("kin_withdrawal_requests").select("*").order("created_at",{ascending:false}).limit(200),
-sb.from("kin_daily_checkins").select("*").order("created_at",{ascending:false}).limit(100)
-]);
-
-let list=[];
-
-if(!tx.error){
-(tx.data||[]).forEach(x=>{
-list.push({
-type:"transaction",
-date:x.created_at,
-amount:x.amount,
-status:x.status||"—",
-user:x.user_id,
-label:x.type||x.transaction_type||x.description||"Transaction",
-ref:x.reference||x.transaction_id||x.id
-});
-});
-}
-
-if(!dep.error){
-(dep.data||[]).forEach(x=>{
-list.push({
-type:"deposit",
-date:x.created_at,
-amount:x.amount,
-status:x.status||"pending",
-user:x.user_id,
-label:"Dépôt",
-ref:x.reference||x.transaction_id||x.id,
-operator:x.operator,
-number:x.payment_number
-});
-});
-}
-
-if(!wd.error){
-(wd.data||[]).forEach(x=>{
-list.push({
-type:"withdrawal",
-date:x.created_at,
-amount:x.amount,
-status:x.status||"pending",
-user:x.user_id,
-label:"Retrait",
-ref:x.id,
-operator:x.operator,
-number:x.payment_number||x.withdrawal_number
-});
-});
-}
-
-if(!check.error){
-(check.data||[]).forEach(x=>{
-list.push({
-type:"checkin",
-date:x.created_at,
-amount:x.reward||20,
-status:"recorded",
-user:x.user_id,
-label:"Pointage",
-ref:x.id
-});
-});
-}
-
-list.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
-
-box.innerHTML=`
-<div class="card">
-<h3>📒 Historique des transactions</h3>
-
-<div class="notice">
-Cette rubrique regroupe dépôts, retraits, transactions enregistrées
-et pointages afin de garder une vue générale.
-</div>
-
-<input id="txSearch" placeholder="Rechercher ID, utilisateur, type..." oninput="filterTransactions()">
-
-<div id="txList">
-${list.map(transactionCard).join("")||"<p class='muted'>Aucune transaction trouvée.</p>"}
-</div>
-</div>`;
-}
-
-function transactionCard(x){
-return`
-<div class="tx transaction-item"
-data-search="${esc((x.user||"")+" "+(x.label||"")+" "+(x.ref||"")+" "+(x.operator||"")}">
-
-<div class="tx-title">
-<div>
-<b>${iconType(x.type)} ${esc(x.label||"Transaction")}</b>
-<div class="small muted">${esc(x.user||"")}</div>
-</div>
-<div class="tx-amount">${money(x.amount)}</div>
-</div>
-
-<div style="margin-top:7px">
-<span class="status ${statusClass(x.status)}">${statusLabel(x.status)}</span>
-</div>
-
-${x.operator?`<p>📱 ${esc(x.operator)} — ${esc(x.number||"")}</p>`:""}
-${x.ref?`<p class="small">Référence : ${esc(x.ref)}</p>`:""}
-<p class="small muted">📅 ${dateTime(x.date)}</p>
-</div>`;
-}
-
-function filterTransactions(){
-const q=(document.getElementById("txSearch")?.value||"").toLowerCase();
-document.querySelectorAll(".transaction-item").forEach(el=>{
-el.style.display=el.dataset.search.toLowerCase().includes(q)?"block":"none";
-});
-}
-
-function iconType(t){
-if(t==="deposit")return"💰";
-if(t==="withdrawal")return"💸";
-if(t==="checkin")return"✓";
-return"📒";
-}
-
-/* PAIEMENTS */
-function adminPayments(box){
-box.innerHTML=`
-<div class="card">
-<h3>📱 Moyens de paiement</h3>
-<p class="muted">Numéros actuellement configurés.</p>
+function adminPayments(a){
+a.innerHTML=`
+<h2>📱 Moyens de paiement</h2>
+<div class="notice">L'administrateur peut gérer les opérateurs sans modifier le code du site.</div>
 
 ${PAYMENTS.map((p,i)=>`
-<div class="pay">
-<strong>${p.operator}</strong>
-<div class="number">${p.number}</div>
-<div>Nom : <b>${p.name}</b></div>
-<div class="small muted">Transfert</div>
+<div class="card">
+<h3>${p.operator}</h3>
+<p>Numéro : <b>${p.number}</b></p>
+<p>Bénéficiaire : <b>${p.name}</b></p>
 <button class="btn btn-dark" onclick="editPayment(${i})">Modifier</button>
 </div>`).join("")}
 
-<button class="btn btn-green" onclick="addPayment()">＋ Ajouter un opérateur</button>
-</div>
-
-<div class="card">
-<h3>⚠️ Important</h3>
-<p class="muted">
-Les modifications définitives des moyens de paiement doivent être
-enregistrées côté serveur pour être protégées.
-</p>
-</div>`;
+<button class="btn btn-red" onclick="addPayment()">＋ Ajouter un opérateur</button>`;
 }
 
 function editPayment(i){
 const p=PAYMENTS[i];
+
 showModal(`
 <button class="close" onclick="closeModal()">×</button>
 <h2>Modifier ${p.operator}</h2>
-<label>Numéro</label>
-<input id="editPayNumber" value="${esc(p.number)}">
-<label>Nom</label>
-<input id="editPayName" value="${esc(p.name)}">
-<button class="btn btn-red" onclick="savePayment(${i})">Enregistrer</button>
-`);
-}
-
-function savePayment(i){
-const n=document.getElementById("editPayNumber").value.trim();
-const name=document.getElementById("editPayName").value.trim();
-if(!n||!name){alert("Remplissez tous les champs.");return}
-PAYMENTS[i].number=n;
-PAYMENTS[i].name=name;
-closeModal();
-renderAdmin();
+<label>Opérateur</label><input id="payOp" value="${esc(p.operator)}">
+<label>Numéro</label><input id="payNum" value="${esc(p.number)}">
+<label>Bénéficiaire</label><input id="payName" value="${esc(p.name)}">
+<button class="btn btn-red" onclick="savePayment(${i})">Enregistrer</button>`);
 }
 
 function addPayment(){
 showModal(`
 <button class="close" onclick="closeModal()">×</button>
-<h2>＋ Nouvel opérateur</h2>
-<label>Opérateur</label>
-<input id="newPayOperator" placeholder="Ex : Airtel Money">
-<label>Numéro</label>
-<input id="newPayNumber" placeholder="Numéro de paiement">
-<label>Nom</label>
-<input id="newPayName" placeholder="Nom du bénéficiaire">
-<button class="btn btn-green" onclick="saveNewPayment()">Ajouter</button>
-`);
+<h2>Ajouter un opérateur</h2>
+<label>Opérateur</label><input id="payOp" placeholder="Ex : Airtel Money">
+<label>Numéro</label><input id="payNum">
+<label>Bénéficiaire</label><input id="payName">
+<button class="btn btn-red" onclick="saveNewPayment()">Ajouter</button>`);
 }
 
-function saveNewPayment(){
-const operator=document.getElementById("newPayOperator").value.trim();
-const number=document.getElementById("newPayNumber").value.trim();
-const name=document.getElementById("newPayName").value.trim();
+async function savePayment(i){
+const operator=document.getElementById("payOp").value.trim();
+const number=document.getElementById("payNum").value.trim();
+const name=document.getElementById("payName").value.trim();
 
-if(!operator||!number||!name){alert("Remplissez tous les champs.");return}
+const {error}=await sb.rpc("admin_update_payment_method",{
+p_id:i+1,p_operator:operator,p_number:number,p_name:name
+});
 
-PAYMENTS.push({operator,number,name});
+if(error){
+alert("Impossible : "+error.message);
+return;
+}
+
 closeModal();
-renderAdmin();
+alert("Moyen de paiement modifié.");
 }
 
-/* ASSISTANCE */
-function adminSupport(box){
-box.innerHTML=`
+async function saveNewPayment(){
+const operator=document.getElementById("payOp").value.trim();
+const number=document.getElementById("payNum").value.trim();
+const name=document.getElementById("payName").value.trim();
+
+if(!operator||!number||!name){alert("Tous les champs sont obligatoires.");return}
+
+const {error}=await sb.rpc("admin_add_payment_method",{
+p_operator:operator,p_number:number,p_name:name
+});
+
+if(error){
+alert("Impossible : "+error.message);
+return;
+}
+
+closeModal();
+alert("Opérateur ajouté.");
+}
+
+function adminGroups(a){
+a.innerHTML=`
+<h2>📢 Groupes & assistance</h2>
+
 <div class="card">
-<h3>🆘 Assistance</h3>
-
-<label>Groupe WhatsApp</label>
-<input id="supportWhatsapp"
-value="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps">
-
-<label>Groupe Telegram</label>
-<input id="supportTelegram"
-value="https://t.me/francscongolais">
-
-<label>Numéro service client</label>
-<input id="supportNumber" placeholder="Ajouter votre numéro">
-
-<button class="btn btn-red" onclick="saveSupport()">Enregistrer l'assistance</button>
+<h3>WhatsApp</h3>
+<input id="wa" value="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps">
+<button class="btn btn-green" onclick="saveGroup('whatsapp')">Enregistrer WhatsApp</button>
 </div>
 
 <div class="card">
-<h3>📢 Accès rapide</h3>
-<a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps" target="_blank">
-<button class="btn btn-green">WhatsApp</button></a>
-<a href="https://t.me/francscongolais" target="_blank">
-<button class="btn btn-dark">Telegram</button></a>
+<h3>Telegram</h3>
+<input id="tg" value="https://t.me/francscongolais">
+<button class="btn btn-dark" onclick="saveGroup('telegram')">Enregistrer Telegram</button>
+</div>
+
+<div class="card">
+<h3>Service client</h3>
+<input id="support" placeholder="Numéro / WhatsApp service client">
+<button class="btn btn-red" onclick="saveGroup('support')">Enregistrer service client</button>
+</div>
+
+<div class="notice">
+Ces contacts peuvent servir lorsque les membres rencontrent un problème de dépôt, retrait ou compte.
 </div>`;
 }
 
-function saveSupport(){
-alert("Paramètres d'assistance préparés. Pour une sauvegarde permanente, ils doivent être enregistrés dans kin_settings côté serveur.");
+async function saveGroup(type){
+const value=document.getElementById(
+type==="whatsapp"?"wa":type==="telegram"?"tg":"support"
+).value.trim();
+
+const {error}=await sb.rpc("admin_update_setting",{
+p_key:type,p_value:value
+});
+
+if(error){alert("Impossible : "+error.message);return}
+alert("Paramètre enregistré.");
 }
 
-/* PARAMETRES */
-function adminSettings(box){
-box.innerHTML=`
-<div class="card">
-<h3>⚙️ Configuration générale</h3>
+function adminSettings(a){
+a.innerHTML=`
+<h2>⚙️ Configuration</h2>
 
-<label>Nom de la plateforme</label>
-<input value="KINSHASA BUSINESS">
+<div class="setting">
+<h3>Plateforme</h3>
+<label>Nom</label>
+<input id="siteName" value="KINSHASA BUSINESS">
+<button class="btn btn-red" onclick="saveSettingInput('site_name','siteName')">Enregistrer</button>
+</div>
 
-<label>Minimum dépôt</label>
-<input type="number" value="15000">
-
-<label>Minimum retrait</label>
-<input type="number" value="2000">
-
+<div class="setting">
+<h3>Finances</h3>
+<label>Dépôt minimum</label>
+<input id="minDep" type="number" value="15000">
+<label>Retrait minimum</label>
+<input id="minWd" type="number" value="2000">
 <label>Bonus inscription</label>
-<input type="number" value="2000">
-
-<label>Frais retrait (%)</label>
-<input type="number" value="10">
-
-<label>Pointage quotidien</label>
-<input type="number" value="20">
-
-<button class="btn btn-red" onclick="saveGeneralSettings()">
-Enregistrer les paramètres
-</button>
+<input id="bonusSignup" type="number" value="2000">
+<label>Frais retrait %</label>
+<input id="withdrawFee" type="number" value="10">
+<button class="btn btn-red" onclick="saveFinancialSettings()">Enregistrer</button>
 </div>
 
-<div class="card">
-<h3>👥 Parrainage</h3>
-<label>Niveau 1 (%)</label><input type="number" value="30">
-<label>Niveau 2 (%)</label><input type="number" value="2">
-<label>Niveau 3 (%)</label><input type="number" value="1">
-<button class="btn btn-red" onclick="saveGeneralSettings()">Enregistrer</button>
+<div class="setting">
+<h3>Parrainage</h3>
+<label>Niveau 1 %</label><input id="ref1" value="30">
+<label>Niveau 2 %</label><input id="ref2" value="2">
+<label>Niveau 3 %</label><input id="ref3" value="1">
+<button class="btn btn-red" onclick="saveReferralSettings()">Enregistrer</button>
 </div>
 
-<div class="card">
-<h3>🎯 KIN1 → KIN7</h3>
+<div class="setting">
+<h3>KIN1 à KIN7</h3>
 ${PLANS.map(p=>`
-<div class="member">
+<div class="card">
 <b>${p.id}</b>
-<p>Prix : ${money(p.price)}</p>
-<p>Gain affiché : ${money(p.gain)} / jour</p>
-<p>Durée : ${p.days} jours · Maximum : ${p.max}</p>
-<button class="btn btn-dark" onclick="editPlan('${p.id}')">Modifier ${p.id}</button>
+<input id="price_${p.id}" type="number" value="${p.price}" placeholder="Prix">
+<input id="gain_${p.id}" type="number" value="${p.gain}" placeholder="Gain affiché/jour">
+<input id="days_${p.id}" type="number" value="${p.days}" placeholder="Durée">
+<input id="max_${p.id}" type="number" value="${p.max}" placeholder="Maximum positions">
+<button class="btn btn-dark" onclick="savePlan('${p.id}')">Modifier ${p.id}</button>
 </div>`).join("")}
 </div>
 
-<div class="card">
-<h3>🚧 Maintenance</h3>
-<p class="muted">
-Activez la maintenance uniquement avec une fonction serveur protégée.
-</p>
-<button class="btn btn-danger" onclick="maintenanceNotice()">
-Mode maintenance
-</button>
+<div class="setting">
+<h3>Maintenance</h3>
+<button class="btn btn-danger" onclick="toggleMaintenance()">Activer / désactiver la maintenance</button>
 </div>`;
 }
 
-function editPlan(id){
-const p=PLANS.find(x=>x.id===id);
-if(!p)return;
+async function saveSettingInput(key,id){
+const value=document.getElementById(id).value.trim();
 
-showModal(`
-<button class="close" onclick="closeModal()">×</button>
-<h2>Modifier ${p.id}</h2>
-<label>Prix</label><input id="planPrice" type="number" value="${p.price}">
-<label>Gain affiché / jour</label><input id="planGain" type="number" value="${p.gain}">
-<label>Durée</label><input id="planDays" type="number" value="${p.days}">
-<label>Maximum positions</label><input id="planMax" type="number" value="${p.max}">
-<button class="btn btn-red" onclick="savePlan('${id}')">Enregistrer</button>
-`);
-}
-
-function savePlan(id){
-const p=PLANS.find(x=>x.id===id);
-if(!p)return;
-p.price=Number(document.getElementById("planPrice").value);
-p.gain=Number(document.getElementById("planGain").value);
-p.days=Number(document.getElementById("planDays").value);
-p.max=Number(document.getElementById("planMax").value);
-closeModal();
-renderAdmin();
-}
-
-function saveGeneralSettings(){
-alert("Paramètres préparés. Pour une modification permanente sécurisée, utilisez une fonction Supabase côté serveur.");
-}
-
-function maintenanceNotice(){
-alert("Le mode maintenance doit être appliqué côté serveur afin qu'un membre ne puisse pas le désactiver depuis son navigateur.");
-}
-
-/* ACTIONS TRANSACTIONS */
-async function validateDeposit(id){
-if(!confirm("Valider ce dépôt ?"))return;
-alert("Validation financière : cette action doit passer par une fonction RPC Supabase sécurisée avant de créditer le solde.");
-}
-
-async function rejectDeposit(id){
-if(!confirm("Rejeter ce dépôt ?"))return;
-alert("Rejet : cette action doit passer par une fonction RPC Supabase sécurisée.");
-}
-
-async function validateWithdrawal(id){
-if(!confirm("Valider ce retrait ?"))return;
-alert("Validation financière : cette action doit passer par une fonction RPC Supabase sécurisée pour éviter un double débit.");
-}
-
-async function rejectWithdrawal(id){
-if(!confirm("Rejeter ce retrait ?"))return;
-alert("Rejet : cette action doit passer par une fonction RPC Supabase sécurisée.");
-}
-
-/* OUTILS */
-function statusClass(s){
-s=String(s||"").toLowerCase();
-if(["approved","validated","valid","completed","success","recorded"].includes(s))return"approved";
-if(["rejected","refused","cancelled","blocked"].includes(s))return"rejected";
-return"pending";
-}
-
-function statusLabel(s){
-s=String(s||"pending").toLowerCase();
-if(["approved","validated","valid","completed","success"].includes(s))return"VALIDÉ";
-if(s==="recorded")return"ENREGISTRÉ";
-if(["rejected","refused","cancelled"].includes(s))return"REJETÉ";
-if(s==="blocked")return"BLOQUÉ";
-return"EN ATTENTE";
-}
-
-function dateTime(v){
-if(!v)return"Date inconnue";
-try{
-return new Date(v).toLocaleString("fr-FR",{
-dateStyle:"short",timeStyle:"short"
+const {error}=await sb.rpc("admin_update_setting",{
+p_key:key,p_value:value
 });
-}catch(e){return String(v)}
+
+if(error){alert(error.message);return}
+alert("Configuration enregistrée.");
+}
+
+async function saveFinancialSettings(){
+const values={
+min_deposit:document.getElementById("minDep").value,
+min_withdrawal:document.getElementById("minWd").value,
+signup_bonus:document.getElementById("bonusSignup").value,
+withdrawal_fee:document.getElementById("withdrawFee").value
+};
+
+for(const [key,value] of Object.entries(values)){
+const r=await sb.rpc("admin_update_setting",{p_key:key,p_value:value});
+if(r.error){alert(r.error.message);return}
+}
+
+alert("Paramètres financiers enregistrés.");
+}
+
+async function saveReferralSettings(){
+const values={
+referral_level_1:document.getElementById("ref1").value,
+referral_level_2:document.getElementById("ref2").value,
+referral_level_3:document.getElementById("ref3").value
+};
+
+for(const [key,value] of Object.entries(values)){
+const r=await sb.rpc("admin_update_setting",{p_key:key,p_value:value});
+if(r.error){alert(r.error.message);return}
+}
+
+alert("Commissions enregistrées.");
+}
+
+async function savePlan(id){
+const values={
+price:Number(document.getElementById("price_"+id).value),
+daily_gain:Number(document.getElementById("gain_"+id).value),
+duration_days:Number(document.getElementById("days_"+id).value),
+max_positions:Number(document.getElementById("max_"+id).value)
+};
+
+const {error}=await sb.rpc("admin_update_kin_plan",{
+p_kin_id:id,
+p_price:values.price,
+p_daily_gain:values.daily_gain,
+p_duration_days:values.duration_days,
+p_max_positions:values.max_positions
+});
+
+if(error){alert(error.message);return}
+alert(id+" modifié.");
+}
+
+async function toggleMaintenance(){
+const {error}=await sb.rpc("admin_toggle_maintenance");
+if(error){alert(error.message);return}
+alert("Mode maintenance modifié.");
 }
 
 function showModal(html){
-document.getElementById("modal").innerHTML=`
-<div class="modal" onclick="if(event.target===this)closeModal()">
-<div class="modal-box">${html}</div>
-</div>`;
+modal.innerHTML=`<div class="modal" onclick="if(event.target===this)closeModal()"><div class="modal-box">${html}</div></div>`;
 }
 
-function closeModal(){
-document.getElementById("modal").innerHTML="";
-}
+function closeModal(){modal.innerHTML=""}
 
 async function copyText(text){
-try{
-await navigator.clipboard.writeText(text);
-alert("Copié !");
-}catch(e){alert(text)}
+try{await navigator.clipboard.writeText(text);alert("Copié !")}
+catch(e){alert(text)}
 }
 
 async function logout(){
 await sb.auth.signOut();
 user=null;profile=null;wallet=null;
-document.getElementById("app").classList.add("hidden");
-document.getElementById("auth").classList.remove("hidden");
+app.classList.add("hidden");
+auth.classList.remove("hidden");
 }
 
-sb.auth.onAuthStateChange(async(event,session)=>{
+sb.auth.onAuthStateChange((event,session)=>{
 if(event==="SIGNED_IN"&&session)setTimeout(loadUser,100);
 if(event==="SIGNED_OUT"){
-document.getElementById("app").classList.add("hidden");
-document.getElementById("auth").classList.remove("hidden");
+app.classList.add("hidden");
+auth.classList.remove("hidden");
 }
 });
 
 loadUser();
 </script>
-
 </body>
 </html>
