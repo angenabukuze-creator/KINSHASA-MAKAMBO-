@@ -1,365 +1,1869 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test Administration - KINSHASA BUSINESS</title>
+<!-- =========================================================
+     ADMINISTRATION KINSHASA BUSINESS
+     Remplacer l'ancien renderAdmin() + loadAdminData()
+     ========================================================= -->
 
-<style>
-*{box-sizing:border-box}
+async function renderAdmin(){
 
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#080808;
-color:white;
-padding:15px;
+  if(!isAdmin){
+    page("profile");
+    return;
+  }
+
+  const c=document.getElementById("content");
+
+  c.innerHTML=`
+
+    <h2 class="admin-title">
+      ⚙️ Administration KINSHASA BUSINESS
+    </h2>
+
+    <div class="notice">
+      🔐 Espace sécurisé administrateur.
+      Les opérations sensibles sont contrôlées côté serveur.
+    </div>
+
+    <!-- TABLEAU DE BORD -->
+    <div class="grid">
+
+      <div class="stat">
+        <span class="muted">Administrateur</span>
+        <b>ADMIN</b>
+      </div>
+
+      <div class="stat">
+        <span class="muted">Email</span>
+        <b class="small">${esc(user.email)}</b>
+      </div>
+
+      <div class="stat">
+        <span class="muted">Membres</span>
+        <b id="adminTotalMembers">...</b>
+      </div>
+
+      <div class="stat">
+        <span class="muted">Dépôts attente</span>
+        <b id="adminPendingDeposits">...</b>
+      </div>
+
+      <div class="stat">
+        <span class="muted">Retraits attente</span>
+        <b id="adminPendingWithdrawals">...</b>
+      </div>
+
+      <div class="stat">
+        <span class="muted">Membres bloqués</span>
+        <b id="adminBlockedMembers">...</b>
+      </div>
+
+    </div>
+
+    <!-- ONGLETS ADMIN -->
+    <div class="tabs" style="margin-top:18px">
+
+      <button
+        id="admTabMembers"
+        class="active"
+        onclick="adminTab('members')">
+        👥 Membres
+      </button>
+
+      <button
+        id="admTabDeposits"
+        onclick="adminTab('deposits')">
+        💰 Dépôts
+      </button>
+
+    </div>
+
+    <div class="tabs">
+
+      <button
+        id="admTabWithdrawals"
+        onclick="adminTab('withdrawals')">
+        💸 Retraits
+      </button>
+
+      <button
+        id="admTabSettings"
+        onclick="adminTab('settings')">
+        ⚙️ Paramètres
+      </button>
+
+    </div>
+
+    <!-- MEMBRES -->
+    <section id="adminMembers">
+
+      <h2>👥 Tous les membres</h2>
+
+      <input
+        id="adminMemberSearch"
+        placeholder="🔎 Rechercher nom, email, téléphone ou code..."
+        oninput="filterAdminMembers()">
+
+      <div id="members">
+        Chargement...
+      </div>
+
+    </section>
+
+    <!-- DEPOTS -->
+    <section id="adminDeposits" class="hidden">
+
+      <h2>💰 Gestion des dépôts</h2>
+
+      <div class="notice">
+        Tu peux consulter, valider ou rejeter chaque demande.
+      </div>
+
+      <div id="deposits">
+        Chargement...
+      </div>
+
+    </section>
+
+    <!-- RETRAITS -->
+    <section id="adminWithdrawals" class="hidden">
+
+      <h2>💸 Gestion des retraits</h2>
+
+      <div class="notice">
+        Vérifie toujours le numéro de réception avant validation.
+      </div>
+
+      <div id="withdrawals">
+        Chargement...
+      </div>
+
+    </section>
+
+    <!-- PARAMETRES -->
+    <section id="adminSettings" class="hidden">
+
+      <h2>⚙️ Configuration</h2>
+
+      <div class="card">
+
+        <h3>🏷️ Plateforme</h3>
+
+        <label>Nom du site</label>
+        <input
+          id="settingSiteName"
+          value="KINSHASA BUSINESS">
+
+        <button
+          class="btn btn-red"
+          onclick="saveAdminSetting('site_name')">
+          Enregistrer le nom
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>💸 Frais de retrait</h3>
+
+        <label>Pourcentage</label>
+
+        <input
+          id="settingWithdrawalFee"
+          type="number"
+          value="10">
+
+        <button
+          class="btn btn-red"
+          onclick="saveAdminSetting('withdrawal_fee')">
+          Enregistrer
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>💰 Dépôt minimum</h3>
+
+        <input
+          id="settingMinDeposit"
+          type="number"
+          value="15000">
+
+        <button
+          class="btn btn-red"
+          onclick="saveAdminSetting('min_deposit')">
+          Enregistrer
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>💸 Retrait minimum</h3>
+
+        <input
+          id="settingMinWithdraw"
+          type="number"
+          value="2000">
+
+        <button
+          class="btn btn-red"
+          onclick="saveAdminSetting('min_withdraw')">
+          Enregistrer
+        </button>
+
+      </div>
+
+
+      <!-- WHATSAPP -->
+      <div class="card">
+
+        <h3>📱 Groupe WhatsApp</h3>
+
+        <label>Lien du groupe</label>
+
+        <input
+          id="settingWhatsapp"
+          value="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps">
+
+        <button
+          class="btn btn-green"
+          onclick="saveAdminSetting('whatsapp')">
+          Enregistrer WhatsApp
+        </button>
+
+      </div>
+
+
+      <!-- TELEGRAM -->
+      <div class="card">
+
+        <h3>✈️ Groupe Telegram</h3>
+
+        <label>Lien Telegram</label>
+
+        <input
+          id="settingTelegram"
+          value="https://t.me/francscongolais">
+
+        <button
+          class="btn btn-dark"
+          onclick="saveAdminSetting('telegram')">
+          Enregistrer Telegram
+        </button>
+
+      </div>
+
+
+      <!-- SERVICE CLIENT -->
+      <div class="card">
+
+        <h3>☎️ Service client</h3>
+
+        <label>Numéro service client</label>
+
+        <input
+          id="settingSupport"
+          placeholder="Ex : +243...">
+
+        <button
+          class="btn btn-red"
+          onclick="saveAdminSetting('support')">
+          Enregistrer
+        </button>
+
+      </div>
+
+
+      <!-- MOYENS DE PAIEMENT -->
+      <div class="card">
+
+        <h3>💳 Moyens de paiement</h3>
+
+        <p class="muted">
+          Ajouter ou modifier les opérateurs utilisés pour les dépôts.
+        </p>
+
+        <div id="adminPayments">
+          Chargement...
+        </div>
+
+        <button
+          class="btn btn-red"
+          onclick="adminAddPayment()">
+          ＋ Ajouter un opérateur
+        </button>
+
+      </div>
+
+
+      <!-- KIN -->
+      <div class="card">
+
+        <h3>📊 Configuration KIN</h3>
+
+        <div id="adminPlans">
+          Chargement...
+        </div>
+
+      </div>
+
+
+      <!-- MAINTENANCE -->
+      <div class="card">
+
+        <h3>🛠️ Maintenance</h3>
+
+        <p class="muted">
+          Permet de suspendre temporairement l'accès aux opérations.
+        </p>
+
+        <button
+          class="btn btn-danger"
+          onclick="toggleMaintenance()">
+          Activer / désactiver la maintenance
+        </button>
+
+      </div>
+
+
+      <!-- SECURITE -->
+      <div class="card">
+
+        <h3>🔐 Sécurité</h3>
+
+        <p>
+          ✅ Contrôle administrateur
+        </p>
+
+        <p>
+          ✅ Actions financières côté serveur
+        </p>
+
+        <p>
+          ✅ Journalisation des opérations
+        </p>
+
+        <p>
+          ✅ Blocage des membres
+        </p>
+
+        <p>
+          ✅ Réinitialisation sécurisée du mot de passe
+        </p>
+
+      </div>
+
+    </section>
+
+  `;
+
+  await loadAdminData();
+  await loadAdminPayments();
+  await loadAdminPlans();
 }
 
-.container{
-max-width:700px;
-margin:auto;
+
+/* =========================================================
+   ONGLETS ADMIN
+   ========================================================= */
+
+function adminTab(tab){
+
+  const sections={
+    members:"adminMembers",
+    deposits:"adminDeposits",
+    withdrawals:"adminWithdrawals",
+    settings:"adminSettings"
+  };
+
+  Object.values(sections).forEach(id=>{
+    document.getElementById(id)
+      ?.classList.add("hidden");
+  });
+
+  document.getElementById(sections[tab])
+    ?.classList.remove("hidden");
+
+  document.querySelectorAll(
+    "#admTabMembers,#admTabDeposits,#admTabWithdrawals,#admTabSettings"
+  ).forEach(x=>{
+    x.classList.remove("active");
+  });
+
+  if(tab==="members")
+    document.getElementById("admTabMembers")?.classList.add("active");
+
+  if(tab==="deposits")
+    document.getElementById("admTabDeposits")?.classList.add("active");
+
+  if(tab==="withdrawals")
+    document.getElementById("admTabWithdrawals")?.classList.add("active");
+
+  if(tab==="settings")
+    document.getElementById("admTabSettings")?.classList.add("active");
 }
 
-h1{
-color:#ff3340;
+
+/* =========================================================
+   CHARGEMENT ADMIN
+   ========================================================= */
+
+let ADMIN_MEMBERS_CACHE=[];
+
+async function loadAdminData(){
+
+  const members=document.getElementById("members");
+  const deposits=document.getElementById("deposits");
+  const withdrawals=document.getElementById("withdrawals");
+
+  /* ---------------- MEMBRES ---------------- */
+
+  const m=await sb
+    .from("profiles")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(m.error){
+
+    members.innerHTML=
+      msg(m.error.message,"err");
+
+  }else{
+
+    ADMIN_MEMBERS_CACHE=m.data||[];
+
+    const total=ADMIN_MEMBERS_CACHE.length;
+
+    const blocked=ADMIN_MEMBERS_CACHE.filter(x=>
+      x.status==="blocked" ||
+      x.is_blocked===true
+    ).length;
+
+    document.getElementById(
+      "adminTotalMembers"
+    ).textContent=total;
+
+    document.getElementById(
+      "adminBlockedMembers"
+    ).textContent=blocked;
+
+    renderAdminMembers(ADMIN_MEMBERS_CACHE);
+  }
+
+
+  /* ---------------- DEPOTS ---------------- */
+
+  const d=await sb
+    .from("kin_deposit_requests")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(d.error){
+
+    deposits.innerHTML=
+      msg(d.error.message,"err");
+
+  }else{
+
+    const rows=d.data||[];
+
+    const pending=rows.filter(x=>
+      (x.status||"pending")==="pending"
+    ).length;
+
+    document.getElementById(
+      "adminPendingDeposits"
+    ).textContent=pending;
+
+    deposits.innerHTML=
+      rows.map(adminDepositCard).join("") ||
+
+      `<div class="muted">
+        Aucun dépôt enregistré.
+      </div>`;
+  }
+
+
+  /* ---------------- RETRAITS ---------------- */
+
+  const w=await sb
+    .from("kin_withdrawal_requests")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(w.error){
+
+    withdrawals.innerHTML=
+      msg(w.error.message,"err");
+
+  }else{
+
+    const rows=w.data||[];
+
+    const pending=rows.filter(x=>
+      (x.status||"pending")==="pending"
+    ).length;
+
+    document.getElementById(
+      "adminPendingWithdrawals"
+    ).textContent=pending;
+
+    withdrawals.innerHTML=
+      rows.map(adminWithdrawalCard).join("") ||
+
+      `<div class="muted">
+        Aucun retrait enregistré.
+      </div>`;
+  }
 }
 
-.card{
-background:#151515;
-border:1px solid #333;
-border-radius:16px;
-padding:16px;
-margin:12px 0;
+
+/* =========================================================
+   MEMBRES
+   ========================================================= */
+
+function renderAdminMembers(rows){
+
+  const box=document.getElementById("members");
+
+  if(!box)return;
+
+  box.innerHTML=
+
+    rows.map(x=>{
+
+      const blocked=
+        x.status==="blocked" ||
+        x.is_blocked===true;
+
+      const status=
+        blocked
+        ? `<b style="color:#ff626a">🔴 BLOQUÉ</b>`
+        : `<b style="color:#19c37d">🟢 ACTIF</b>`;
+
+      return `
+
+      <div class="member">
+
+        <div class="row">
+
+          <div>
+
+            <b>
+              ${esc(x.full_name||"Membre")}
+            </b>
+
+            <div class="small muted">
+              ${esc(x.email||"Email non affiché")}
+            </div>
+
+          </div>
+
+          <div>
+            ${status}
+          </div>
+
+        </div>
+
+
+        <hr>
+
+
+        <div class="small">
+
+          <b>ID :</b>
+          ${esc(x.id)}
+
+        </div>
+
+
+        <div class="small">
+
+          <b>Code :</b>
+          ${esc(x.referral_code||"—")}
+
+        </div>
+
+
+        <div class="small">
+
+          <b>Parrain :</b>
+          ${esc(x.referred_by_code||"—")}
+
+        </div>
+
+
+        <div class="small">
+
+          <b>Rôle :</b>
+          ${esc(x.role||"member")}
+
+        </div>
+
+
+        <div class="grid" style="margin-top:10px">
+
+          <button
+            class="btn btn-dark"
+            onclick="adminMemberDetails('${x.id}')">
+            👁️ Détails
+          </button>
+
+          ${
+            blocked
+
+            ?
+
+            `<button
+              class="btn btn-green"
+              onclick="adminUnblockMember('${x.id}')">
+              🔓 Débloquer
+            </button>`
+
+            :
+
+            `<button
+              class="btn btn-danger"
+              onclick="adminBlockMember('${x.id}')">
+              🔒 Bloquer
+            </button>`
+          }
+
+        </div>
+
+
+        <button
+          class="btn btn-dark"
+          onclick="adminResetPassword('${x.id}')">
+          🔑 Réinitialiser le mot de passe
+        </button>
+
+
+        <button
+          class="btn btn-dark"
+          onclick="adminChangeCode('${x.id}')">
+          🆔 Modifier le code membre
+        </button>
+
+
+        <button
+          class="btn btn-dark"
+          onclick="adminAdjustBalance('${x.id}')">
+          💰 Modifier le solde
+        </button>
+
+
+        <button
+          class="btn btn-dark"
+          onclick="adminAssignKin('${x.id}')">
+          📊 Attribuer un KIN
+        </button>
+
+      </div>
+
+      `;
+
+    }).join("") ||
+
+    `<div class="muted">
+      Aucun membre trouvé.
+    </div>`;
 }
 
-button{
-border:0;
-border-radius:10px;
-padding:12px;
-font-weight:bold;
-cursor:pointer;
-margin:4px;
+
+function filterAdminMembers(){
+
+  const q=
+    document.getElementById(
+      "adminMemberSearch"
+    ).value.toLowerCase().trim();
+
+  const rows=
+    ADMIN_MEMBERS_CACHE.filter(x=>
+
+      String(x.full_name||"")
+        .toLowerCase()
+        .includes(q)
+
+      ||
+
+      String(x.email||"")
+        .toLowerCase()
+        .includes(q)
+
+      ||
+
+      String(x.phone||"")
+        .toLowerCase()
+        .includes(q)
+
+      ||
+
+      String(x.referral_code||"")
+        .toLowerCase()
+        .includes(q)
+
+    );
+
+  renderAdminMembers(rows);
 }
 
-.red{background:#e50914;color:white}
-.green{background:#159447;color:white}
-.orange{background:#ff8c00;color:white}
-.dark{background:#292929;color:white}
 
-input,select{
-width:100%;
-padding:12px;
-margin:6px 0;
-border-radius:9px;
-border:1px solid #444;
-background:#101010;
-color:white;
+/* =========================================================
+   DETAILS MEMBRE
+   ========================================================= */
+
+async function adminMemberDetails(id){
+
+  const x=
+    ADMIN_MEMBERS_CACHE.find(
+      m=>m.id===id
+    );
+
+  if(!x)return;
+
+  const w=await sb
+    .from("kin_wallets")
+    .select("*")
+    .eq("user_id",id)
+    .maybeSingle();
+
+  const purchases=await sb
+    .from("kin_purchases")
+    .select("*")
+    .eq("user_id",id)
+    .order("created_at",{ascending:false});
+
+  showModal(`
+
+    <button class="close"
+      onclick="closeModal()">×</button>
+
+    <h2>👤 Membre</h2>
+
+    <div class="card">
+
+      <h3>
+        ${esc(x.full_name||"Membre")}
+      </h3>
+
+      <p>
+        Email :
+        <b>${esc(x.email||"Non disponible")}</b>
+      </p>
+
+      <p>
+        Code :
+        <b>${esc(x.referral_code||"—")}</b>
+      </p>
+
+      <p>
+        Parrain :
+        <b>${esc(x.referred_by_code||"—")}</b>
+      </p>
+
+      <p>
+        Solde :
+        <b>
+          ${money(w.data?.balance)}
+        </b>
+      </p>
+
+      <p>
+        Gains :
+        <b>
+          ${money(w.data?.total_earnings)}
+        </b>
+      </p>
+
+    </div>
+
+    <h3>📊 KIN du membre</h3>
+
+    ${
+      (purchases.data||[]).map(p=>`
+
+        <div class="member">
+
+          <b>
+            ${esc(p.kin_id||p.plan_id||"KIN")}
+          </b>
+
+          <div class="small muted">
+            ${esc(p.status||"")}
+          </div>
+
+        </div>
+
+      `).join("") ||
+
+      `<p class="muted">
+        Aucun KIN enregistré.
+      </p>`
+    }
+
+  `);
 }
 
-.status{
-padding:10px;
-border-radius:10px;
-background:#102d1b;
-color:#72e39a;
-margin:10px 0;
+
+/* =========================================================
+   DEPOT
+   ========================================================= */
+
+function adminDepositCard(x){
+
+  const status=x.status||"pending";
+
+  const color=
+    status==="approved" ||
+    status==="validated"
+    ? "#19c37d"
+
+    :
+
+    status==="rejected"
+    ? "#ff626a"
+
+    :
+
+    "#f5c542";
+
+  return `
+
+  <div class="member">
+
+    <div class="row">
+
+      <b>${money(x.amount)}</b>
+
+      <b style="color:${color}">
+        ${esc(status.toUpperCase())}
+      </b>
+
+    </div>
+
+    <hr>
+
+    <div class="small">
+      📱 Opérateur :
+      <b>${esc(x.operator||"—")}</b>
+    </div>
+
+    <div class="small">
+      💳 Numéro :
+      <b>${esc(x.payment_number||"—")}</b>
+    </div>
+
+    <div class="small">
+      👤 Bénéficiaire :
+      <b>${esc(x.payment_name||"—")}</b>
+    </div>
+
+    <div class="small">
+      🔖 Référence :
+      <b>${esc(x.reference||"—")}</b>
+    </div>
+
+    <div class="small muted">
+      📅 ${formatDate(x.created_at)}
+    </div>
+
+    ${
+      status==="pending"
+
+      ?
+
+      `<div class="grid" style="margin-top:10px">
+
+        <button
+          class="btn btn-green"
+          onclick="adminValidateDeposit('${x.id}')">
+          ✅ VALIDER
+        </button>
+
+        <button
+          class="btn btn-danger"
+          onclick="adminRejectDeposit('${x.id}')">
+          ❌ REJETER
+        </button>
+
+      </div>`
+
+      :
+
+      ""
+    }
+
+  </div>
+
+  `;
 }
 
-.warning{
-background:#382400;
-color:#ffc766;
-padding:12px;
-border-radius:10px;
+
+/* =========================================================
+   RETRAIT
+   ========================================================= */
+
+function adminWithdrawalCard(x){
+
+  const status=x.status||"pending";
+
+  const color=
+    status==="approved" ||
+    status==="validated"
+    ? "#19c37d"
+
+    :
+
+    status==="rejected"
+    ? "#ff626a"
+
+    :
+
+    "#f5c542";
+
+  return `
+
+  <div class="member">
+
+    <div class="row">
+
+      <b>${money(x.amount)}</b>
+
+      <b style="color:${color}">
+        ${esc(status.toUpperCase())}
+      </b>
+
+    </div>
+
+    <hr>
+
+    <div>
+      Net :
+      <b>${money(x.net_amount)}</b>
+    </div>
+
+    <div class="small">
+      Opérateur :
+      <b>${esc(x.operator||"—")}</b>
+    </div>
+
+    <div class="small">
+      Numéro réception :
+      <b>${esc(x.payment_number||"—")}</b>
+    </div>
+
+    <div class="small muted">
+      📅 ${formatDate(x.created_at)}
+    </div>
+
+    ${
+      status==="pending"
+
+      ?
+
+      `<div class="grid" style="margin-top:10px">
+
+        <button
+          class="btn btn-green"
+          onclick="adminValidateWithdrawal('${x.id}')">
+          ✅ VALIDER
+        </button>
+
+        <button
+          class="btn btn-danger"
+          onclick="adminRejectWithdrawal('${x.id}')">
+          ❌ REJETER
+        </button>
+
+      </div>`
+
+      :
+
+      ""
+    }
+
+  </div>
+
+  `;
 }
 
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
+
+/* =========================================================
+   VALIDATION DEPOT
+   ========================================================= */
+
+async function adminValidateDeposit(id){
+
+  if(!confirm(
+    "Confirmer la validation de ce dépôt ?"
+  ))return;
+
+  const note=prompt(
+    "Note administrative (facultatif)"
+  )||"Dépôt validé";
+
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_set_deposit_status",
+      {
+        p_request_id:id,
+        p_status:"approved",
+        p_note:note
+      }
+    );
+
+    if(error)throw error;
+
+    alert("✅ Dépôt validé.");
+
+    await loadAdminData();
+
+  }catch(e){
+
+    alert(
+      "Impossible de valider le dépôt :\n"+
+      e.message
+    );
+
+  }
 }
 
-@media(max-width:500px){
-.grid{
-grid-template-columns:1fr;
-}
-}
-</style>
-</head>
 
-<body>
+/* =========================================================
+   REJET DEPOT
+   ========================================================= */
 
-<div class="container">
+async function adminRejectDeposit(id){
 
-<h1>🇨🇩 KINSHASA BUSINESS</h1>
+  const note=prompt(
+    "Pourquoi rejeter ce dépôt ?"
+  );
 
-<div class="status">
-✅ MODULE ADMINISTRATION — TEST
-</div>
+  if(note===null)return;
 
-<div class="warning">
-⚠️ Ceci est uniquement une interface de test.
-Aucune opération réelle n'est effectuée.
-</div>
+  try{
 
-<div class="card">
+    const {error}=await sb.rpc(
+      "admin_set_deposit_status",
+      {
+        p_request_id:id,
+        p_status:"rejected",
+        p_note:note||"Dépôt rejeté"
+      }
+    );
 
-<h2>👥 Gestion des membres</h2>
+    if(error)throw error;
 
-<input
-id="memberSearch"
-placeholder="Rechercher un membre..."
->
+    alert("❌ Dépôt rejeté.");
 
-<div class="grid">
+    await loadAdminData();
 
-<button class="green" onclick="test('Afficher tous les membres')">
-👥 Tous les membres
-</button>
+  }catch(e){
 
-<button class="orange" onclick="test('Afficher les membres en attente')">
-⏳ En attente
-</button>
+    alert(
+      "Impossible de rejeter le dépôt :\n"+
+      e.message
+    );
 
-<button class="red" onclick="test('Bloquer le membre')">
-🚫 Bloquer
-</button>
-
-<button class="green" onclick="test('Débloquer le membre')">
-🔓 Débloquer
-</button>
-
-<button class="dark" onclick="test('Réinitialiser le mot de passe')">
-🔑 Réinitialiser mot de passe
-</button>
-
-<button class="orange" onclick="test('Modifier le code membre')">
-✏️ Modifier code
-</button>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h2>💰 Dépôts</h2>
-
-<div class="grid">
-
-<button class="green"
-onclick="test('Valider le dépôt')">
-✅ Valider
-</button>
-
-<button class="red"
-onclick="test('Rejeter le dépôt')">
-❌ Rejeter
-</button>
-
-<button class="dark"
-onclick="test('Voir tous les dépôts')">
-📋 Tous les dépôts
-</button>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h2>💸 Retraits</h2>
-
-<div class="grid">
-
-<button class="green"
-onclick="test('Valider le retrait')">
-✅ Valider
-</button>
-
-<button class="red"
-onclick="test('Rejeter le retrait')">
-❌ Rejeter
-</button>
-
-<button class="dark"
-onclick="test('Voir tous les retraits')">
-📋 Tous les retraits
-</button>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h2>📱 Moyens de paiement</h2>
-
-<input
-id="operator"
-placeholder="Nom opérateur : Airtel Money"
->
-
-<input
-id="paymentNumber"
-placeholder="Numéro de paiement"
->
-
-<input
-id="paymentName"
-placeholder="Nom du bénéficiaire"
->
-
-<button class="green"
-onclick="testPayment()">
-➕ Ajouter / modifier
-</button>
-
-</div>
-
-
-<div class="card">
-
-<h2>📢 Assistance</h2>
-
-<input
-id="whatsapp"
-placeholder="Lien WhatsApp"
->
-
-<input
-id="telegram"
-placeholder="Lien Telegram"
->
-
-<input
-id="support"
-placeholder="Numéro service client"
->
-
-<button class="green"
-onclick="testSupport()">
-💾 Enregistrer assistance
-</button>
-
-</div>
-
-
-<div class="card">
-
-<h2>⚙️ Paramètres</h2>
-
-<label>Nom de la plateforme</label>
-
-<input
-value="KINSHASA BUSINESS"
->
-
-<label>Minimum dépôt</label>
-
-<input
-value="15000"
-type="number"
->
-
-<label>Minimum retrait</label>
-
-<input
-value="2000"
-type="number"
->
-
-<label>Frais retrait (%)</label>
-
-<input
-value="10"
-type="number"
->
-
-<button class="green"
-onclick="test('Enregistrer les paramètres')">
-💾 Enregistrer
-</button>
-
-</div>
-
-
-<div class="card">
-
-<h2>🛡️ Sécurité</h2>
-
-<button class="orange"
-onclick="test('Activer maintenance')">
-🔧 Mode maintenance
-</button>
-
-<button class="dark"
-onclick="test('Afficher journal administrateur')">
-📜 Journal des actions
-</button>
-
-</div>
-
-</div>
-
-
-<script>
-
-function test(action){
-
-alert(
-"TEST ADMIN\n\n"+
-"Action : "+action+
-"\n\nLe bouton fonctionne."
-);
-
+  }
 }
 
-function testPayment(){
 
-const operator=
-document.getElementById("operator").value;
+/* =========================================================
+   VALIDATION RETRAIT
+   ========================================================= */
 
-const number=
-document.getElementById("paymentNumber").value;
+async function adminValidateWithdrawal(id){
 
-const name=
-document.getElementById("paymentName").value;
+  if(!confirm(
+    "Confirmer la validation de ce retrait ?"
+  ))return;
 
-alert(
-"TEST PAIEMENT\n\n"+
-"Opérateur : "+operator+
-"\nNuméro : "+number+
-"\nBénéficiaire : "+name+
-"\n\nLe formulaire fonctionne."
-);
+  const note=prompt(
+    "Note administrative (facultatif)"
+  )||"Retrait validé";
 
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_set_withdrawal_status",
+      {
+        p_request_id:id,
+        p_status:"approved",
+        p_note:note
+      }
+    );
+
+    if(error)throw error;
+
+    alert("✅ Retrait validé.");
+
+    await loadAdminData();
+
+  }catch(e){
+
+    alert(
+      "Impossible de valider le retrait :\n"+
+      e.message
+    );
+
+  }
 }
 
-function testSupport(){
 
-const whatsapp=
-document.getElementById("whatsapp").value;
+/* =========================================================
+   REJET RETRAIT
+   ========================================================= */
 
-const telegram=
-document.getElementById("telegram").value;
+async function adminRejectWithdrawal(id){
 
-const support=
-document.getElementById("support").value;
+  const note=prompt(
+    "Pourquoi rejeter ce retrait ?"
+  );
 
-alert(
-"TEST ASSISTANCE\n\n"+
-"WhatsApp : "+whatsapp+
-"\nTelegram : "+telegram+
-"\nService client : "+support+
-"\n\nLe formulaire fonctionne."
-);
+  if(note===null)return;
 
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_set_withdrawal_status",
+      {
+        p_request_id:id,
+        p_status:"rejected",
+        p_note:note||"Retrait rejeté"
+      }
+    );
+
+    if(error)throw error;
+
+    alert("❌ Retrait rejeté.");
+
+    await loadAdminData();
+
+  }catch(e){
+
+    alert(
+      "Impossible de rejeter le retrait :\n"+
+      e.message
+    );
+
+  }
 }
 
-</script>
 
-</body>
-</html>
+/* =========================================================
+   BLOQUER MEMBRE
+   ========================================================= */
+
+async function adminBlockMember(id){
+
+  if(!confirm(
+    "Bloquer ce membre ?\n\n"+
+    "Il ne pourra plus utiliser normalement son compte."
+  ))return;
+
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_set_member_blocked",
+      {
+        p_user_id:id,
+        p_blocked:true,
+        p_reason:"Blocage administrateur"
+      }
+    );
+
+    if(error)throw error;
+
+    alert("🔒 Membre bloqué.");
+
+    await loadAdminData();
+
+  }catch(e){
+
+    alert(
+      "Impossible de bloquer le membre :\n"+
+      e.message
+    );
+
+  }
+}
+
+
+/* =========================================================
+   DEBLOQUER
+   ========================================================= */
+
+async function adminUnblockMember(id){
+
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_set_member_blocked",
+      {
+        p_user_id:id,
+        p_blocked:false,
+        p_reason:"Déblocage administrateur"
+      }
+    );
+
+    if(error)throw error;
+
+    alert("🔓 Membre débloqué.");
+
+    await loadAdminData();
+
+  }catch(e){
+
+    alert(
+      "Impossible de débloquer :\n"+
+      e.message
+    );
+
+  }
+}
+
+
+/* =========================================================
+   RESET MOT DE PASSE
+   ========================================================= */
+
+async function adminResetPassword(id){
+
+  if(!confirm(
+    "Envoyer un lien sécurisé de réinitialisation "+
+    "du mot de passe à ce membre ?"
+  ))return;
+
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_send_password_reset",
+      {
+        p_user_id:id
+      }
+    );
+
+    if(error)throw error;
+
+    alert(
+      "🔑 Le lien de réinitialisation a été demandé."
+    );
+
+  }catch(e){
+
+    alert(
+      "Impossible de réinitialiser le mot de passe :\n"+
+      e.message
+    );
+
+  }
+}
+
+
+/* =========================================================
+   MODIFIER CODE MEMBRE
+   ========================================================= */
+
+async function adminChangeCode(id){
+
+  const code=prompt(
+    "Nouveau code membre :"
+  );
+
+  if(!code)return;
+
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_change_member_code",
+      {
+        p_user_id:id,
+        p_new_code:code.trim().toUpperCase()
+      }
+    );
+
+    if(error)throw error;
+
+    alert("✅ Code membre modifié.");
+
+    await loadAdminData();
+
+  }catch(e){
+
+    alert(
+      "Impossible de modifier le code :\n"+
+      e.message
+    );
+
+  }
+}
+
+
+/* =========================================================
+   MODIFIER SOLDE
+   ========================================================= */
+
+async function adminAdjustBalance(id){
+
+  const amount=prompt(
+    "Montant à ajouter ou retirer.\n\n"+
+    "Exemple : 5000 pour ajouter.\n"+
+    "Exemple : -5000 pour retirer."
+  );
+
+  if(amount===null)return;
+
+  const value=Number(amount);
+
+  if(!Number.isFinite(value) || value===0){
+
+    alert("Montant invalide.");
+
+    return;
+  }
+
+  const reason=prompt(
+    "Motif obligatoire de la modification :"
+  );
+
+  if(!reason)return;
+
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_adjust_balance",
+      {
+        p_user_id:id,
+        p_amount:value,
+        p_reason:reason
+      }
+    );
+
+    if(error)throw error;
+
+    alert("✅ Solde modifié.");
+
+    await loadAdminData();
+
+  }catch(e){
+
+    alert(
+      "Impossible de modifier le solde :\n"+
+      e.message
+    );
+
+  }
+}
+
+
+/* =========================================================
+   ATTRIBUTION KIN
+   ========================================================= */
+
+async function adminAssignKin(id){
+
+  const kin=prompt(
+    "Quel KIN attribuer ?\n\n"+
+    "KIN1, KIN2, KIN3, KIN4, KIN5, KIN6 ou KIN7"
+  );
+
+  if(!kin)return;
+
+  const value=kin.trim().toUpperCase();
+
+  if(!PLANS.some(p=>p.id===value)){
+
+    alert("KIN invalide.");
+
+    return;
+  }
+
+  const reason=prompt(
+    "Motif de l'attribution :"
+  );
+
+  if(!reason)return;
+
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_assign_kin",
+      {
+        p_user_id:id,
+        p_kin_id:value,
+        p_reason:reason
+      }
+    );
+
+    if(error)throw error;
+
+    alert(
+      "✅ "+value+
+      " attribué au membre."
+    );
+
+  }catch(e){
+
+    alert(
+      "Impossible d'attribuer le KIN :\n"+
+      e.message
+    );
+
+  }
+}
+
+
+/* =========================================================
+   PARAMETRES
+   ========================================================= */
+
+async function saveAdminSetting(key){
+
+  let value="";
+
+  if(key==="site_name")
+    value=document.getElementById(
+      "settingSiteName"
+    ).value.trim();
+
+  if(key==="withdrawal_fee")
+    value=document.getElementById(
+      "settingWithdrawalFee"
+    ).value;
+
+  if(key==="min_deposit")
+    value=document.getElementById(
+      "settingMinDeposit"
+    ).value;
+
+  if(key==="min_withdraw")
+    value=document.getElementById(
+      "settingMinWithdraw"
+    ).value;
+
+  if(key==="whatsapp")
+    value=document.getElementById(
+      "settingWhatsapp"
+    ).value.trim();
+
+  if(key==="telegram")
+    value=document.getElementById(
+      "settingTelegram"
+    ).value.trim();
+
+  if(key==="support")
+    value=document.getElementById(
+      "settingSupport"
+    ).value.trim();
+
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_update_setting",
+      {
+        p_key:key,
+        p_value:String(value)
+      }
+    );
+
+    if(error)throw error;
+
+    alert("✅ Paramètre enregistré.");
+
+  }catch(e){
+
+    alert(
+      "Impossible d'enregistrer :\n"+
+      e.message
+    );
+
+  }
+}
+
+
+/* =========================================================
+   PAIEMENTS
+   ========================================================= */
+
+async function loadAdminPayments(){
+
+  const box=
+    document.getElementById("adminPayments");
+
+  if(!box)return;
+
+  const r=await sb
+    .from("kin_payment_methods")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  if(r.error){
+
+    box.innerHTML=
+      msg(r.error.message,"err");
+
+    return;
+  }
+
+  box.innerHTML=
+    (r.data||[]).map(p=>`
+
+      <div class="pay">
+
+        <strong>
+          ${esc(
+            p.operator||
+            p.name||
+            "Opérateur"
+          )}
+        </strong>
+
+        <div class="number">
+          ${esc(
+            p.payment_number||
+            p.number||
+            "—"
+          )}
+        </div>
+
+        <small>
+          ${esc(p.payment_name||"")}
+        </small>
+
+      </div>
+
+    `).join("") ||
+
+    `<p class="muted">
+      Aucun opérateur supplémentaire.
+    </p>`;
+}
+
+
+function adminAddPayment(){
+
+  showModal(`
+
+    <button class="close"
+      onclick="closeModal()">×</button>
+
+    <h2>➕ Ajouter un opérateur</h2>
+
+    <label>Opérateur</label>
+
+    <input
+      id="newPayOperator"
+      placeholder="AIRTEL MONEY">
+
+    <label>Numéro</label>
+
+    <input
+      id="newPayNumber"
+      placeholder="Numéro de paiement">
+
+    <label>Nom bénéficiaire</label>
+
+    <input
+      id="newPayName"
+      placeholder="Nom">
+
+    <button
+      class="btn btn-red"
+      onclick="saveNewPayment()">
+      Enregistrer
+    </button>
+
+  `);
+}
+
+
+async function saveNewPayment(){
+
+  const operator=
+    document.getElementById(
+      "newPayOperator"
+    ).value.trim();
+
+  const number=
+    document.getElementById(
+      "newPayNumber"
+    ).value.trim();
+
+  const name=
+    document.getElementById(
+      "newPayName"
+    ).value.trim();
+
+  if(!operator||!number){
+
+    alert(
+      "Opérateur et numéro obligatoires."
+    );
+
+    return;
+  }
+
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_add_payment_method",
+      {
+        p_operator:operator,
+        p_number:number,
+        p_name:name
+      }
+    );
+
+    if(error)throw error;
+
+    closeModal();
+
+    alert(
+      "✅ Moyen de paiement ajouté."
+    );
+
+    await loadAdminPayments();
+
+  }catch(e){
+
+    alert(
+      "Impossible d'ajouter le moyen de paiement :\n"+
+      e.message
+    );
+
+  }
+}
+
+
+/* =========================================================
+   KIN
+   ========================================================= */
+
+async function loadAdminPlans(){
+
+  const box=
+    document.getElementById("adminPlans");
+
+  if(!box)return;
+
+  box.innerHTML=
+
+    PLANS.map(p=>`
+
+      <div class="member">
+
+        <div class="row">
+
+          <b>${p.id}</b>
+
+          <b>${money(p.price)}</b>
+
+        </div>
+
+        <div class="small">
+          Gain affiché :
+          <b>${money(p.gain)}/jour</b>
+        </div>
+
+        <div class="small">
+          Durée :
+          ${p.days} jours
+        </div>
+
+        <div class="small">
+          Maximum :
+          ${p.max}
+        </div>
+
+        <button
+          class="btn btn-dark"
+          onclick="adminEditKin('${p.id}')">
+          ✏️ Modifier ${p.id}
+        </button>
+
+      </div>
+
+    `).join("");
+}
+
+
+function adminEditKin(id){
+
+  const p=
+    PLANS.find(x=>x.id===id);
+
+  if(!p)return;
+
+  showModal(`
+
+    <button class="close"
+      onclick="closeModal()">×</button>
+
+    <h2>✏️ ${p.id}</h2>
+
+    <label>Prix</label>
+
+    <input
+      id="editKinPrice"
+      type="number"
+      value="${p.price}">
+
+    <label>Gain affiché / jour</label>
+
+    <input
+      id="editKinGain"
+      type="number"
+      value="${p.gain}">
+
+    <label>Durée</label>
+
+    <input
+      id="editKinDays"
+      type="number"
+      value="${p.days}">
+
+    <label>Nombre maximum</label>
+
+    <input
+      id="editKinMax"
+      type="number"
+      value="${p.max}">
+
+    <button
+      class="btn btn-red"
+      onclick="saveKinEdit('${p.id}')">
+      Enregistrer
+    </button>
+
+  `);
+}
+
+
+async function saveKinEdit(id){
+
+  const price=
+    Number(
+      document.getElementById(
+        "editKinPrice"
+      ).value
+    );
+
+  const gain=
+    Number(
+      document.getElementById(
+        "editKinGain"
+      ).value
+    );
+
+  const days=
+    Number(
+      document.getElementById(
+        "editKinDays"
+      ).value
+    );
+
+  const max=
+    Number(
+      document.getElementById(
+        "editKinMax"
+      ).value
+    );
+
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_update_kin_plan",
+      {
+        p_kin_id:id,
+        p_price:price,
+        p_daily_gain:gain,
+        p_duration_days:days,
+        p_max_positions:max
+      }
+    );
+
+    if(error)throw error;
+
+    closeModal();
+
+    alert(
+      "✅ Paramètres "+id+
+      " enregistrés."
+    );
+
+    await loadAdminPlans();
+
+  }catch(e){
+
+    alert(
+      "Impossible de modifier "+id+" :\n"+
+      e.message
+    );
+
+  }
+}
+
+
+/* =========================================================
+   MAINTENANCE
+   ========================================================= */
+
+async function toggleMaintenance(){
+
+  if(!confirm(
+    "Modifier le mode maintenance du site ?"
+  ))return;
+
+  try{
+
+    const {error}=await sb.rpc(
+      "admin_toggle_maintenance"
+    );
+
+    if(error)throw error;
+
+    alert(
+      "✅ Mode maintenance modifié."
+    );
+
+  }catch(e){
+
+    alert(
+      "Impossible de modifier la maintenance :\n"+
+      e.message
+    );
+
+  }
+}
+
+
+/* =========================================================
+   DATE
+   ========================================================= */
+
+function formatDate(value){
+
+  if(!value)return "Date inconnue";
+
+  try{
+
+    return new Date(value)
+      .toLocaleString(
+        "fr-FR",
+        {
+          dateStyle:"short",
+          timeStyle:"short"
+        }
+      );
+
+  }catch(e){
+
+    return value;
+  }
+}
