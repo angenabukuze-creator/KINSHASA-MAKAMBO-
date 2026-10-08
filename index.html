@@ -3,10 +3,10 @@
   <div class="card">
     <h2>📜 Historique de mes transactions</h2>
     <p class="small">
-      Retrouvez vos dépôts, retraits, revenus, commissions et bonus.
+      Retrouvez ici vos opérations, leur statut, leur date et leur heure.
     </p>
 
-    <label>Type d'opération</label>
+    <label for="historyFilter">Filtrer les opérations</label>
     <select id="historyFilter" onchange="loadHistory()">
       <option value="all">Toutes les opérations</option>
       <option value="depot">Dépôts</option>
@@ -14,91 +14,212 @@
       <option value="revenu">Revenus</option>
       <option value="commission">Commissions</option>
       <option value="bonus">Bonus</option>
+      <option value="pointage">Pointages</option>
+      <option value="kin">Achats KIN</option>
     </select>
 
+    <div id="historySummary" class="grid">
+      <div class="stat">
+        <span class="small">Opérations affichées</span>
+        <strong id="historyCount">0</strong>
+      </div>
+      <div class="stat">
+        <span class="small">Montant total affiché</span>
+        <strong id="historyTotal">0 FC</strong>
+      </div>
+    </div>
+
     <div id="historyList">
-      <p class="small">Chargement de l'historique...</p>
+      <div class="loader">Chargement de votre historique...</div>
     </div>
   </div>
 </section>
 
 <script>
-async function loadHistory() {
-  const box = document.getElementById("historyList");
-  const filter = document.getElementById("historyFilter")?.value || "all";
+/*
+  Historique personnel.
+  À intégrer dans le script existant, sans remplacer
+  les autres fonctions du site.
+*/
 
-  if (!box) return;
+function historyMoney(value) {
+  return new Intl.NumberFormat("fr-FR", {
+    maximumFractionDigits: 0
+  }).format(Number(value || 0)) + " FC";
+}
+
+function historyDate(value) {
+  if (!value) return "Date non disponible";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "Date non disponible";
+
+  return date.toLocaleString("fr-FR", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    hour12: false
+  });
+}
+
+function historyEscape(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+async function loadHistory() {
+  const list = document.getElementById("historyList");
+  const filter = document.getElementById("historyFilter")?.value || "all";
+  const count = document.getElementById("historyCount");
+  const total = document.getElementById("historyTotal");
+
+  if (!list) return;
 
   if (!user?.id) {
-    box.innerHTML = "<p>Connectez-vous pour voir vos transactions.</p>";
+    list.innerHTML = '<div class="notice">Connectez-vous pour voir vos opérations.</div>';
     return;
   }
 
-  box.innerHTML = "<p>Chargement...</p>";
+  list.innerHTML = '<div class="loader">Chargement...</div>';
 
-  const { data, error } = await sb
-    .from("kin_transactions")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(200);
+  const operations = [];
+  const errors = [];
 
-  if (error) {
-    box.innerHTML =
-      "<p>Historique indisponible pour le moment.</p>";
-    return;
+  async function readTable(table, type, amountColumn = "amount") {
+    const { data, error } = await sb
+      .from(table)
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(200);
+
+    if (error) {
+      errors.push(table);
+      console.warn("Historique indisponible :", table, error.message);
+      return;
+    }
+
+    (data || []).forEach(row => {
+      operations.push({
+        type,
+        amount: Number(row[amountColumn] || 0),
+        status: row.status || row.state || "enregistré",
+        date: row.created_at || row.transaction_date || row.date,
+        reference: row.reference || row.transaction_id || "",
+        operator: row.operator || row.payment_method || "",
+        note: row.description || row.note || row.reason || ""
+      });
+    });
   }
 
-  const rows = (data || []).filter(t => {
-    if (filter === "all") return true;
+  const tasks = [
+    ["kin_deposit_requests", "depot"],
+    ["kin_withdrawal_requests", "retrait"],
+    ["kin_transactions", "transaction"],
+    ["kin_purchases", "kin"],
+    ["kin_daily_checkins", "pointage"]
+  ];
 
-    const type = String(t.type || "").toLowerCase();
-    const description = String(t.description || "").toLowerCase();
-    const value = type + " " + description;
+  for (const [table, type] of tasks) {
+    await readTable(table, type);
+  }
 
-    const keywords = {
-      depot: ["depot", "dépôt", "recharge"],
-      retrait: ["retrait", "withdraw"],
-      revenu: ["revenu", "gain", "earning"],
-      commission: ["commission", "parrainage"],
-      bonus: ["bonus", "prime", "inscription"]
-    };
+  const typeLabels = {
+    depot: "💰 Dépôt",
+    retrait: "💸 Retrait",
+    revenu: "📈 Revenu",
+    commission: "🤝 Commission",
+    bonus: "🎁 Bonus",
+    pointage: "🎯 Pointage",
+    kin: "📦 Achat KIN",
+    transaction: "💳 Transaction"
+  };
 
-    return (keywords[filter] || []).some(k => value.includes(k));
+  const normalized = operations.map(op => {
+    const text = (
+      String(op.type) + " " +
+      String(op.note) + " " +
+      String(op.reference)
+    ).toLowerCase();
+
+    if (op.type === "transaction") {
+      if (text.includes("commission")) op.type = "commission";
+      else if (text.includes("bonus")) op.type = "bonus";
+      else if (text.includes("revenu") || text.includes("gain")) op.type = "revenu";
+      else if (text.includes("dépôt") || text.includes("depot")) op.type = "depot";
+      else if (text.includes("retrait")) op.type = "retrait";
+    }
+
+    return op;
   });
 
-  if (!rows.length) {
-    box.innerHTML =
-      "<p class='small'>Aucune transaction dans cette catégorie.</p>";
+  const filtered = normalized
+    .filter(op => filter === "all" || op.type === filter)
+    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+  if (count) count.textContent = String(filtered.length);
+
+  if (total) {
+    total.textContent = historyMoney(
+      filtered.reduce((sum, op) => sum + op.amount, 0)
+    );
+  }
+
+  if (!filtered.length) {
+    list.innerHTML = `
+      <div class="notice">
+        Aucun historique disponible pour ce filtre.
+        Les revenus et commissions apparaîtront lorsqu'ils seront
+        enregistrés dans la base de données.
+      </div>
+      ${errors.length ? `
+        <p class="small">
+          Certaines catégories ne sont pas accessibles dans la base actuelle.
+        </p>` : ""}
+    `;
     return;
   }
 
-  box.innerHTML = rows.map(t => {
-    const amount = Number(t.amount || 0);
-    const date = t.created_at
-      ? new Date(t.created_at).toLocaleString("fr-FR")
-      : "Date indisponible";
-
-    const safe = value =>
-      String(value ?? "").replace(/[&<>"']/g, c => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      })[c]);
+  list.innerHTML = filtered.map(op => {
+    const status = String(op.status || "enregistré");
+    const statusClass = /valid|approved|completed|success/i.test(status)
+      ? "green"
+      : /reject|refus|cancel|failed/i.test(status)
+        ? "red"
+        : "";
 
     return `
       <div class="tableItem">
-        <b>${safe(t.type || "Transaction")}</b>
-        <p class="small">${safe(t.description || "")}</p>
-        <p>
-          <strong class="${amount >= 0 ? "green" : "red"}">
-            ${amount >= 0 ? "+" : ""}${amount.toLocaleString("fr-FR")} FC
-          </strong>
-        </p>
-        <p class="small">Statut : ${safe(t.status || "Enregistré")}</p>
-        <p class="small">📅 ${safe(date)}</p>
+        <div style="display:flex;justify-content:space-between;gap:10px">
+          <b>${historyEscape(typeLabels[op.type] || "💳 Transaction")}</b>
+          <b>${historyMoney(op.amount)}</b>
+        </div>
+
+        <div class="small" style="margin-top:6px">
+          📅 ${historyEscape(historyDate(op.date))}
+        </div>
+
+        <div class="small">
+          Statut :
+          <b class="${statusClass}">${historyEscape(status)}</b>
+        </div>
+
+        ${op.operator ? `
+          <div class="small">Opérateur : ${historyEscape(op.operator)}</div>
+        ` : ""}
+
+        ${op.reference ? `
+          <div class="small">Référence : ${historyEscape(op.reference)}</div>
+        ` : ""}
+
+        ${op.note ? `
+          <div class="small">${historyEscape(op.note)}</div>
+        ` : ""}
       </div>
     `;
   }).join("");
