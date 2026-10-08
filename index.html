@@ -1,195 +1,106 @@
-<!-- ===== HISTORIQUE DES TRANSACTIONS DES MEMBRES ===== -->
-<section id="member-transaction-history" class="transaction-history">
-  <h2>📊 Historique de mes transactions</h2>
-  <p>Consultez vos opérations avec leur montant, statut, date et heure.</p>
+<!-- HISTORIQUE DES TRANSACTIONS DU MEMBRE -->
+<section id="historySection" class="hidden">
+  <div class="card">
+    <h2>📜 Historique de mes transactions</h2>
+    <p class="small">
+      Retrouvez vos dépôts, retraits, revenus, commissions et bonus.
+    </p>
 
-  <div class="history-filters">
-    <button onclick="filterMemberTransactions('all')">Tout</button>
-    <button onclick="filterMemberTransactions('depot')">Dépôts</button>
-    <button onclick="filterMemberTransactions('retrait')">Retraits</button>
-    <button onclick="filterMemberTransactions('revenu')">Revenus</button>
-    <button onclick="filterMemberTransactions('commission')">Commissions</button>
-    <button onclick="filterMemberTransactions('bonus')">Bonus</button>
+    <label>Type d'opération</label>
+    <select id="historyFilter" onchange="loadHistory()">
+      <option value="all">Toutes les opérations</option>
+      <option value="depot">Dépôts</option>
+      <option value="retrait">Retraits</option>
+      <option value="revenu">Revenus</option>
+      <option value="commission">Commissions</option>
+      <option value="bonus">Bonus</option>
+    </select>
+
+    <div id="historyList">
+      <p class="small">Chargement de l'historique...</p>
+    </div>
   </div>
-
-  <div id="memberTransactionList">Chargement de l'historique…</div>
 </section>
 
-<style>
-.transaction-history {
-  background:#141417;
-  color:#fff;
-  padding:16px;
-  margin:16px 0;
-  border:1px solid #303038;
-  border-radius:16px;
-}
-.transaction-history h2 {font-size:20px}
-.transaction-history p {color:#aaa;font-size:13px}
-.history-filters {display:flex;flex-wrap:wrap;gap:7px;margin:14px 0}
-.history-filters button {
-  background:#29292f;color:#fff;border:1px solid #444;
-  padding:9px 11px;border-radius:9px;
-}
-.history-item {
-  padding:12px;margin:9px 0;border:1px solid #303038;
-  border-radius:12px;background:#09090b;
-}
-.history-item .history-date {font-size:12px;color:#aaa;margin-top:6px}
-.history-amount {font-size:17px;font-weight:bold}
-.history-status {font-size:12px;margin-top:5px;color:#f5c542}
-.history-empty {padding:14px;color:#aaa}
-</style>
-
 <script>
-let memberTransactionRows = [];
-let memberTransactionFilter = "all";
+async function loadHistory() {
+  const box = document.getElementById("historyList");
+  const filter = document.getElementById("historyFilter")?.value || "all";
 
-function filterMemberTransactions(type) {
-  memberTransactionFilter = type;
-  displayMemberTransactions();
-}
+  if (!box) return;
 
-function displayMemberTransactions() {
-  const container = document.getElementById("memberTransactionList");
-  if (!container) return;
+  if (!user?.id) {
+    box.innerHTML = "<p>Connectez-vous pour voir vos transactions.</p>";
+    return;
+  }
 
-  const rows = memberTransactionFilter === "all"
-    ? memberTransactionRows
-    : memberTransactionRows.filter(t => t.type === memberTransactionFilter);
+  box.innerHTML = "<p>Chargement...</p>";
+
+  const { data, error } = await sb
+    .from("kin_transactions")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(200);
+
+  if (error) {
+    box.innerHTML =
+      "<p>Historique indisponible pour le moment.</p>";
+    return;
+  }
+
+  const rows = (data || []).filter(t => {
+    if (filter === "all") return true;
+
+    const type = String(t.type || "").toLowerCase();
+    const description = String(t.description || "").toLowerCase();
+    const value = type + " " + description;
+
+    const keywords = {
+      depot: ["depot", "dépôt", "recharge"],
+      retrait: ["retrait", "withdraw"],
+      revenu: ["revenu", "gain", "earning"],
+      commission: ["commission", "parrainage"],
+      bonus: ["bonus", "prime", "inscription"]
+    };
+
+    return (keywords[filter] || []).some(k => value.includes(k));
+  });
 
   if (!rows.length) {
-    container.innerHTML =
-      '<div class="history-empty">Aucune transaction pour cette catégorie.</div>';
+    box.innerHTML =
+      "<p class='small'>Aucune transaction dans cette catégorie.</p>";
     return;
   }
 
-  container.innerHTML = rows.map(t => {
-    const date = t.created_at ? new Date(t.created_at) : null;
-    const dateText = date && !isNaN(date)
-      ? date.toLocaleString("fr-FR", {dateStyle:"medium", timeStyle:"short"})
+  box.innerHTML = rows.map(t => {
+    const amount = Number(t.amount || 0);
+    const date = t.created_at
+      ? new Date(t.created_at).toLocaleString("fr-FR")
       : "Date indisponible";
 
-    const amount = Number(t.amount || 0).toLocaleString("fr-FR") + " FC";
-    const title = {
-      depot:"Dépôt", retrait:"Retrait", revenu:"Revenu",
-      commission:"Commission", bonus:"Bonus"
-    }[t.type] || "Transaction";
+    const safe = value =>
+      String(value ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[c]);
 
     return `
-      <div class="history-item">
-        <div><b>${title}</b></div>
-        <div class="history-amount">${amount}</div>
-        <div class="history-status">Statut : ${escapeHistoryText(t.status || "enregistré")}</div>
-        <div class="history-date">${dateText}</div>
-        ${t.reference ? `<div class="history-date">Référence : ${escapeHistoryText(t.reference)}</div>` : ""}
-      </div>`;
+      <div class="tableItem">
+        <b>${safe(t.type || "Transaction")}</b>
+        <p class="small">${safe(t.description || "")}</p>
+        <p>
+          <strong class="${amount >= 0 ? "green" : "red"}">
+            ${amount >= 0 ? "+" : ""}${amount.toLocaleString("fr-FR")} FC
+          </strong>
+        </p>
+        <p class="small">Statut : ${safe(t.status || "Enregistré")}</p>
+        <p class="small">📅 ${safe(date)}</p>
+      </div>
+    `;
   }).join("");
-}
-
-function escapeHistoryText(value) {
-  return String(value).replace(/[&<>"']/g, char => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
-  }[char]));
-}
-
-async function loadMemberTransactionHistory() {
-  const container = document.getElementById("memberTransactionList");
-  if (!container) return;
-
-  if (typeof sb === "undefined" || !user) {
-    container.innerHTML =
-      '<div class="history-empty">Connectez-vous pour consulter votre historique.</div>';
-    return;
-  }
-
-  container.textContent = "Chargement de l'historique…";
-
-  try {
-    const results = await Promise.all([
-      sb.from("kin_transactions")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", {ascending:false})
-        .limit(500),
-
-      sb.from("kin_deposit_requests")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", {ascending:false})
-        .limit(200),
-
-      sb.from("kin_withdrawal_requests")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", {ascending:false})
-        .limit(200)
-    ]);
-
-    const [transactions, deposits, withdrawals] = results;
-    const errors = results.filter(result => result.error);
-
-    if (errors.length === results.length) {
-      throw errors[0].error;
-    }
-
-    const rows = [];
-
-    if (!transactions.error) {
-      (transactions.data || []).forEach(t => {
-        const rawType = String(t.type || t.transaction_type || "").toLowerCase();
-        let type = rawType.includes("depot") || rawType.includes("deposit") ? "depot"
-          : rawType.includes("retrait") || rawType.includes("withdraw") ? "retrait"
-          : rawType.includes("commission") ? "commission"
-          : rawType.includes("bonus") ? "bonus"
-          : rawType.includes("revenu") || rawType.includes("earning") ? "revenu"
-          : null;
-
-        if (type) rows.push({
-          type,
-          amount: t.amount,
-          status: t.status || "enregistré",
-          created_at: t.created_at || t.inserted_at,
-          reference: t.reference || t.description || ""
-        });
-      });
-    }
-
-    if (!deposits.error) {
-      (deposits.data || []).forEach(t => rows.push({
-        type:"depot",
-        amount:t.amount,
-        status:t.status || "en attente",
-        created_at:t.created_at,
-        reference:t.reference || t.transaction_id || ""
-      }));
-    }
-
-    if (!withdrawals.error) {
-      (withdrawals.data || []).forEach(t => rows.push({
-        type:"retrait",
-        amount:t.amount,
-        status:t.status || "en attente",
-        created_at:t.created_at,
-        reference:t.payment_number || t.withdrawal_number || ""
-      }));
-    }
-
-    const unique = new Map();
-    rows.forEach((t, i) => {
-      const key = [t.type,t.amount,t.created_at,t.status,t.reference].join("|") || String(i);
-      if (!unique.has(key)) unique.set(key,t);
-    });
-
-    memberTransactionRows = Array.from(unique.values()).sort(
-      (a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)
-    );
-
-    displayMemberTransactions();
-  } catch (error) {
-    container.innerHTML =
-      '<div class="history-empty">Impossible de charger l’historique. Réessayez plus tard.</div>';
-    console.error("Historique membre :", error);
-  }
 }
 </script>
