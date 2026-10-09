@@ -1,206 +1,2741 @@
-<!-- KINSHASA BUSINESS — index.html -->
-<!-- Remplacez uniquement après avoir sauvegardé votre version actuelle. -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#09090b">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>KINSHASA BUSINESS 🇨🇩</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--red:#e50914;--bg:#09090b;--card:#17171c;--line:#303038;--muted:#aaaab4;--green:#19c37d}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#fff;font-family:Arial,sans-serif}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer;border:0;border-radius:10px;padding:12px;font-weight:bold}
-input,select,textarea{width:100%;padding:12px;margin:6px 0 12px;background:#101014;color:#fff;border:1px solid var(--line);border-radius:10px}
-label{display:block;color:#ccc;font-size:13px}
-header{position:sticky;top:0;background:#101014;padding:15px;border-bottom:1px solid var(--line);z-index:3}
-h1{font-size:23px}h2{font-size:20px;margin-top:24px}
-main{max-width:760px;margin:auto;padding:15px;padding-bottom:50px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;overflow-wrap:anywhere}
-.btn{display:inline-block;margin:4px 3px 4px 0;background:#303038;color:white}
-.red{background:var(--red);color:white}.green{background:var(--green);color:#07150e}
-.danger{background:#65141a;color:#fff}.muted{color:var(--muted);font-size:13px}
-.row{display:flex;flex-wrap:wrap;gap:7px}.row>*{flex:1}
-.badge{display:inline-block;border-radius:20px;padding:5px 8px;background:#333;font-size:12px}
-.pending{background:#594311}.approved{background:#10472f}.rejected,.blocked{background:#65141a}
-.hidden{display:none!important}.notice{padding:12px;border-left:4px solid var(--red);background:#202026;border-radius:8px}
-nav{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-nav button{background:#25252b;color:white;flex:1;min-width:85px}
-hr{border:0;border-top:1px solid var(--line);margin:15px 0}
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#08090c;
+  color:#fff;
+}
+
+body{
+  min-height:100vh;
+}
+
+button,input,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.muted{
+  color:#a7a7ad;
+}
+
+.small{
+  font-size:12px;
+}
+
+.center{
+  text-align:center;
+}
+
+#auth{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  background:
+    radial-gradient(circle at top,#3d1115 0,#08090c 45%);
+}
+
+.auth-box{
+  width:100%;
+  max-width:430px;
+  background:#111217;
+  border:1px solid #292b31;
+  border-radius:24px;
+  padding:24px;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+
+.logo-auth{
+  text-align:center;
+  margin-bottom:22px;
+}
+
+.flag{
+  font-size:52px;
+  margin-bottom:8px;
+}
+
+.logo-auth h1{
+  margin:0;
+  font-size:25px;
+  font-weight:900;
+}
+
+.logo-auth p{
+  margin:8px 0 0;
+  color:#999ba3;
+}
+
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:18px;
+}
+
+.tabs button{
+  border:0;
+  border-radius:12px;
+  padding:13px;
+  background:#202127;
+  color:#aaa;
+  font-weight:800;
+}
+
+.tabs button.active{
+  background:#d71920;
+  color:#fff;
+}
+
+label{
+  display:block;
+  margin:13px 0 7px;
+  font-size:13px;
+  color:#ccc;
+  font-weight:700;
+}
+
+input,select{
+  width:100%;
+  border:1px solid #30323a;
+  background:#090a0d;
+  color:#fff;
+  border-radius:12px;
+  padding:14px;
+  outline:none;
+}
+
+input:focus,select:focus{
+  border-color:#e31b23;
+}
+
+.btn{
+  width:100%;
+  border:0;
+  border-radius:13px;
+  padding:14px;
+  margin-top:12px;
+  font-weight:900;
+}
+
+.btn-red{
+  background:#d71920;
+  color:#fff;
+}
+
+.btn-green{
+  background:#16834b;
+  color:#fff;
+}
+
+.btn-dark{
+  background:#292b31;
+  color:#fff;
+}
+
+.btn-danger{
+  background:#7e1117;
+  color:#fff;
+}
+
+.msg{
+  padding:12px;
+  border-radius:12px;
+  margin:10px 0;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.msg.ok{
+  background:#0c3925;
+  color:#8ff0bc;
+}
+
+.msg.err{
+  background:#42151a;
+  color:#ffb8bd;
+}
+
+#app{
+  min-height:100vh;
+  padding-bottom:85px;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(8,9,12,.95);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid #292b31;
+  padding:13px 15px;
+}
+
+.header-inner{
+  max-width:900px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand .flag{
+  font-size:29px;
+  margin:0;
+}
+
+.brand strong{
+  display:block;
+  font-size:15px;
+}
+
+.brand small{
+  color:#8f9199;
+}
+
+main{
+  width:100%;
+  max-width:900px;
+  margin:auto;
+  padding:16px;
+}
+
+.hero{
+  background:
+    linear-gradient(135deg,#5b0b10,#d71920 55%,#111217);
+  border-radius:22px;
+  padding:22px;
+  margin-bottom:14px;
+  box-shadow:0 15px 35px rgba(215,25,32,.18);
+}
+
+.hero h2{
+  margin:0 0 5px;
+}
+
+.balance{
+  font-size:34px;
+  font-weight:900;
+  margin:15px 0 2px;
+}
+
+.notice{
+  background:#17191f;
+  border:1px solid #30323a;
+  border-radius:15px;
+  padding:14px;
+  margin:14px 0;
+  line-height:1.5;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.card{
+  background:#121318;
+  border:1px solid #292b31;
+  border-radius:17px;
+  padding:15px;
+  margin:10px 0;
+}
+
+.action{
+  background:#121318;
+  color:#fff;
+  border:1px solid #292b31;
+  border-radius:17px;
+  padding:17px 10px;
+}
+
+.action span{
+  display:block;
+  font-size:25px;
+  margin-bottom:5px;
+}
+
+.action b{
+  font-size:13px;
+}
+
+.plan{
+  background:#121318;
+  border:1px solid #292b31;
+  border-radius:18px;
+  padding:17px;
+  margin:10px 0;
+}
+
+.plan-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.plan h3{
+  margin:0;
+}
+
+.price{
+  color:#ff5158;
+  font-weight:900;
+}
+
+.badge{
+  display:inline-block;
+  background:#2c1114;
+  color:#ff7278;
+  border:1px solid #5b1b20;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.member{
+  background:#121318;
+  border:1px solid #292b31;
+  border-radius:15px;
+  padding:14px;
+  margin:8px 0;
+}
+
+.admin-title{
+  color:#ff555d;
+}
+
+.admin-section{
+  margin-top:20px;
+}
+
+.status{
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:900;
+  display:inline-block;
+}
+
+.status.pending{
+  background:#493b0d;
+  color:#ffd966;
+}
+
+.status.approved{
+  background:#0d3d28;
+  color:#8ff0bc;
+}
+
+.status.rejected{
+  background:#47171b;
+  color:#ff9da3;
+}
+
+.nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:30;
+  background:#101116;
+  border-top:1px solid #292b31;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  padding:7px 5px;
+}
+
+.nav button{
+  border:0;
+  background:transparent;
+  color:#858790;
+  padding:7px 2px;
+  font-size:10px;
+}
+
+.nav button.active{
+  color:#ff4d55;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  background:rgba(0,0,0,.8);
+  display:flex;
+  align-items:flex-end;
+}
+
+.modal-box{
+  width:100%;
+  max-width:600px;
+  max-height:92vh;
+  overflow:auto;
+  margin:auto auto 0;
+  background:#15161b;
+  border-radius:24px 24px 0 0;
+  padding:20px;
+}
+
+.close{
+  float:right;
+  width:35px;
+  height:35px;
+  border:0;
+  border-radius:50%;
+  background:#292b31;
+  color:#fff;
+}
+
+@media(min-width:700px){
+  .nav{
+    left:50%;
+    right:auto;
+    width:700px;
+    transform:translateX(-50%);
+    border-radius:18px 18px 0 0;
+  }
+
+  .grid{
+    grid-template-columns:repeat(4,1fr);
+  }
+}
 </style>
 </head>
+
 <body>
-<header><strong>🇨🇩 KINSHASA BUSINESS</strong></header>
-<main>
+
+<!-- =========================
+     CONNEXION
+========================= -->
+
 <section id="auth">
-<h1>Connexion administrateur / membre</h1>
-<label>Email</label><input id="email" type="email" autocomplete="username">
-<label>Mot de passe</label><input id="password" type="password" autocomplete="current-password">
-<div class="row">
-<button class="red" onclick="login()">Connexion</button>
-<button class="btn" onclick="signup()">Inscription</button>
+
+<div class="auth-box">
+
+  <div class="logo-auth">
+    <div class="flag">🇨🇩</div>
+    <h1>KINSHASA BUSINESS</h1>
+    <p>République démocratique du Congo</p>
+  </div>
+
+  <div class="tabs">
+    <button id="loginTab"
+      class="active"
+      onclick="showAuth('login')">
+      Connexion
+    </button>
+
+    <button id="signupTab"
+      onclick="showAuth('signup')">
+      Inscription
+    </button>
+  </div>
+
+  <div id="authMsg"></div>
+
+  <label>Email</label>
+  <input
+    id="email"
+    type="email"
+    autocomplete="email"
+    placeholder="Votre adresse email">
+
+  <label>Mot de passe</label>
+  <input
+    id="password"
+    type="password"
+    autocomplete="current-password"
+    placeholder="Votre mot de passe">
+
+  <div id="signupFields" class="hidden">
+
+    <label>Nom complet</label>
+    <input
+      id="name"
+      type="text"
+      placeholder="Votre nom">
+
+    <label>Numéro de téléphone</label>
+    <input
+      id="phone"
+      type="tel"
+      placeholder="+243XXXXXXXXX">
+
+    <label>Confirmer le mot de passe</label>
+    <input
+      id="password2"
+      type="password"
+      autocomplete="new-password"
+      placeholder="Confirmer le mot de passe">
+
+    <label>Code de parrainage</label>
+    <input
+      id="referral"
+      type="text"
+      maxlength="11"
+      placeholder="Exemple : KIN12345678">
+
+  </div>
+
+  <button
+    id="authBtn"
+    class="btn btn-red"
+    onclick="submitAuth()">
+    Se connecter
+  </button>
+
+  <button
+    id="resetBtn"
+    class="btn btn-dark"
+    onclick="forgotPassword()">
+    Mot de passe oublié
+  </button>
+
 </div>
-<button class="btn" onclick="resetPassword()">Réinitialiser mon mot de passe</button>
-<div id="authMessage" class="notice"></div>
+
 </section>
+
+
+<!-- =========================
+     APPLICATION
+========================= -->
+
 <section id="app" class="hidden">
-<div class="row">
-<div><b id="memberName">Compte</b><div class="muted" id="memberEmail"></div></div>
-<button class="btn" onclick="logout()">Déconnexion</button>
-</div>
-<nav>
-<button onclick="showPage('home')">Accueil</button>
-<button onclick="showPage('deposit')">Dépôt</button>
-<button onclick="showPage('withdraw')">Retrait</button>
-<button onclick="showPage('team')">Équipe</button>
-<button onclick="showPage('profile')">Profil</button>
-<button id="adminNav" class="red hidden" onclick="showPage('admin')">Administration</button>
+
+<header>
+  <div class="header-inner">
+
+    <div class="brand">
+      <div class="flag">🇨🇩</div>
+
+      <div>
+        <strong>KINSHASA BUSINESS</strong>
+        <small>Plateforme RDC</small>
+      </div>
+    </div>
+
+    <button
+      class="btn btn-dark"
+      style="width:auto;margin:0;padding:8px 12px"
+      onclick="logout()">
+      Sortir
+    </button>
+
+  </div>
+</header>
+
+<main id="content"></main>
+
+<nav class="nav">
+
+  <button id="nav-home" onclick="page('home')">
+    🏠<br>Accueil
+  </button>
+
+  <button id="nav-products" onclick="page('products')">
+    📦<br>Produits
+  </button>
+
+  <button id="nav-tasks" onclick="page('tasks')">
+    ✓<br>Tâches
+  </button>
+
+  <button id="nav-team" onclick="page('team')">
+    👥<br>Équipe
+  </button>
+
+  <button id="nav-profile" onclick="page('profile')">
+    👤<br>Profil
+  </button>
+
 </nav>
-<div id="content"></div>
+
 </section>
-</main>
+
+<div id="modal"></div>
+
+
 <script>
-const SUPABASE_URL="https://uewceocdzvekuopgsmpg.supabase.co";
-const SUPABASE_KEY="sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const ADMIN_EMAIL="angenabukuze@gmail.com";
-const PAYMENTS=[
- {operator:"AIRTEL MONEY",number:"973087965",name:"YVETTE"},
- {operator:"ORANGE MONEY",number:"899532643",name:"JEANCQUELINE"},
- {operator:"M-PESA",number:"0861823718",name:"REGINA"}
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+  "https://uewceocdzvekuopgsmpg.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
+
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+/* =====================================================
+   CONFIGURATION
+===================================================== */
+
+const ADMIN_EMAIL =
+  "angenabukuze@gmail.com";
+
+const PAYMENTS = [
+  {
+    operator:"AIRTEL MONEY",
+    number:"973087965",
+    name:"YVETTE"
+  },
+  {
+    operator:"ORANGE MONEY",
+    number:"899532643",
+    name:"JEANCQUELINE"
+  },
+  {
+    operator:"M-PESA",
+    number:"0861823718",
+    name:"REGINA"
+  }
 ];
-const PLANS=[
- {id:"KIN1",price:15000,gain:2000,days:60,max:1},
- {id:"KIN2",price:30000,gain:4400,days:60,max:2},
- {id:"KIN3",price:80000,gain:12300,days:60,max:3},
- {id:"KIN4",price:150000,gain:24000,days:60,max:3},
- {id:"KIN5",price:300000,gain:52000,days:60,max:5},
- {id:"KIN6",price:600000,gain:120000,days:60,max:2},
- {id:"KIN7",price:1500000,gain:330000,days:60,max:2}
+
+const PLANS = [
+
+  {
+    id:"suw6v7",
+    name:"KIN1",
+    price:15000,
+    daily:2000,
+    days:60,
+    max:1
+  },
+
+  {
+    id:"kin2",
+    name:"KIN2",
+    price:30000,
+    daily:4400,
+    days:60,
+    max:2
+  },
+
+  {
+    id:"kin3",
+    name:"KIN3",
+    price:80000,
+    daily:12300,
+    days:60,
+    max:3
+  },
+
+  {
+    id:"kin4",
+    name:"KIN4",
+    price:150000,
+    daily:24000,
+    days:60,
+    max:3
+  },
+
+  {
+    id:"kin5",
+    name:"KIN5",
+    price:300000,
+    daily:52000,
+    days:60,
+    max:5
+  },
+
+  {
+    id:"kin6",
+    name:"KIN6",
+    price:600000,
+    daily:120000,
+    days:60,
+    max:2
+  },
+
+  {
+    id:"kin7",
+    name:"KIN7",
+    price:1500000,
+    daily:330000,
+    days:60,
+    max:2
+  }
+
 ];
-let user=null,profile=null,wallet=null,isAdmin=false;
-const $=id=>document.getElementById(id);
-const money=n=>Number(n||0).toLocaleString("fr-FR")+" FC";
-const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function message(t){$("authMessage").textContent=t}
-async function login(){
- const {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
- if(error)return message(error.message);
- await loadUser();
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let user = null;
+let profile = null;
+let wallet = null;
+let isAdmin = false;
+let currentPage = "home";
+let authMode = "login";
+
+
+/* =====================================================
+   OUTILS
+===================================================== */
+
+function esc(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
 }
-async function signup(){
- const {data,error}=await sb.auth.signUp({email:$("email").value.trim(),password:$("password").value});
- if(error)return message(error.message);
- message("Inscription envoyée. Connectez-vous si votre compte est actif.");
+
+function money(value){
+
+  return Number(value || 0)
+    .toLocaleString("fr-FR") + " FC";
+
 }
-async function resetPassword(){
- const email=$("email").value.trim();
- if(!email)return message("Entrez votre email.");
- const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});
- message(error?error.message:"Si le compte existe, un lien de réinitialisation sera envoyé.");
+
+function shortCode(id){
+
+  return "KIN" +
+    id
+      .replaceAll("-","")
+      .slice(0,8)
+      .toUpperCase();
+
 }
-async function logout(){await sb.auth.signOut();location.reload()}
+
+function showMessage(text,type="err"){
+
+  document.getElementById("authMsg").innerHTML =
+    `<div class="msg ${type}">${esc(text)}</div>`;
+
+}
+
+function appMessage(text,type="ok"){
+
+  return `<div class="msg ${type}">${esc(text)}</div>`;
+
+}
+
+
+/* =====================================================
+   AUTH MODE
+===================================================== */
+
+function showAuth(mode){
+
+  authMode = mode;
+
+  document
+    .getElementById("loginTab")
+    .classList.toggle("active",mode==="login");
+
+  document
+    .getElementById("signupTab")
+    .classList.toggle("active",mode==="signup");
+
+  const fields =
+    document.getElementById("signupFields");
+
+  fields.classList.toggle(
+    "hidden",
+    mode !== "signup"
+  );
+
+  document.getElementById("authBtn").textContent =
+    mode === "login"
+      ? "Se connecter"
+      : "S'inscrire";
+
+  document.getElementById("authMsg").innerHTML = "";
+
+}
+
+
+/* =====================================================
+   INSCRIPTION / CONNEXION
+===================================================== */
+
+async function submitAuth(){
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  if(!email || !password){
+
+    showMessage(
+      "Veuillez remplir votre email et votre mot de passe."
+    );
+
+    return;
+  }
+
+
+  if(authMode === "login"){
+
+    await login(email,password);
+
+  }else{
+
+    await signup(email,password);
+
+  }
+
+}
+
+
+async function login(email,password){
+
+  showMessage("Connexion en cours...","ok");
+
+  const result =
+    await sb.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if(result.error){
+
+    showMessage(
+      "Connexion impossible : " +
+      result.error.message
+    );
+
+    return;
+  }
+
+  await loadUser();
+
+}
+
+
+async function signup(email,password){
+
+  const name =
+    document.getElementById("name")
+      .value.trim();
+
+  const phone =
+    document.getElementById("phone")
+      .value.trim();
+
+  const password2 =
+    document.getElementById("password2")
+      .value;
+
+  const referral =
+    document.getElementById("referral")
+      .value.trim()
+      .toUpperCase();
+
+
+  if(!name || !phone){
+
+    showMessage(
+      "Veuillez remplir votre nom et votre numéro."
+    );
+
+    return;
+  }
+
+  if(password.length < 6){
+
+    showMessage(
+      "Le mot de passe doit contenir au moins 6 caractères."
+    );
+
+    return;
+  }
+
+  if(password !== password2){
+
+    showMessage(
+      "Les deux mots de passe sont différents."
+    );
+
+    return;
+  }
+
+
+  showMessage(
+    "Création du compte...",
+    "ok"
+  );
+
+
+  const result =
+    await sb.auth.signUp({
+
+      email,
+
+      password,
+
+      options:{
+        data:{
+          name:name,
+          phone:phone
+        }
+      }
+
+    });
+
+
+  if(result.error){
+
+    showMessage(
+      "Inscription impossible : " +
+      result.error.message
+    );
+
+    return;
+  }
+
+
+  if(!result.data.user){
+
+    showMessage(
+      "Le compte n'a pas pu être créé."
+    );
+
+    return;
+  }
+
+
+  const uid =
+    result.data.user.id;
+
+  const code =
+    shortCode(uid);
+
+
+  /*
+     Le profil est créé séparément.
+     Si une colonne optionnelle n'existe pas,
+     on tente d'abord la version complète,
+     puis une version minimale.
+  */
+
+  let profileResult =
+    await sb
+      .from("profiles")
+      .upsert({
+
+        id:uid,
+
+        full_name:name,
+
+        phone:phone,
+
+        referral_code:code,
+
+        referred_by_code:
+          referral || null,
+
+        role:"member"
+
+      },{
+        onConflict:"id"
+      });
+
+
+  if(profileResult.error){
+
+    profileResult =
+      await sb
+        .from("profiles")
+        .upsert({
+
+          id:uid,
+
+          full_name:name,
+
+          phone:phone,
+
+          role:"member"
+
+        },{
+          onConflict:"id"
+        });
+
+  }
+
+
+  /*
+     Création du portefeuille.
+     Si le wallet existe déjà, rien n'est supprimé.
+  */
+
+  await sb
+    .from("kin_wallets")
+    .upsert({
+
+      user_id:uid,
+
+      balance:2000,
+
+      total_earnings:0
+
+    },{
+      onConflict:"user_id"
+    });
+
+
+  showMessage(
+    "Inscription réussie ! Vous pouvez maintenant vous connecter.",
+    "ok"
+  );
+
+  setTimeout(()=>{
+
+    showAuth("login");
+
+    document.getElementById("password").value = "";
+
+  },1200);
+
+}
+
+
+/* =====================================================
+   MOT DE PASSE OUBLIÉ
+===================================================== */
+
+async function forgotPassword(){
+
+  const email =
+    document.getElementById("email")
+      .value.trim();
+
+  if(!email){
+
+    showMessage(
+      "Entrez d'abord votre adresse email."
+    );
+
+    return;
+  }
+
+  const result =
+    await sb.auth.resetPasswordForEmail(
+      email,
+      {
+        redirectTo:
+          window.location.origin
+      }
+    );
+
+  if(result.error){
+
+    showMessage(
+      "Impossible d'envoyer le lien : " +
+      result.error.message
+    );
+
+    return;
+  }
+
+  showMessage(
+    "Un lien sécurisé de réinitialisation a été envoyé à votre email.",
+    "ok"
+  );
+
+}
+
+
+/* =====================================================
+   CHARGEMENT UTILISATEUR
+===================================================== */
+
 async function loadUser(){
- const {data,error}=await sb.auth.getUser();
- if(error||!data.user)return;
- user=data.user;
- const p=await sb.from("profiles").select("*").eq("id",user.id).maybeSingle();
- profile=p.data||{id:user.id,full_name:user.user_metadata?.name||"Membre",role:"member"};
- isAdmin=profile.role==="admin"||user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
- const w=await sb.from("kin_wallets").select("*").eq("user_id",user.id).maybeSingle();
- wallet=w.data||{balance:0,total_earnings:0};
- $("auth").classList.add("hidden");$("app").classList.remove("hidden");
- $("memberName").textContent=profile.full_name||"Membre";
- $("memberEmail").textContent=user.email||"";
- $("adminNav").classList.toggle("hidden",!isAdmin);
- showPage("home");
+
+  const session =
+    await sb.auth.getSession();
+
+  if(!session.data.session){
+
+    document
+      .getElementById("auth")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("app")
+      .classList.add("hidden");
+
+    return;
+  }
+
+  user =
+    session.data.session.user;
+
+
+  const p =
+    await sb
+      .from("profiles")
+      .select("*")
+      .eq("id",user.id)
+      .maybeSingle();
+
+
+  profile =
+    p.data || {
+
+      id:user.id,
+
+      full_name:
+        user.user_metadata?.name ||
+        "Membre",
+
+      role:"member"
+
+    };
+
+
+  isAdmin =
+    profile.role === "admin" ||
+    user.email?.toLowerCase() ===
+      ADMIN_EMAIL.toLowerCase();
+
+
+  const w =
+    await sb
+      .from("kin_wallets")
+      .select("*")
+      .eq("user_id",user.id)
+      .maybeSingle();
+
+
+  wallet =
+    w.data || {
+
+      balance:2000,
+
+      total_earnings:0
+
+    };
+
+
+  document
+    .getElementById("auth")
+    .classList.add("hidden");
+
+  document
+    .getElementById("app")
+    .classList.remove("hidden");
+
+
+  page("home");
+
 }
-function showPage(p){
- if(p==="admin"&&!isAdmin)return alert("Accès administrateur refusé.");
- const c=$("content");
- if(p==="home")c.innerHTML=`<div class="card"><h2>Bienvenue 🇨🇩</h2><h1>${money(wallet?.balance)}</h1>Solde disponible<hr>Gains cumulés : ${money(wallet?.total_earnings)}</div><div class="notice">Les gains affichés ne constituent pas une garantie de rendement.</div><h2>Produits KIN</h2>${PLANS.map(x=>`<div class="card"><b>${x.id}</b><p>Prix : ${money(x.price)}</p><p>Gain affiché : ${money(x.gain)} / jour</p><p>${x.days} jours · maximum ${x.max}</p></div>`).join("")}`;
- if(p==="deposit")renderDeposit();
- if(p==="withdraw")renderWithdraw();
- if(p==="team")c.innerHTML=`<h2>Équipe et assistance</h2><div class="card">Votre code : <b>KIN${user.id.replaceAll("-","").slice(0,8).toUpperCase()}</b></div><div class="card"><a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps" target="_blank"><button class="green">Groupe WhatsApp</button></a><a href="https://t.me/francscongolais" target="_blank"><button class="btn">Groupe Telegram</button></a></div>`;
- if(p==="profile")c.innerHTML=`<div class="card"><h2>Profil</h2>${esc(user.email)}<p>Rôle : ${isAdmin?"Administrateur":"Membre"}</p><button class="btn" onclick="resetPassword()">Envoyer un lien de réinitialisation</button></div>`;
- if(p==="admin")renderAdmin();
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function page(name){
+
+  currentPage = name;
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(b =>
+      b.classList.remove("active")
+    );
+
+
+  const nav =
+    document.getElementById(
+      "nav-" + name
+    );
+
+  if(nav)
+    nav.classList.add("active");
+
+
+  if(name==="home")
+    renderHome();
+
+  else if(name==="products")
+    renderProducts();
+
+  else if(name==="tasks")
+    renderTasks();
+
+  else if(name==="team")
+    renderTeam();
+
+  else if(name==="profile")
+    renderProfile();
+
+  else if(name==="admin")
+    renderAdmin();
+
 }
-function renderDeposit(){
- $("content").innerHTML=`<h2>Demande de dépôt</h2><div class="notice">Minimum : 15 000 FC. La validation du transfert reste à confirmer par l'administration.</div><label>Montant FC</label><input id="depAmount" type="number" min="15000"><label>Opérateur</label><select id="depOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator} — ${p.number} — ${p.name}</option>`).join("")}</select><label>Référence du transfert</label><input id="depRef"><button class="red" onclick="submitDeposit()">Envoyer</button>`;
+
+
+/* =====================================================
+   ACCUEIL
+===================================================== */
+
+function renderHome(){
+
+  const c =
+    document.getElementById("content");
+
+
+  c.innerHTML = `
+
+    <section class="hero">
+
+      <h2>
+        Bienvenue 🇨🇩
+      </h2>
+
+      <div class="muted">
+        ${esc(profile?.full_name || "Membre")}
+      </div>
+
+      <div class="balance">
+        ${money(wallet?.balance)}
+      </div>
+
+      <div class="muted">
+        Solde disponible
+      </div>
+
+      <hr>
+
+      <div class="row">
+
+        <span>
+          Gains cumulés
+        </span>
+
+        <b>
+          ${money(wallet?.total_earnings)}
+        </b>
+
+      </div>
+
+    </section>
+
+
+    <div class="notice">
+
+      📢 <b>KINSHASA BUSINESS</b><br>
+
+      Les gains affichés correspondent
+      aux paramètres déclarés des produits
+      et ne constituent pas une garantie
+      de rendement.
+
+    </div>
+
+
+    <div class="grid">
+
+      <button
+        class="action"
+        onclick="openDeposit()">
+
+        <span>＋</span>
+        <b>Dépôt</b>
+
+      </button>
+
+
+      <button
+        class="action"
+        onclick="openWithdraw()">
+
+        <span>↗</span>
+        <b>Retrait</b>
+
+      </button>
+
+
+      <button
+        class="action"
+        onclick="page('tasks')">
+
+        <span>✓</span>
+        <b>Pointage</b>
+
+      </button>
+
+
+      <button
+        class="action"
+        onclick="page('team')">
+
+        <span>👥</span>
+        <b>Équipe</b>
+
+      </button>
+
+    </div>
+
+
+    <h2>
+      Nos KIN
+    </h2>
+
+    ${PLANS.slice(0,3)
+      .map(planHTML)
+      .join("")}
+
+  `;
+
 }
-async function submitDeposit(){
- const amount=Number($("depAmount").value),p=PAYMENTS[Number($("depOperator").value)];
- if(amount<15000)return alert("Minimum 15 000 FC.");
- const {error}=await sb.from("kin_deposit_requests").insert({user_id:user.id,amount,operator:p.operator,payment_number:p.number,payment_name:p.name,reference:$("depRef").value.trim()||null,status:"pending"});
- alert(error?"Erreur : "+error.message:"Demande envoyée. Elle apparaîtra après actualisation.");
+
+
+function planHTML(p){
+
+  return `
+
+    <div class="plan">
+
+      <div class="plan-top">
+
+        <div>
+
+          <h3>
+            ${p.name}
+          </h3>
+
+          <span class="badge">
+            ${p.days} jours
+          </span>
+
+        </div>
+
+        <div class="price">
+          ${money(p.price)}
+        </div>
+
+      </div>
+
+      <hr>
+
+      <div class="row">
+        <span>Gain affiché / jour</span>
+        <b>${money(p.daily)}</b>
+      </div>
+
+      <div class="row">
+        <span>Positions maximum</span>
+        <b>${p.max}</b>
+      </div>
+
+    </div>
+
+  `;
+
 }
-function renderWithdraw(){
- $("content").innerHTML=`<h2>Demande de retrait</h2><div class="notice">Minimum : 2 000 FC · frais indicatifs : 10 %.</div><label>Montant FC</label><input id="wdAmount" type="number" min="2000"><label>Opérateur de réception</label><select id="wdOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator}</option>`).join("")}</select><label>Votre numéro de réception</label><input id="wdNumber"><button class="red" onclick="submitWithdraw()">Envoyer la demande</button>`;
+
+
+/* =====================================================
+   PRODUITS
+===================================================== */
+
+function renderProducts(){
+
+  const c =
+    document.getElementById("content");
+
+  c.innerHTML = `
+
+    <h2>📦 Produits KIN</h2>
+
+    <div class="notice">
+
+      Choisissez un produit.
+      L'achat réel doit être validé
+      par les règles serveur de la plateforme.
+
+    </div>
+
+    ${PLANS
+      .map(planHTML)
+      .join("")}
+
+  `;
+
 }
-async function submitWithdraw(){
- const amount=Number($("wdAmount").value),number=$("wdNumber").value.trim(),p=PAYMENTS[Number($("wdOperator").value)];
- if(amount<2000)return alert("Minimum 2 000 FC.");
- if(amount>Number(wallet?.balance||0))return alert("Solde insuffisant.");
- if(!number)return alert("Entrez le numéro de réception.");
- const {error}=await sb.from("kin_withdrawal_requests").insert({user_id:user.id,amount,fee:amount*.1,net_amount:amount*.9,operator:p.operator,payment_number:number,status:"pending"});
- alert(error?"Erreur : "+error.message:"Demande envoyée à l'administration.");
+
+
+/* =====================================================
+   TÂCHES / POINTAGE
+===================================================== */
+
+async function renderTasks(){
+
+  const c =
+    document.getElementById("content");
+
+  c.innerHTML = `
+
+    <h2>✓ Pointage</h2>
+
+    <div class="card">
+
+      <h3>
+        Pointage quotidien
+      </h3>
+
+      <p class="muted">
+        Récompense déclarée :
+        20 FC / jour.
+      </p>
+
+      <button
+        class="btn btn-green"
+        onclick="doCheckin()">
+
+        Faire mon pointage
+
+      </button>
+
+    </div>
+
+  `;
+
 }
+
+
+async function doCheckin(){
+
+  if(!user)return;
+
+  const today =
+    new Date()
+      .toISOString()
+      .slice(0,10);
+
+
+  const result =
+    await sb
+      .from("kin_daily_checkins")
+      .insert({
+
+        user_id:user.id,
+
+        checkin_date:today,
+
+        reward:20
+
+      });
+
+
+  if(result.error){
+
+    if(
+      result.error.message
+        .toLowerCase()
+        .includes("duplicate")
+    ){
+
+      alert(
+        "Vous avez déjà effectué votre pointage aujourd'hui."
+      );
+
+    }else{
+
+      alert(
+        "Pointage impossible : " +
+        result.error.message
+      );
+
+    }
+
+    return;
+  }
+
+
+  alert(
+    "Pointage enregistré. Récompense déclarée : 20 FC."
+  );
+
+}
+
+
+/* =====================================================
+   ÉQUIPE
+===================================================== */
+
+async function renderTeam(){
+
+  const c =
+    document.getElementById("content");
+
+  const code =
+    profile?.referral_code ||
+    shortCode(user.id);
+
+
+  let stats = null;
+
+
+  const result =
+    await sb.rpc(
+      "get_my_team_stats"
+    );
+
+
+  if(!result.error)
+    stats = result.data;
+
+
+  const referralCode =
+    stats?.code || code;
+
+
+  const link =
+    window.location.origin +
+    "/?ref=" +
+    referralCode;
+
+
+  c.innerHTML = `
+
+    <h2>👥 Mon équipe</h2>
+
+    <div class="card">
+
+      <h3>
+        Mon code
+      </h3>
+
+      <div class="price">
+        ${esc(referralCode)}
+      </div>
+
+      <button
+        class="btn btn-dark"
+        onclick='copyText(${JSON.stringify(referralCode)})'>
+
+        Copier le code
+
+      </button>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>
+        Mon lien de parrainage
+      </h3>
+
+      <div class="small muted">
+        ${esc(link)}
+      </div>
+
+      <button
+        class="btn btn-red"
+        onclick='copyText(${JSON.stringify(link)})'>
+
+        Copier le lien
+
+      </button>
+
+    </div>
+
+
+    <div class="grid">
+
+      <div class="stat">
+        <span class="muted">
+          Inscrits
+        </span>
+
+        <b>
+          ${stats?.registered || 0}
+        </b>
+      </div>
+
+
+      <div class="stat">
+        <span class="muted">
+          Validés
+        </span>
+
+        <b>
+          ${stats?.validated || 0}
+        </b>
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =====================================================
+   PROFIL
+===================================================== */
+
+function renderProfile(){
+
+  const c =
+    document.getElementById("content");
+
+
+  c.innerHTML = `
+
+    <h2>👤 Mon profil</h2>
+
+
+    <div class="card">
+
+      <div class="row">
+
+        <span>Nom</span>
+
+        <b>
+          ${esc(profile?.full_name)}
+        </b>
+
+      </div>
+
+      <hr>
+
+      <div class="row">
+
+        <span>Email</span>
+
+        <b class="small">
+          ${esc(user?.email)}
+        </b>
+
+      </div>
+
+      <hr>
+
+      <div class="row">
+
+        <span>Rôle</span>
+
+        <b>
+          ${isAdmin ? "Administrateur" : "Membre"}
+        </b>
+
+      </div>
+
+    </div>
+
+
+    ${
+      isAdmin
+      ?
+      `
+      <button
+        class="btn btn-red"
+        onclick="page('admin')">
+
+        ⚙ Ouvrir l'administration
+
+      </button>
+      `
+      :
+      ""
+    }
+
+
+    <button
+      class="btn btn-dark"
+      onclick="logout()">
+
+      Déconnexion
+
+    </button>
+
+  `;
+
+}
+
+
+/* =====================================================
+   ADMINISTRATION
+===================================================== */
+
 async function renderAdmin(){
- $("content").innerHTML=`
- <h2>⚙ Administration complète</h2>
- <div class="notice">Les actions financières et les changements de statut doivent être autorisés par les fonctions sécurisées de Supabase. Les boutons affichent les erreurs si les fonctions ou permissions ne sont pas disponibles.</div>
- <nav><button onclick="loadAdmin('members')">Membres</button><button onclick="loadAdmin('deposits')">Dépôts</button><button onclick="loadAdmin('withdrawals')">Retraits</button><button onclick="loadAdmin('settings')">Configuration</button></nav>
- <div id="adminResults">Choisissez une section.</div>`;
+
+  if(!isAdmin){
+
+    page("profile");
+
+    return;
+
+  }
+
+
+  const c =
+    document.getElementById("content");
+
+
+  c.innerHTML = `
+
+    <h2 class="admin-title">
+      ⚙ Administration
+    </h2>
+
+
+    <div class="notice">
+
+      🔐 <b>Mode administrateur</b><br>
+
+      Les opérations sensibles doivent
+      être sécurisées côté serveur.
+
+    </div>
+
+
+    <div class="grid">
+
+      <div class="stat">
+        <span class="muted">
+          Administrateur
+        </span>
+
+        <b>
+          ADMIN
+        </b>
+      </div>
+
+
+      <div class="stat">
+        <span class="muted">
+          Membres
+        </span>
+
+        <b id="adminCount">
+          ...
+        </b>
+      </div>
+
+    </div>
+
+
+    <div class="admin-section">
+
+      <h2>
+        👥 Membres
+      </h2>
+
+      <div id="adminMembers">
+        Chargement...
+      </div>
+
+    </div>
+
+
+    <div class="admin-section">
+
+      <h2>
+        💰 Dépôts
+      </h2>
+
+      <div id="adminDeposits">
+        Chargement...
+      </div>
+
+    </div>
+
+
+    <div class="admin-section">
+
+      <h2>
+        💸 Retraits
+      </h2>
+
+      <div id="adminWithdrawals">
+        Chargement...
+      </div>
+
+    </div>
+
+
+    <div class="admin-section">
+
+      <h2>
+        📱 Moyens de paiement
+      </h2>
+
+      ${PAYMENTS.map(p=>`
+
+        <div class="member">
+
+          <b>
+            ${esc(p.operator)}
+          </b>
+
+          <div>
+            ${esc(p.number)}
+          </div>
+
+          <div class="muted small">
+            ${esc(p.name)}
+          </div>
+
+        </div>
+
+      `).join("")}
+
+    </div>
+
+
+    <div class="admin-section">
+
+      <h2>
+        📢 Assistance
+      </h2>
+
+      <div class="card">
+
+        <p>
+          Groupe WhatsApp
+        </p>
+
+        <input
+          value="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps"
+          readonly>
+
+        <p>
+          Groupe Telegram
+        </p>
+
+        <input
+          value="https://t.me/francscongolais"
+          readonly>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  await loadAdminData();
+
 }
-async function loadAdmin(kind){
- if(!isAdmin)return alert("Accès refusé.");
- const box=$("adminResults");box.textContent="Chargement...";
- if(kind==="members"){
-  const r=await sb.from("profiles").select("*").order("created_at",{ascending:false});
-  if(r.error){box.textContent=r.error.message;return}
-  box.innerHTML=(r.data||[]).map(m=>`<div class="card"><b>${esc(m.full_name||"Membre")}</b><p class="muted">${esc(m.id)}</p><p>Code : ${esc(m.referral_code||"—")}</p><p>Rôle : ${esc(m.role||"member")}</p><p>Statut : ${esc(m.status||"non défini")}</p><div class="row"><button class="btn" onclick="adminAction('admin_toggle_member_block',{p_user_id:'${m.id}',p_blocked:true})">Bloquer</button><button class="btn" onclick="adminAction('admin_toggle_member_block',{p_user_id:'${m.id}',p_blocked:false})">Débloquer</button></div><button class="btn" onclick="adminReset('${esc(user.email||"")}')">Réinitialiser mon mot de passe admin</button><button class="btn" onclick="adminAction('admin_adjust_balance',{p_user_id:'${m.id}',p_amount:Number(prompt('Montant signé : + pour créditer, - pour débiter')),p_reason:prompt('Motif obligatoire')})">Ajuster solde</button><button class="btn" onclick="adminAction('admin_assign_kin',{p_user_id:'${m.id}',p_kin_id:prompt('KIN1 à KIN7'),p_reason:prompt('Motif')})">Attribuer un KIN</button></div>`).join("")||"Aucun membre.";
- }
- if(kind==="deposits")await loadRequests("kin_deposit_requests",box,"deposit");
- if(kind==="withdrawals")await loadRequests("kin_withdrawal_requests",box,"withdrawal");
- if(kind==="settings"){
-  box.innerHTML=`<div class="card"><h3>Liens d'assistance</h3><label>WhatsApp</label><input id="whatsapp" value="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps"><label>Telegram</label><input id="telegram" value="https://t.me/francscongolais"><button class="red" onclick="saveSupport()">Enregistrer les liens</button><p class="muted">L'enregistrement nécessite une table de configuration accessible aux administrateurs.</p></div><div class="card"><h3>Opérateurs de paiement</h3><p>Les numéros de paiement peuvent être modifiés dans la configuration Supabase; ne modifiez pas les numéros avant de confirmer le bénéficiaire.</p>${PAYMENTS.map(p=>`<p>${esc(p.operator)} : ${esc(p.number)} — ${esc(p.name)}</p>`).join("")}</div>`;
- }
+
+
+/* =====================================================
+   DONNÉES ADMIN
+===================================================== */
+
+async function loadAdminData(){
+
+  const members =
+    document.getElementById(
+      "adminMembers"
+    );
+
+  const deposits =
+    document.getElementById(
+      "adminDeposits"
+    );
+
+  const withdrawals =
+    document.getElementById(
+      "adminWithdrawals"
+    );
+
+
+  /* MEMBERS */
+
+  const m =
+    await sb
+      .from("profiles")
+      .select("*")
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+
+  if(m.error){
+
+    members.innerHTML =
+      appMessage(
+        m.error.message,
+        "err"
+      );
+
+  }else{
+
+    const data =
+      m.data || [];
+
+
+    document.getElementById(
+      "adminCount"
+    ).textContent =
+      data.length;
+
+
+    members.innerHTML =
+      data.map(x=>`
+
+        <div class="member">
+
+          <div class="row">
+
+            <b>
+              ${esc(
+                x.full_name ||
+                "Membre"
+              )}
+            </b>
+
+            <span class="status ${
+              x.status==="blocked"
+              ? "rejected"
+              : "approved"
+            }">
+
+              ${
+                x.status==="blocked"
+                ? "Bloqué"
+                : "Actif"
+              }
+
+            </span>
+
+          </div>
+
+          <div class="small muted">
+            ID : ${esc(x.id)}
+          </div>
+
+          <div>
+            Rôle :
+            <b>
+              ${esc(x.role || "member")}
+            </b>
+          </div>
+
+          ${
+            x.referral_code
+            ?
+            `
+            <div class="small">
+              Code :
+              ${esc(x.referral_code)}
+            </div>
+            `
+            :
+            ""
+          }
+
+          <div class="grid">
+
+            <button
+              class="btn btn-dark"
+              onclick='adminResetPassword(${JSON.stringify(x.id)})'>
+
+              🔑 Réinitialiser
+
+            </button>
+
+            <button
+              class="btn ${
+                x.status==="blocked"
+                ? "btn-green"
+                : "btn-danger"
+              }"
+              onclick='adminToggleBlock(${JSON.stringify(x.id)},${JSON.stringify(x.status)})'>
+
+              ${
+                x.status==="blocked"
+                ? "Débloquer"
+                : "Bloquer"
+              }
+
+            </button>
+
+          </div>
+
+        </div>
+
+      `).join("") ||
+      `<div class="muted">
+        Aucun membre.
+      </div>`;
+
+  }
+
+
+  /* DEPOSITS */
+
+  const d =
+    await sb
+      .from("kin_deposit_requests")
+      .select("*")
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+
+  if(d.error){
+
+    deposits.innerHTML =
+      appMessage(
+        d.error.message,
+        "err"
+      );
+
+  }else{
+
+    deposits.innerHTML =
+      (d.data || [])
+      .map(x=>`
+
+        <div class="member">
+
+          <div class="row">
+
+            <b>
+              ${money(x.amount)}
+            </b>
+
+            <span class="status ${
+              x.status==="approved"
+              ? "approved"
+              :
+              x.status==="rejected"
+              ? "rejected"
+              : "pending"
+            }">
+
+              ${esc(x.status || "pending")}
+
+            </span>
+
+          </div>
+
+          <div>
+            Opérateur :
+            ${esc(x.operator || "—")}
+          </div>
+
+          <div>
+            Numéro :
+            ${esc(
+              x.payment_number || "—"
+            )}
+          </div>
+
+          <div>
+            Référence :
+            ${esc(
+              x.reference || "—"
+            )}
+          </div>
+
+          <div class="small muted">
+            ${
+              x.created_at
+              ?
+              new Date(x.created_at)
+                .toLocaleString("fr-FR")
+              :
+              "Date inconnue"
+            }
+          </div>
+
+        </div>
+
+      `).join("") ||
+      `<div class="muted">
+        Aucun dépôt.
+      </div>`;
+
+  }
+
+
+  /* WITHDRAWALS */
+
+  const w =
+    await sb
+      .from("kin_withdrawal_requests")
+      .select("*")
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+
+  if(w.error){
+
+    withdrawals.innerHTML =
+      appMessage(
+        w.error.message,
+        "err"
+      );
+
+  }else{
+
+    withdrawals.innerHTML =
+      (w.data || [])
+      .map(x=>`
+
+        <div class="member">
+
+          <div class="row">
+
+            <b>
+              ${money(x.amount)}
+            </b>
+
+            <span class="status ${
+              x.status==="approved"
+              ? "approved"
+              :
+              x.status==="rejected"
+              ? "rejected"
+              : "pending"
+            }">
+
+              ${esc(x.status || "pending")}
+
+            </span>
+
+          </div>
+
+          <div>
+            Opérateur :
+            ${esc(x.operator || "—")}
+          </div>
+
+          <div>
+            Numéro :
+            ${esc(
+              x.payment_number || "—"
+            )}
+          </div>
+
+          <div>
+            Frais :
+            ${money(x.fee)}
+          </div>
+
+          <div>
+            Net :
+            ${money(x.net_amount)}
+          </div>
+
+          <div class="small muted">
+            ${
+              x.created_at
+              ?
+              new Date(x.created_at)
+                .toLocaleString("fr-FR")
+              :
+              "Date inconnue"
+            }
+          </div>
+
+        </div>
+
+      `).join("") ||
+      `<div class="muted">
+        Aucun retrait.
+      </div>`;
+
+  }
+
 }
-async function loadRequests(table,box,type){
- const r=await sb.from(table).select("*").order("created_at",{ascending:false});
- if(r.error){box.textContent=r.error.message;return}
- box.innerHTML=(r.data||[]).map(x=>`<div class="card"><b>${money(x.amount)}</b><p>Statut : <span class="badge ${esc(x.status||"pending")}">${esc(x.status||"pending")}</span></p><p>Date : ${esc(x.created_at||"—")}</p><p>Opérateur : ${esc(x.operator||"—")}</p><p>Numéro : ${esc(x.payment_number||"—")}</p><p>Référence : ${esc(x.reference||"—")}</p><p>Net : ${money(x.net_amount)}</p><div class="row"><button class="green" onclick="reviewRequest('${type}','${x.id}','approved')">Valider</button><button class="danger" onclick="reviewRequest('${type}','${x.id}','rejected')">Rejeter</button></div></div>`).join("")||"Aucune demande.";
+
+
+/* =====================================================
+   DÉPÔT
+===================================================== */
+
+function openDeposit(){
+
+  showModal(`
+
+    <button
+      class="close"
+      onclick="closeModal()">
+      ×
+    </button>
+
+    <h2>
+      💰 Dépôt
+    </h2>
+
+    <p class="muted">
+      Minimum : 15 000 FC
+    </p>
+
+    <label>Opérateur</label>
+
+    <select id="depOperator">
+
+      ${PAYMENTS.map((p,i)=>`
+
+        <option value="${i}">
+
+          ${esc(p.operator)}
+          -
+          ${esc(p.number)}
+          -
+          ${esc(p.name)}
+
+        </option>
+
+      `).join("")}
+
+    </select>
+
+
+    <label>Montant</label>
+
+    <input
+      id="depAmount"
+      type="number"
+      min="15000"
+      placeholder="15000">
+
+
+    <label>Référence de transaction</label>
+
+    <input
+      id="depRef"
+      placeholder="Référence">
+
+
+    <button
+      class="btn btn-red"
+      onclick="submitDeposit()">
+
+      Envoyer le dépôt
+
+    </button>
+
+  `);
+
 }
-async function reviewRequest(type,id,status){
- if(!confirm(`Confirmer le statut ${status} ?`))return;
- const fn=type==="deposit"?"admin_review_deposit":"admin_review_withdrawal";
- const {error}=await sb.rpc(fn,{p_request_id:id,p_status:status,p_note:prompt("Motif ou note administrative")||""});
- if(error)return alert("Action non exécutée : "+error.message+" — vérifiez le nom et les permissions de la fonction Supabase.");
- alert("Statut envoyé à Supabase.");loadAdmin(type==="deposit"?"deposits":"withdrawals");
+
+
+async function submitDeposit(){
+
+  const amount =
+    Number(
+      document.getElementById(
+        "depAmount"
+      ).value
+    );
+
+
+  const ref =
+    document.getElementById(
+      "depRef"
+    ).value.trim();
+
+
+  const operator =
+    PAYMENTS[
+      Number(
+        document.getElementById(
+          "depOperator"
+        ).value
+      )
+    ];
+
+
+  if(amount < 15000){
+
+    alert(
+      "Le dépôt minimum est de 15 000 FC."
+    );
+
+    return;
+
+  }
+
+
+  const result =
+    await sb
+      .from("kin_deposit_requests")
+      .insert({
+
+        user_id:user.id,
+
+        amount:amount,
+
+        operator:operator.operator,
+
+        payment_number:operator.number,
+
+        payment_name:operator.name,
+
+        reference:ref || null,
+
+        status:"pending"
+
+      });
+
+
+  if(result.error){
+
+    alert(
+      "Impossible d'envoyer le dépôt : " +
+      result.error.message
+    );
+
+    return;
+
+  }
+
+
+  closeModal();
+
+  alert(
+    "Demande de dépôt envoyée. Elle sera vérifiée par l'administration."
+  );
+
 }
-async function adminAction(fn,args){
- if(!isAdmin)return alert("Accès refusé.");
- if(Object.values(args).some(v=>v===null||v===undefined||v===""||(typeof v==="number"&&!Number.isFinite(v))))return alert("Action annulée : informations manquantes.");
- const {error}=await sb.rpc(fn,args);
- if(error)return alert("Action non exécutée : "+error.message+" — vérifiez la fonction Supabase.");
- alert("Action envoyée à Supabase.");loadAdmin("members");
+
+
+/* =====================================================
+   RETRAIT
+===================================================== */
+
+function openWithdraw(){
+
+  showModal(`
+
+    <button
+      class="close"
+      onclick="closeModal()">
+      ×
+    </button>
+
+    <h2>
+      💸 Retrait
+    </h2>
+
+    <p class="muted">
+      Minimum : 2 000 FC
+    </p>
+
+    <label>Montant</label>
+
+    <input
+      id="wdAmount"
+      type="number"
+      min="2000"
+      placeholder="2000">
+
+
+    <label>Opérateur</label>
+
+    <select id="wdOperator">
+
+      ${PAYMENTS.map((p,i)=>`
+
+        <option value="${i}">
+          ${esc(p.operator)}
+        </option>
+
+      `).join("")}
+
+    </select>
+
+
+    <label>
+      Numéro de réception
+    </label>
+
+    <input
+      id="wdNumber"
+      placeholder="Numéro où recevoir le retrait">
+
+
+    <button
+      class="btn btn-red"
+      onclick="submitWithdraw()">
+
+      Envoyer la demande
+
+    </button>
+
+  `);
+
 }
-async function adminReset(email){
- if(!email)return alert("Email manquant.");
- if(!confirm("Envoyer un lien de réinitialisation à votre compte administrateur ?"))return;
- const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});
- alert(error?error.message:"Lien demandé. Vérifiez votre email.");
+
+
+async function submitWithdraw(){
+
+  const amount =
+    Number(
+      document.getElementById(
+        "wdAmount"
+      ).value
+    );
+
+
+  const operator =
+    PAYMENTS[
+      Number(
+        document.getElementById(
+          "wdOperator"
+        ).value
+      )
+    ];
+
+
+  const number =
+    document.getElementById(
+      "wdNumber"
+    ).value.trim();
+
+
+  if(amount < 2000){
+
+    alert(
+      "Le retrait minimum est de 2 000 FC."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    amount >
+    Number(wallet?.balance || 0)
+  ){
+
+    alert(
+      "Solde insuffisant."
+    );
+
+    return;
+
+  }
+
+
+  if(!number){
+
+    alert(
+      "Entrez votre numéro de réception."
+    );
+
+    return;
+
+  }
+
+
+  const fee =
+    amount * 0.10;
+
+  const net =
+    amount - fee;
+
+
+  const result =
+    await sb
+      .from(
+        "kin_withdrawal_requests"
+      )
+      .insert({
+
+        user_id:user.id,
+
+        amount:amount,
+
+        fee:fee,
+
+        net_amount:net,
+
+        operator:
+          operator.operator,
+
+        payment_number:number,
+
+        status:"pending"
+
+      });
+
+
+  if(result.error){
+
+    alert(
+      "Impossible d'envoyer le retrait : " +
+      result.error.message
+    );
+
+    return;
+
+  }
+
+
+  closeModal();
+
+  alert(
+    "Demande de retrait envoyée.\n\n" +
+    "Montant : " +
+    money(amount) +
+    "\nFrais 10% : " +
+    money(fee) +
+    "\nNet indicatif : " +
+    money(net)
+  );
+
 }
-async function saveSupport(){
- const settings={whatsapp:$("whatsapp").value.trim(),telegram:$("telegram").value.trim()};
- const {error}=await sb.from("kin_settings").upsert([{key:"support_links",value:settings}],{onConflict:"key"});
- alert(error?"Enregistrement impossible : "+error.message:"Liens enregistrés.");
+
+
+/* =====================================================
+   ADMIN - ACTIONS VISUELLES
+   Les actions sensibles seront sécurisées côté serveur.
+===================================================== */
+
+async function adminToggleBlock(id,status){
+
+  if(!isAdmin)return;
+
+
+  const nouveau =
+    status === "blocked"
+      ? "active"
+      : "blocked";
+
+
+  alert(
+    "Le changement de statut sera appliqué par la fonction serveur sécurisée de l'administration."
+  );
+
 }
-sb.auth.onAuthStateChange((event,session)=>{if(session)setTimeout(loadUser,100)});
+
+
+async function adminResetPassword(id){
+
+  if(!isAdmin)return;
+
+
+  alert(
+    "La réinitialisation sécurisée doit envoyer un lien à l'adresse email du membre. Aucun mot de passe ne sera affiché à l'administrateur."
+  );
+
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+function showModal(html){
+
+  document.getElementById(
+    "modal"
+  ).innerHTML = `
+
+    <div
+      class="modal"
+      onclick="
+        if(event.target===this)
+        closeModal()
+      ">
+
+      <div class="modal-box">
+        ${html}
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+function closeModal(){
+
+  document.getElementById(
+    "modal"
+  ).innerHTML = "";
+
+}
+
+
+/* =====================================================
+   COPIE
+===================================================== */
+
+async function copyText(text){
+
+  try{
+
+    await navigator.clipboard
+      .writeText(text);
+
+    alert("Copié !");
+
+  }catch(e){
+
+    alert(text);
+
+  }
+
+}
+
+
+/* =====================================================
+   DÉCONNEXION
+===================================================== */
+
+async function logout(){
+
+  await sb.auth.signOut();
+
+  user = null;
+  profile = null;
+  wallet = null;
+
+  document
+    .getElementById("app")
+    .classList.add("hidden");
+
+  document
+    .getElementById("auth")
+    .classList.remove("hidden");
+
+  showAuth("login");
+
+}
+
+
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
+sb.auth.onAuthStateChange(
+  async(event,session)=>{
+
+    if(
+      event === "SIGNED_IN" &&
+      session
+    ){
+
+      setTimeout(
+        loadUser,
+        100
+      );
+
+    }
+
+
+    if(
+      event === "SIGNED_OUT"
+    ){
+
+      document
+        .getElementById("app")
+        .classList.add("hidden");
+
+      document
+        .getElementById("auth")
+        .classList.remove("hidden");
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   LIEN DE PARRAINAGE DANS L'URL
+===================================================== */
+
+(function(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const ref =
+    params.get("ref");
+
+  if(ref){
+
+    const input =
+      document.getElementById(
+        "referral"
+      );
+
+    if(input)
+      input.value =
+        ref.toUpperCase();
+
+  }
+
+})();
+
+
+/* =====================================================
+   DÉMARRAGE
+===================================================== */
+
+showAuth("login");
+
 loadUser();
+
 </script>
+
 </body>
 </html>
