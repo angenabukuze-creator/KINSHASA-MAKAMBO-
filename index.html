@@ -1,284 +1,231 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#09090b">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KINSHASA BUSINESS 🇨🇩</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--red:#e50914;--bg:#09090b;--card:#17171c;--line:#303038;--muted:#aaa;--green:#19c37d}
+:root {
+  --bleu:#007fff;
+  --jaune:#ffce00;
+  --rouge:#ce1021;
+  --fond:#f1f5f9;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:white;font-family:Arial,sans-serif}
-button,input,select{font:inherit}button{cursor:pointer}
-.wrap{max-width:650px;margin:auto;padding:14px 14px 90px}
-header{position:sticky;top:0;background:#101014;padding:15px;border-bottom:1px solid var(--line);z-index:5}
-h1{font-size:21px;margin:0}h2{font-size:19px;margin-top:22px}
-h3{margin:8px 0}
-.muted{color:var(--muted);font-size:13px}
-.card,.item,.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
-.hero{background:linear-gradient(135deg,#a90009,#241018);padding:22px;border-radius:18px}
-.balance{font-size:29px;font-weight:bold;margin:12px 0}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-button,.btn{border:0;border-radius:10px;padding:12px;background:#33333b;color:white}
-.primary{background:var(--red);color:white}.good{background:#08784c}.danger{background:#9c1720}
-input,select{display:block;width:100%;padding:12px;border-radius:9px;border:1px solid #444;background:#0d0d11;color:white;margin:7px 0 13px}
-label{font-size:13px;color:#ddd}
-.hidden{display:none!important}
-nav{position:fixed;bottom:0;left:0;right:0;background:#111115;border-top:1px solid var(--line);display:flex;justify-content:center;z-index:8}
-nav .navinner{max-width:650px;width:100%;display:flex;justify-content:space-around;padding:8px 2px}
-nav button{background:transparent;font-size:11px;padding:9px 5px}
-nav button.active{color:#ff646a}
-.msg{padding:11px;border-radius:9px;background:#243a2e;margin:9px 0;overflow-wrap:anywhere}
-.err{background:#481d22}
-.small{font-size:12px;overflow-wrap:anywhere}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.row>*{flex:1}
-hr{border:0;border-top:1px solid var(--line);margin:14px 0}
-a{color:#ff777d}
+body{margin:0;font-family:Arial,sans-serif;background:var(--fond);color:#172033}
+.drapeau{height:7px;background:linear-gradient(to bottom,#007fff 33%,#ffce00 33% 66%,#ce1021 66%)}
+header{background:var(--bleu);color:white;text-align:center;padding:22px 10px;border-bottom:5px solid var(--jaune)}
+header h1{font-size:25px;margin:0}
+header p{margin:8px 0 0}
+main{max-width:600px;margin:18px auto;padding:0 12px 100px}
+.carte{background:white;border-radius:14px;padding:18px;margin-bottom:15px;box-shadow:0 3px 12px #00000010}
+h2{font-size:21px;margin-top:0}
+input{width:100%;padding:13px;margin:6px 0 13px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
+label{font-size:14px;font-weight:bold}
+button{border:0;border-radius:9px;padding:13px;font-size:15px;font-weight:bold;cursor:pointer}
+.bleu{background:var(--bleu);color:white}
+.jaune{background:var(--jaune);color:#172033}
+.rouge{background:var(--rouge);color:white}
+.large{width:100%}
+.ligne{display:flex;gap:9px;margin-bottom:17px}
+.ligne button{flex:1}
+.cache{display:none!important}
+.message{padding:12px;border-radius:8px;margin-top:12px;font-size:14px}
+.erreur{background:#fee2e2;color:#991b1b}
+.info{background:#dbeafe;color:#1e40af}
+.succes{background:#dcfce7;color:#166534}
+nav{position:fixed;bottom:0;left:0;right:0;background:white;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -3px 12px #0002;padding:6px 2px}
+nav button{background:white;color:#172033;font-size:11px;padding:7px 1px}
+nav span{display:block;font-size:21px;margin-bottom:4px}
+nav button.actif{color:var(--bleu);background:#eaf4ff}
+.stat{background:#eaf4ff;padding:15px;border-radius:9px;margin:10px 0}
 </style>
 </head>
 <body>
+<div class="drapeau"></div>
 <header>
-  <h1>🇨🇩 KINSHASA BUSINESS</h1>
-  <div class="muted">République démocratique du Congo</div>
+<h1>🇨🇩 KINSHASA BUSINESS</h1>
+<p>République démocratique du Congo</p>
 </header>
 
-<section id="auth" class="wrap">
-  <div class="card">
-    <div class="grid">
-      <button id="loginTab" class="primary" onclick="authMode='login';showAuth()">Connexion</button>
-      <button id="signupTab" onclick="authMode='signup';showAuth()">Inscription</button>
-    </div>
-    <div id="authMessage"></div>
-    <label>Nom complet</label><input id="fullName" placeholder="Nom complet">
-    <label>Email</label><input id="email" type="email" placeholder="Email">
-    <label>Téléphone RDC (+243)</label><input id="phone" placeholder="+243...">
-    <label>Code de parrainage (facultatif)</label><input id="referral" placeholder="KINXXXXXXXX">
-    <label>Mot de passe</label><input id="password" type="password" placeholder="Minimum 6 caractères">
-    <button class="primary" style="width:100%" onclick="authenticate()">Continuer</button>
-    <button style="width:100%;margin-top:8px" onclick="resetPassword()">Mot de passe oublié ?</button>
-  </div>
-</section>
-
-<div id="app" class="hidden">
-<main class="wrap" id="content"></main>
-<nav><div class="navinner">
-<button onclick="page('home')">🏠<br>Accueil</button>
-<button onclick="page('products')">🧴<br>KIN</button>
-<button onclick="page('tasks')">✓<br>Pointage</button>
-<button onclick="page('team')">👥<br>Équipe</button>
-<button onclick="page('history')">📜<br>Historique</button>
-<button onclick="page('profile')">👤<br>Profil</button>
-<button id="adminNav" class="hidden" onclick="page('admin')">⚙️<br>Admin</button>
-</div></nav>
+<main>
+<section class="carte" id="auth">
+<div class="ligne">
+<button class="bleu" id="btnConnexion" onclick="changerMode('connexion')">Connexion</button>
+<button class="jaune" id="btnInscription" onclick="changerMode('inscription')">Inscription</button>
 </div>
 
+<h2 id="titreAuth">Connexion</h2>
+<form id="formAuth">
+<div id="champNom" class="cache">
+<label>Nom complet</label>
+<input id="nom" placeholder="Votre nom complet">
+</div>
+
+<label>Email</label>
+<input id="email" type="email" placeholder="Votre adresse email" required>
+
+<label>Téléphone RDC (+243)</label>
+<input id="telephone" type="tel" placeholder="+243..." required>
+
+<div id="champParrain" class="cache">
+<label>Code de parrainage (facultatif)</label>
+<input id="parrain" placeholder="Code du parrain">
+</div>
+
+<label>Mot de passe</label>
+<input id="motDePasse" type="password" minlength="6" placeholder="6 caractères minimum" required>
+
+<div id="champConfirmation" class="cache">
+<label>Confirmer le mot de passe</label>
+<input id="confirmation" type="password" minlength="6" placeholder="Répéter le mot de passe">
+</div>
+
+<button class="bleu large" id="btnEnvoyer" type="submit">Se connecter</button>
+</form>
+
+<p style="text-align:center">
+<a href="#" id="motOublie">Mot de passe oublié ?</a>
+</p>
+<div id="message" class="cache"></div>
+</section>
+
+<section id="espace" class="cache">
+<div class="carte">
+<h2 id="titrePage">🏠 Accueil</h2>
+<p id="bienvenue">Bienvenue sur KINSHASA BUSINESS 🇨🇩</p>
+<div class="stat">💰 Solde : <strong>0 Fc</strong></div>
+<div id="contenuPage">Bienvenue dans votre espace membre.</div>
+</div>
+<div class="carte">
+<button class="rouge large" onclick="deconnexion()">Déconnexion</button>
+</div>
+</section>
+</main>
+
+<nav id="menu" class="cache">
+<button class="actif" onclick="ouvrirPage('Accueil',this)"><span>🏠</span>Accueil</button>
+<button onclick="ouvrirPage('KIN',this)"><span>🧴</span>KIN</button>
+<button onclick="ouvrirPage('Pointage',this)"><span>✓</span>Pointage</button>
+<button onclick="ouvrirPage('Menu',this)"><span>☰</span>Menu</button>
+</nav>
+
 <script>
-const SUPABASE_URL="https://uewceocdzvekuopgsmpg.supabase.co";
-const SUPABASE_KEY="sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const ADMIN_EMAIL="angenabukuze@gmail.com";
-const PAYMENTS=[
- {operator:"AIRTEL MONEY",number:"973087965",name:"YVETTE"},
- {operator:"ORANGE MONEY",number:"899532643",name:"JEANCQUELINE"},
- {operator:"M-PESA",number:"0861823718",name:"REGINA"}
-];
-const PLANS=[
- {id:"KIN1",price:15000,gain:2000,days:60,max:1},
- {id:"KIN2",price:30000,gain:4400,days:60,max:2},
- {id:"KIN3",price:80000,gain:12300,days:60,max:3},
- {id:"KIN4",price:150000,gain:24000,days:60,max:3},
- {id:"KIN5",price:300000,gain:52000,days:60,max:5},
- {id:"KIN6",price:600000,gain:120000,days:60,max:2},
- {id:"KIN7",price:1500000,gain:330000,days:60,max:2}
-];
-let user=null,profile=null,wallet=null,authMode="login",currentPage="home";
-const money=n=>Number(n||0).toLocaleString("fr-FR")+" FC";
-const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const say=(m)=>alert(m);
-function showAuth(){
- document.getElementById("fullName").style.display=authMode==="signup"?"block":"none";
- document.getElementById("phone").style.display=authMode==="signup"?"block":"none";
- document.getElementById("referral").style.display=authMode==="signup"?"block":"none";
- document.getElementById("signupTab").classList.toggle("primary",authMode==="signup");
- document.getElementById("loginTab").classList.toggle("primary",authMode==="login");
+let mode="connexion";
+let utilisateur=null;
+
+const el=id=>document.getElementById(id);
+
+function afficherMessage(texte,type="info"){
+ const m=el("message");
+ m.textContent=texte;
+ m.className="message "+type;
 }
-function referralCode(id){return "KIN"+String(id).replaceAll("-","").slice(0,8).toUpperCase()}
-async function authenticate(){
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
- const name=document.getElementById("fullName").value.trim();
- const phone=document.getElementById("phone").value.trim();
- const referred=document.getElementById("referral").value.trim().toUpperCase();
- const box=document.getElementById("authMessage");
- try{
-  let result;
-  if(authMode==="signup"){
-   if(!name||!email||password.length<6||!phone){throw Error("Remplissez le nom, téléphone, email et mot de passe (6 caractères minimum).")}
-   result=await sb.auth.signUp({email,password,options:{data:{full_name:name,phone}}});
-   if(result.error)throw result.error;
-   if(!result.data.user)throw Error("Compte non créé.");
-   if(!result.data.session){box.innerHTML="Compte créé. Connectez-vous si la confirmation email est désactivée dans Supabase.";return}
-   user=result.data.user;
-   const code=referralCode(user.id);
-   const p=await sb.from("profiles").upsert({id:user.id,full_name:name,phone,referral_code:code,referred_by_code:referred||null},{onConflict:"id"});
-   if(p.error)throw p.error;
-  }else{
-   result=await sb.auth.signInWithPassword({email,password});
-   if(result.error)throw result.error;
-   user=result.data.user;
+
+function changerMode(nouveauMode){
+ mode=nouveauMode;
+ const inscription=mode==="inscription";
+
+ el("titreAuth").textContent=inscription?"Créer un compte":"Connexion";
+ el("champNom").classList.toggle("cache",!inscription);
+ el("champParrain").classList.toggle("cache",!inscription);
+ el("champConfirmation").classList.toggle("cache",!inscription);
+ el("nom").required=inscription;
+ el("confirmation").required=inscription;
+ el("btnEnvoyer").textContent=inscription?"S'inscrire":"Se connecter";
+ el("btnConnexion").className=inscription?"jaune":"bleu";
+ el("btnInscription").className=inscription?"bleu":"jaune";
+ el("message").className="cache";
+}
+
+el("formAuth").addEventListener("submit",function(e){
+ e.preventDefault();
+
+ const nom=el("nom").value.trim();
+ const email=el("email").value.trim();
+ const telephone=el("telephone").value.trim();
+ const motDePasse=el("motDePasse").value;
+
+ if(!/^\+243[0-9]{9}$/.test(telephone.replace(/[\s-]/g,""))){
+  afficherMessage("Entrez un numéro RDC valide au format +243 suivi de 9 chiffres.","erreur");
+  return;
+ }
+
+ if(mode==="inscription"){
+  if(!nom){
+   afficherMessage("Entrez votre nom complet.","erreur");
+   return;
   }
-  await loadUser();
- }catch(e){box.innerHTML='<div class="msg err">'+esc(e.message)+'</div>'}
-}
-async function resetPassword(){
- const email=document.getElementById("email").value.trim();
- if(!email)return say("Entrez d’abord votre email.");
- const r=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});
- if(r.error)return say(r.error.message);
- say("Si ce compte existe, un lien de réinitialisation sera envoyé par email.");
-}
-async function loadUser(){
- const r=await sb.auth.getUser();
- user=r.data.user;
- if(!user){document.getElementById("auth").classList.remove("hidden");document.getElementById("app").classList.add("hidden");return}
- const p=await sb.from("profiles").select("*").eq("id",user.id).maybeSingle();
- profile=p.data||{id:user.id,full_name:user.user_metadata?.full_name||"Membre",role:"member"};
- if(!profile.referral_code){
-  const code=referralCode(user.id);
-  await sb.from("profiles").update({referral_code:code}).eq("id",user.id);
-  profile.referral_code=code;
+  if(motDePasse.length<6){
+   afficherMessage("Le mot de passe doit contenir au moins 6 caractères.","erreur");
+   return;
+  }
+  if(motDePasse!==el("confirmation").value){
+   afficherMessage("Les deux mots de passe ne correspondent pas.","erreur");
+   return;
+  }
+
+  afficherMessage("Le formulaire est valide. Pour enregistrer réellement le compte, connectez le site à Supabase.","info");
+  return;
  }
- const w=await sb.from("kin_wallets").select("*").eq("user_id",user.id).maybeSingle();
- wallet=w.data||{balance:2000,total_earnings:0};
- const admin=profile.role==="admin"||user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
- document.getElementById("adminNav").classList.toggle("hidden",!admin);
- document.getElementById("auth").classList.add("hidden");
- document.getElementById("app").classList.remove("hidden");
- page("home");
-}
-function page(name){
- currentPage=name;
- if(name==="admin"&&profile?.role!=="admin"&&user?.email?.toLowerCase()!==ADMIN_EMAIL.toLowerCase())name="profile";
- const c=document.getElementById("content");
- if(name==="home")renderHome(c);
- if(name==="products")renderProducts(c);
- if(name==="tasks")renderTasks(c);
- if(name==="team")renderTeam(c);
- if(name==="history")renderHistory(c);
- if(name==="profile")renderProfile(c);
- if(name==="admin")renderAdmin(c);
-}
-function renderHome(c){
- c.innerHTML=`<section class="hero"><h2>Bienvenue 🇨🇩</h2>${esc(profile.full_name||"Membre")}<div class="balance">${money(wallet.balance)}</div><div>Solde disponible</div><hr>Gains cumulés : <b>${money(wallet.total_earnings)}</b></section>
- <div class="card">Les gains affichés sont des paramètres déclarés et ne garantissent pas un rendement.</div>
- <div class="grid"><button onclick="openDeposit()">＋ Dépôt</button><button onclick="openWithdraw()">↗ Retrait</button><button onclick="page('tasks')">✓ Pointage</button><button onclick="page('team')">👥 Équipe</button></div>
- <h2>Nos KIN</h2>${PLANS.map(p=>`<div class="item"><b>${p.id}</b><p>Prix : ${money(p.price)}</p><p>Gain affiché/jour : ${money(p.gain)}</p><p>Durée : ${p.days} jours · Maximum : ${p.max}</p><button class="primary" onclick="buyKin('${p.id}')">Demander ce KIN</button></div>`).join("")}`;
-}
-function renderProducts(c){renderHome(c)}
-function renderTasks(c){
- c.innerHTML=`<h2>Pointage quotidien</h2><div class="card">Récompense déclarée : 20 FC par jour.</div><button class="primary" onclick="checkin()">Faire mon pointage</button>`;
-}
-async function checkin(){
- const today=new Date().toISOString().slice(0,10);
- const r=await sb.from("kin_daily_checkins").insert({user_id:user.id,checkin_date:today,reward:20});
- if(r.error)return say(r.error.message);
- say("Pointage enregistré. Le crédit doit être appliqué côté serveur.");
-}
-async function renderTeam(c){
- c.innerHTML=`<h2>Mon équipe</h2><div class="card"><p>Mon code : <b>${esc(profile.referral_code||referralCode(user.id))}</b></p><button onclick="copyValue('${esc(profile.referral_code||referralCode(user.id))}')">Copier le code</button><p class="small">${esc(location.origin)}/?ref=${esc(profile.referral_code||referralCode(user.id))}</p><button onclick="copyValue('${esc(location.origin)}/?ref=${esc(profile.referral_code||referralCode(user.id))}')">Copier le lien</button></div><div id="teamStats">Chargement...</div>`;
- const r=await sb.rpc("get_my_team_stats");
- const el=document.getElementById("teamStats");
- if(r.error){el.innerHTML='<div class="msg err">Statistiques indisponibles : '+esc(r.error.message)+'</div>';return}
- const d=r.data||{};
- el.innerHTML=`<div class="grid"><div class="stat">Inscrits<b>${Number(d.registered||0)}</b></div><div class="stat">Validés<b>${Number(d.validated||0)}</b></div></div><div class="card">Commissions déclarées : ${money(d.commission||0)}</div>`;
-}
-async function renderHistory(c){
- c.innerHTML="<h2>📜 Historique des transactions</h2><div id='historyRows'>Chargement...</div>";
- const el=document.getElementById("historyRows");
- const results=await Promise.all([
-  sb.from("kin_transactions").select("*").eq("user_id",user.id).order("created_at",{ascending:false}),
-  sb.from("kin_deposit_requests").select("*").eq("user_id",user.id).order("created_at",{ascending:false}),
-  sb.from("kin_withdrawal_requests").select("*").eq("user_id",user.id).order("created_at",{ascending:false})
- ]);
- let rows=[];
- results.forEach((r,i)=>{if(!r.error)(r.data||[]).forEach(x=>rows.push({...x,_type:["Transaction","Dépôt","Retrait"][i]}))});
- rows.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
- if(!rows.length){el.innerHTML='<div class="card">Aucune transaction trouvée ou historique inaccessible.</div>';return}
- el.innerHTML=rows.map(x=>`<div class="item"><b>${esc(x._type)}</b> · ${money(x.amount)}<p class="small">Date : ${esc(x.created_at?new Date(x.created_at).toLocaleString("fr-FR"):"—")}</p><p>Statut : ${esc(x.status||x.type||"enregistré")}</p><p class="small">${esc(x.operator||"")} ${esc(x.reference||"")}</p></div>`).join("");
-}
-function renderProfile(c){
- c.innerHTML=`<h2>Mon profil</h2><div class="card"><p>Nom : ${esc(profile.full_name||"Membre")}</p><p>Email : ${esc(user.email||"")}</p><p>Code membre : ${esc(profile.referral_code||referralCode(user.id))}</p><p>Rôle : ${esc(profile.role||"member")}</p><button onclick="resetPassword()">Réinitialiser mon mot de passe</button><button class="danger" onclick="logout()">Déconnexion</button></div>
- <h2>Assistance</h2><div class="card"><p>WhatsApp : <a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps" target="_blank">Rejoindre le groupe</a></p><p>Telegram : <a href="https://t.me/francscongolais" target="_blank">Ouvrir Telegram</a></p></div>`;
-}
-async function openDeposit(){
- const c=document.getElementById("content");
- c.innerHTML=`<h2>Faire un dépôt</h2><div class="card"><label>Montant minimum : 15 000 FC</label><input id="depAmount" type="number" min="15000" placeholder="Montant"><label>Opérateur</label><select id="depOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator} — ${p.number} (${p.name})</option>`).join("")}</select><label>Référence du transfert</label><input id="depRef" placeholder="Référence facultative"><button class="primary" onclick="submitDeposit()">Envoyer la demande</button><button onclick="page('home')">Retour</button></div>`;
-}
-async function submitDeposit(){
- const amount=Number(document.getElementById("depAmount").value);
- const p=PAYMENTS[Number(document.getElementById("depOperator").value)];
- const reference=document.getElementById("depRef").value.trim();
- if(amount<15000)return say("Le dépôt minimum est de 15 000 FC.");
- const r=await sb.from("kin_deposit_requests").insert({user_id:user.id,amount,operator:p.operator,payment_number:p.number,payment_name:p.name,reference:reference||null,status:"pending"});
- if(r.error)return say("Dépôt non envoyé : "+r.error.message);
- say("Demande de dépôt envoyée. Elle doit être vérifiée par l'administration.");
- page("history");
-}
-async function openWithdraw(){
- document.getElementById("content").innerHTML=`<h2>Demander un retrait</h2><div class="card"><p>Solde : ${money(wallet.balance)}</p><label>Montant minimum : 2 000 FC</label><input id="wdAmount" type="number" min="2000" placeholder="Montant à retirer"><label>Opérateur</label><select id="wdOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator}</option>`).join("")}</select><label>Numéro de réception</label><input id="wdNumber" placeholder="Numéro où recevoir"><button class="primary" onclick="submitWithdraw()">Envoyer la demande</button></div>`;
-}
-async function submitWithdraw(){
- const amount=Number(document.getElementById("wdAmount").value),number=document.getElementById("wdNumber").value.trim(),p=PAYMENTS[Number(document.getElementById("wdOperator").value)];
- if(amount<2000)return say("Le retrait minimum est de 2 000 FC.");
- if(amount>Number(wallet?.balance||0))return say("Solde insuffisant.");
- if(!number)return say("Entrez le numéro de réception.");
- const fee=amount*.10,net=amount-fee;
- const r=await sb.from("kin_withdrawal_requests").insert({user_id:user.id,amount,fee,net_amount:net,operator:p.operator,payment_number:number,status:"pending"});
- if(r.error)return say("Retrait non envoyé : "+r.error.message);
- say("Demande envoyée. Frais indicatifs 10 % : "+money(fee)+" ; net indicatif : "+money(net)+". En attente de vérification.");
- page("history");
-}
-async function buyKin(id){
- say("La demande d'achat de "+id+" nécessite une fonction serveur sécurisée. Aucun débit n'a été effectué.");
-}
-async function renderAdmin(c){
- c.innerHTML=`<h2>⚙️ Administration</h2>
- <div class="card"><b>Compte administrateur</b><p>${esc(user.email)}</p><p class="muted">Les boutons financiers doivent être reliés à des fonctions sécurisées Supabase avant de créditer ou débiter un compte.</p></div>
- <h2>Membres</h2><input id="memberSearch" placeholder="Rechercher un membre" oninput="filterMembers()"><div id="members">Chargement...</div>
- <h2>Dépôts — tous les statuts</h2><div id="adminDeposits">Chargement...</div>
- <h2>Retraits — tous les statuts</h2><div id="adminWithdrawals">Chargement...</div>
- <h2>Paramètres et assistance</h2><div class="card"><p>Nom : KINSHASA BUSINESS</p><p>Minimum dépôt : 15 000 FC</p><p>Minimum retrait : 2 000 FC</p><p>Pointage : 20 FC/jour</p><p>WhatsApp : <a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps">Groupe WhatsApp</a></p><p>Telegram : <a href="https://t.me/francscongolais">Groupe Telegram</a></p><p class="muted">Ne modifiez pas directement les soldes ou les statuts financiers sans fonction serveur idempotente.</p></div>`;
- await loadAdminData();
-}
-let memberCache=[];
-async function loadAdminData(){
- const m=await sb.from("profiles").select("*").order("created_at",{ascending:false});
- const el=document.getElementById("members");
- if(m.error){el.innerHTML='<div class="msg err">'+esc(m.error.message)+'</div>'}else{memberCache=m.data||[];drawMembers(memberCache)}
- for(const [table,id] of [["kin_deposit_requests","adminDeposits"],["kin_withdrawal_requests","adminWithdrawals"]]){
-  const target=document.getElementById(id);
-  const r=await sb.from(table).select("*").order("created_at",{ascending:false});
-  if(r.error){target.innerHTML='<div class="msg err">'+esc(r.error.message)+'</div>';continue}
-  target.innerHTML=(r.data||[]).map(x=>`<div class="item"><b>${esc(x.status||"pending").toUpperCase()} — ${money(x.amount)}</b><p>Opérateur : ${esc(x.operator||"—")}</p><p>Numéro : ${esc(x.payment_number||x.withdrawal_number||"—")}</p><p>Référence : ${esc(x.reference||"—")}</p><p class="small">Date : ${esc(x.created_at?new Date(x.created_at).toLocaleString("fr-FR"):"—")}</p><p class="muted">ID demande : ${esc(x.id||x.transaction_id||"—")}</p></div>`).join("")||'<div class="card">Aucune demande.</div>';
+
+ afficherMessage("La connexion réelle n'est pas encore activée. Il faut relier l'authentification à Supabase.","info");
+});
+
+el("motOublie").addEventListener("click",function(e){
+ e.preventDefault();
+ afficherMessage("La récupération du mot de passe doit être configurée dans le service d'authentification.","info");
+});
+
+function ouvrirPage(page,bouton){
+ document.querySelectorAll("nav button").forEach(b=>b.classList.remove("actif"));
+ if(bouton) bouton.classList.add("actif");
+
+ el("titrePage").textContent=({
+  Accueil:"🏠 Accueil",
+  KIN:"🧴 KIN",
+  Pointage:"✓ Pointage",
+  Equipe:"👥 Équipe",
+  Historique:"📜 Historique",
+  Profil:"👤 Profil",
+  Admin:"⚙️ Administration",
+  Menu:"☰ Menu"
+ })[page]||page;
+
+ const contenu=el("contenuPage");
+
+ if(page==="Menu"){
+  contenu.innerHTML=
+   '<button class="jaune large" onclick="ouvrirPage(\'Equipe\')">👥 Équipe</button><br><br>'+
+   '<button class="jaune large" onclick="ouvrirPage(\'Historique\')">📜 Historique</button><br><br>'+
+   '<button class="jaune large" onclick="ouvrirPage(\'Profil\')">👤 Profil</button><br><br>'+
+   '<button class="bleu large" onclick="ouvrirPage(\'Admin\')">⚙️ Administration</button>';
+ }else if(page==="KIN"){
+  contenu.textContent="Les plans KIN seront affichés ici après configuration.";
+ }else if(page==="Pointage"){
+  contenu.textContent="Votre pointage journalier apparaîtra ici après connexion à la base de données.";
+ }else if(page==="Equipe"){
+  contenu.textContent="Les membres parrainés apparaîtront ici.";
+ }else if(page==="Historique"){
+  contenu.textContent="L'historique des dépôts, retraits et opérations apparaîtra ici.";
+ }else if(page==="Profil"){
+  contenu.textContent=utilisateur?"Compte : "+utilisateur.email:"Informations du profil.";
+ }else if(page==="Admin"){
+  contenu.textContent="Espace administrateur à sécuriser côté serveur. Ne pas laisser les autorisations administrateur accessibles à tous les membres.";
+ }else{
+  contenu.textContent="Bienvenue sur KINSHASA BUSINESS 🇨🇩";
  }
 }
-function drawMembers(arr){
- const el=document.getElementById("members");
- el.innerHTML=arr.map(x=>`<div class="item"><b>${esc(x.full_name||"Membre")}</b><p class="small">ID : ${esc(x.id)}</p><p>Rôle : ${esc(x.role||"member")}</p><p>Code : ${esc(x.referral_code||"—")}</p><p class="small">Statut de blocage : ${esc(x.status||"non défini")}</p><button onclick="sayMemberSecurity()">Gestion sécurisée du membre</button></div>`).join("")||'<div class="card">Aucun membre.</div>';
+
+function deconnexion(){
+ utilisateur=null;
+ el("espace").classList.add("cache");
+ el("menu").classList.add("cache");
+ el("auth").classList.remove("cache");
+ changerMode("connexion");
 }
-function filterMembers(){
- const q=document.getElementById("memberSearch").value.toLowerCase();
- drawMembers(memberCache.filter(x=>[x.full_name,x.email,x.phone,x.referral_code,x.id].some(v=>String(v||"").toLowerCase().includes(q))));
-}
-function sayMemberSecurity(){say("Pour bloquer un membre, changer son solde, attribuer un KIN ou valider un paiement, il faut d’abord installer les fonctions SQL sécurisées. Cette action n’a pas modifié le compte.")}
-async function copyValue(t){try{await navigator.clipboard.writeText(t);say("Copié.")}catch(e){say(t)}}
-async function logout(){await sb.auth.signOut();user=null;profile=null;wallet=null;document.getElementById("app").classList.add("hidden");document.getElementById("auth").classList.remove("hidden")}
-sb.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_IN"&&session)setTimeout(loadUser,100);if(event==="SIGNED_OUT"){document.getElementById("app").classList.add("hidden");document.getElementById("auth").classList.remove("hidden")}});
-const ref=new URLSearchParams(location.search).get("ref");if(ref)document.getElementById("referral").value=ref;
-showAuth();
-loadUser();
+
 </script>
 </body>
 </html>
