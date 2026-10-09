@@ -3,43 +3,40 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KINSHASA BUSINESS 🇨🇩</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --bleu:#007fff;
-  --jaune:#ffce00;
-  --rouge:#ce1021;
-  --fond:#f1f5f9;
-}
+:root{--b:#007fff;--j:#ffce00;--r:#ce1021}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:var(--fond);color:#172033}
-.drapeau{height:7px;background:linear-gradient(to bottom,#007fff 33%,#ffce00 33% 66%,#ce1021 66%)}
-header{background:var(--bleu);color:white;text-align:center;padding:22px 10px;border-bottom:5px solid var(--jaune)}
-header h1{font-size:25px;margin:0}
+body{margin:0;background:#f1f5f9;color:#172033;font-family:Arial,sans-serif}
+.drapeau{height:7px;background:linear-gradient(#007fff 33%,#ffce00 33% 66%,#ce1021 66%)}
+header{background:var(--b);color:white;text-align:center;padding:22px 10px;border-bottom:5px solid var(--j)}
+header h1{margin:0;font-size:25px}
 header p{margin:8px 0 0}
 main{max-width:600px;margin:18px auto;padding:0 12px 100px}
-.carte{background:white;border-radius:14px;padding:18px;margin-bottom:15px;box-shadow:0 3px 12px #00000010}
-h2{font-size:21px;margin-top:0}
-input{width:100%;padding:13px;margin:6px 0 13px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
-label{font-size:14px;font-weight:bold}
+.carte{background:white;padding:18px;border-radius:14px;margin-bottom:15px;box-shadow:0 3px 12px #0001}
+h2{font-size:21px}
+.ligne{display:flex;gap:9px;margin-bottom:18px}
 button{border:0;border-radius:9px;padding:13px;font-size:15px;font-weight:bold;cursor:pointer}
-.bleu{background:var(--bleu);color:white}
-.jaune{background:var(--jaune);color:#172033}
-.rouge{background:var(--rouge);color:white}
-.large{width:100%}
-.ligne{display:flex;gap:9px;margin-bottom:17px}
 .ligne button{flex:1}
+.bleu{background:var(--b);color:white}
+.jaune{background:var(--j);color:#172033}
+.rouge{background:var(--r);color:white}
+.large{width:100%}
+label{font-size:14px;font-weight:bold}
+input{width:100%;padding:13px;margin:6px 0 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
 .cache{display:none!important}
-.message{padding:12px;border-radius:8px;margin-top:12px;font-size:14px}
+.message{padding:12px;border-radius:8px;margin-top:12px;overflow-wrap:anywhere}
 .erreur{background:#fee2e2;color:#991b1b}
 .info{background:#dbeafe;color:#1e40af}
 .succes{background:#dcfce7;color:#166534}
-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -3px 12px #0002;padding:6px 2px}
-nav button{background:white;color:#172033;font-size:11px;padding:7px 1px}
+.stat{padding:15px;background:#eaf4ff;border-radius:9px;margin:12px 0}
+nav{position:fixed;bottom:0;left:0;right:0;background:white;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -3px 12px #0002;padding:5px 2px}
+nav button{background:white;font-size:11px;padding:7px 1px}
 nav span{display:block;font-size:21px;margin-bottom:4px}
-nav button.actif{color:var(--bleu);background:#eaf4ff}
-.stat{background:#eaf4ff;padding:15px;border-radius:9px;margin:10px 0}
+nav button.actif{color:var(--b);background:#eaf4ff}
+a{color:var(--b)}
 </style>
 </head>
 <body>
@@ -50,53 +47,60 @@ nav button.actif{color:var(--bleu);background:#eaf4ff}
 </header>
 
 <main>
-<section class="carte" id="auth">
+<section id="auth" class="carte">
 <div class="ligne">
-<button class="bleu" id="btnConnexion" onclick="changerMode('connexion')">Connexion</button>
-<button class="jaune" id="btnInscription" onclick="changerMode('inscription')">Inscription</button>
+<button id="tabConnexion" class="bleu" type="button" onclick="modeAuth('connexion')">Connexion</button>
+<button id="tabInscription" class="jaune" type="button" onclick="modeAuth('inscription')">Inscription</button>
 </div>
+<h2 id="titre">Connexion</h2>
 
-<h2 id="titreAuth">Connexion</h2>
 <form id="formAuth">
-<div id="champNom" class="cache">
+<div id="zoneNom" class="cache">
 <label>Nom complet</label>
-<input id="nom" placeholder="Votre nom complet">
+<input id="nom" autocomplete="name" placeholder="Votre nom complet">
 </div>
 
+<div id="zoneEmail" class="cache">
 <label>Email</label>
-<input id="email" type="email" placeholder="Votre adresse email" required>
+<input id="email" type="email" autocomplete="email" placeholder="exemple@email.com">
+</div>
 
+<div id="zoneTelephone" class="cache">
 <label>Téléphone RDC (+243)</label>
-<input id="telephone" type="tel" placeholder="+243..." required>
+<input id="telephone" type="tel" autocomplete="tel" placeholder="+243XXXXXXXXX">
+</div>
 
-<div id="champParrain" class="cache">
+<div id="zoneIdentifiant">
+<label>Email ou téléphone RDC (+243)</label>
+<input id="identifiant" autocomplete="username" placeholder="Email ou +243XXXXXXXXX">
+</div>
+
+<div id="zoneParrain" class="cache">
 <label>Code de parrainage (facultatif)</label>
 <input id="parrain" placeholder="Code du parrain">
 </div>
 
 <label>Mot de passe</label>
-<input id="motDePasse" type="password" minlength="6" placeholder="6 caractères minimum" required>
+<input id="password" type="password" minlength="6" autocomplete="current-password" required placeholder="Votre mot de passe">
 
-<div id="champConfirmation" class="cache">
+<div id="zoneConfirmation" class="cache">
 <label>Confirmer le mot de passe</label>
-<input id="confirmation" type="password" minlength="6" placeholder="Répéter le mot de passe">
+<input id="confirmation" type="password" minlength="6" autocomplete="new-password" placeholder="Répéter le mot de passe">
 </div>
 
-<button class="bleu large" id="btnEnvoyer" type="submit">Se connecter</button>
+<button id="envoyer" class="bleu large" type="submit">Se connecter</button>
 </form>
 
-<p style="text-align:center">
-<a href="#" id="motOublie">Mot de passe oublié ?</a>
-</p>
+<p id="oubli" style="text-align:center"><a href="#" onclick="motDePasseOublie(event)">Mot de passe oublié ?</a></p>
 <div id="message" class="cache"></div>
 </section>
 
 <section id="espace" class="cache">
 <div class="carte">
 <h2 id="titrePage">🏠 Accueil</h2>
-<p id="bienvenue">Bienvenue sur KINSHASA BUSINESS 🇨🇩</p>
+<p id="bienvenue"></p>
 <div class="stat">💰 Solde : <strong>0 Fc</strong></div>
-<div id="contenuPage">Bienvenue dans votre espace membre.</div>
+<div id="contenu">Bienvenue sur KINSHASA BUSINESS 🇨🇩</div>
 </div>
 <div class="carte">
 <button class="rouge large" onclick="deconnexion()">Déconnexion</button>
@@ -112,120 +116,219 @@ nav button.actif{color:var(--bleu);background:#eaf4ff}
 </nav>
 
 <script>
+const SUPABASE_URL="https://uewceocdzvekuopgsmpg.supabase.co";
+const SUPABASE_KEY="sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
 let mode="connexion";
 let utilisateur=null;
 
-const el=id=>document.getElementById(id);
-
 function afficherMessage(texte,type="info"){
- const m=el("message");
- m.textContent=texte;
- m.className="message "+type;
+  $("message").textContent=texte;
+  $("message").className="message "+type;
 }
 
-function changerMode(nouveauMode){
- mode=nouveauMode;
- const inscription=mode==="inscription";
+function modeAuth(nouveau){
+  mode=nouveau;
+  const inscription=mode==="inscription";
 
- el("titreAuth").textContent=inscription?"Créer un compte":"Connexion";
- el("champNom").classList.toggle("cache",!inscription);
- el("champParrain").classList.toggle("cache",!inscription);
- el("champConfirmation").classList.toggle("cache",!inscription);
- el("nom").required=inscription;
- el("confirmation").required=inscription;
- el("btnEnvoyer").textContent=inscription?"S'inscrire":"Se connecter";
- el("btnConnexion").className=inscription?"jaune":"bleu";
- el("btnInscription").className=inscription?"bleu":"jaune";
- el("message").className="cache";
+  $("titre").textContent=inscription?"Créer un compte":"Connexion";
+  $("tabConnexion").className=inscription?"jaune":"bleu";
+  $("tabInscription").className=inscription?"bleu":"jaune";
+
+  $("zoneNom").classList.toggle("cache",!inscription);
+  $("zoneEmail").classList.toggle("cache",!inscription);
+  $("zoneTelephone").classList.toggle("cache",!inscription);
+  $("zoneIdentifiant").classList.toggle("cache",inscription);
+  $("zoneParrain").classList.toggle("cache",!inscription);
+  $("zoneConfirmation").classList.toggle("cache",!inscription);
+
+  $("nom").required=inscription;
+  $("email").required=inscription;
+  $("telephone").required=inscription;
+  $("identifiant").required=!inscription;
+  $("confirmation").required=inscription;
+
+  $("envoyer").textContent=inscription?"S'inscrire":"Se connecter";
+  $("oubli").classList.toggle("cache",inscription);
+  $("message").className="cache";
 }
 
-el("formAuth").addEventListener("submit",function(e){
- e.preventDefault();
+function normaliserTelephone(numero){
+  return numero.replace(/[\s()-]/g,"");
+}
 
- const nom=el("nom").value.trim();
- const email=el("email").value.trim();
- const telephone=el("telephone").value.trim();
- const motDePasse=el("motDePasse").value;
+function traduireErreur(texte){
+  if(/Invalid login credentials/i.test(texte))
+    return "Identifiants incorrects. Vérifiez votre e-mail ou téléphone et votre mot de passe.";
+  if(/Email not confirmed/i.test(texte))
+    return "Votre e-mail n'est pas confirmé. Vérifiez votre boîte mail ou les réglages Auth de Supabase.";
+  if(/already registered/i.test(texte))
+    return "Cet e-mail est déjà inscrit. Essayez de vous connecter.";
+  if(/phone.*disabled|phone provider is disabled/i.test(texte))
+    return "La connexion par téléphone n'est pas encore activée dans Supabase. Utilisez votre e-mail.";
+  if(/rate limit/i.test(texte))
+    return "Trop de tentatives. Attendez un peu puis réessayez.";
+  return texte;
+}
 
- if(!/^\+243[0-9]{9}$/.test(telephone.replace(/[\s-]/g,""))){
-  afficherMessage("Entrez un numéro RDC valide au format +243 suivi de 9 chiffres.","erreur");
-  return;
- }
+$("formAuth").addEventListener("submit",async function(e){
+  e.preventDefault();
+  $("envoyer").disabled=true;
+  $("envoyer").textContent="Patientez...";
 
- if(mode==="inscription"){
-  if(!nom){
-   afficherMessage("Entrez votre nom complet.","erreur");
-   return;
+  try{
+    const password=$("password").value;
+
+    if(mode==="inscription"){
+      const nom=$("nom").value.trim();
+      const email=$("email").value.trim();
+      const telephone=normaliserTelephone($("telephone").value);
+
+      if(!nom) throw new Error("Entrez votre nom complet.");
+      if(!/^\+243[0-9]{9}$/.test(telephone))
+        throw new Error("Le téléphone doit commencer par +243 et contenir 9 chiffres après.");
+      if(password.length<6)
+        throw new Error("Le mot de passe doit contenir au moins 6 caractères.");
+      if(password!==$("confirmation").value)
+        throw new Error("Les mots de passe ne correspondent pas.");
+
+      const {data,error}=await db.auth.signUp({
+        email:email,
+        password:password,
+        options:{
+          data:{
+            full_name:nom,
+            phone_number:telephone,
+            referral_code:$("parrain").value.trim()
+          }
+        }
+      });
+
+      if(error) throw error;
+
+      if(data.session){
+        utilisateur=data.user;
+        afficherEspace();
+      }else{
+        afficherMessage("Inscription envoyée. Si Supabase demande la confirmation par e-mail, confirmez votre adresse avant de vous connecter.","succes");
+      }
+    }else{
+      const identifiant=$("identifiant").value.trim();
+      let resultat;
+
+      if(identifiant.includes("@")){
+        resultat=await db.auth.signInWithPassword({
+          email:identifiant,
+          password:password
+        });
+      }else{
+        const telephone=normaliserTelephone(identifiant);
+        if(!/^\+243[0-9]{9}$/.test(telephone))
+          throw new Error("Entrez un e-mail valide ou un numéro au format +243XXXXXXXXX.");
+
+        resultat=await db.auth.signInWithPassword({
+          phone:telephone,
+          password:password
+        });
+      }
+
+      if(resultat.error) throw resultat.error;
+      utilisateur=resultat.data.user;
+      afficherEspace();
+    }
+  }catch(err){
+    afficherMessage(traduireErreur(err.message||"Une erreur est survenue."),"erreur");
+  }finally{
+    $("envoyer").disabled=false;
+    $("envoyer").textContent=mode==="inscription"?"S'inscrire":"Se connecter";
   }
-  if(motDePasse.length<6){
-   afficherMessage("Le mot de passe doit contenir au moins 6 caractères.","erreur");
-   return;
-  }
-  if(motDePasse!==el("confirmation").value){
-   afficherMessage("Les deux mots de passe ne correspondent pas.","erreur");
-   return;
-  }
-
-  afficherMessage("Le formulaire est valide. Pour enregistrer réellement le compte, connectez le site à Supabase.","info");
-  return;
- }
-
- afficherMessage("La connexion réelle n'est pas encore activée. Il faut relier l'authentification à Supabase.","info");
 });
 
-el("motOublie").addEventListener("click",function(e){
- e.preventDefault();
- afficherMessage("La récupération du mot de passe doit être configurée dans le service d'authentification.","info");
-});
+async function motDePasseOublie(e){
+  e.preventDefault();
+  const identifiant=$("identifiant").value.trim();
+
+  if(!identifiant.includes("@")){
+    afficherMessage("Pour réinitialiser le mot de passe, entrez l'adresse e-mail du compte dans Connexion.","info");
+    return;
+  }
+
+  try{
+    const {error}=await db.auth.resetPasswordForEmail(identifiant,{
+      redirectTo:window.location.origin
+    });
+    if(error) throw error;
+    afficherMessage("Si cette adresse est enregistrée, un e-mail de réinitialisation sera envoyé.","succes");
+  }catch(err){
+    afficherMessage(traduireErreur(err.message),"erreur");
+  }
+}
+
+function afficherEspace(){
+  $("auth").classList.add("cache");
+  $("espace").classList.remove("cache");
+  $("menu").classList.remove("cache");
+  $("bienvenue").textContent="Bienvenue "+(utilisateur?.user_metadata?.full_name||utilisateur?.email||"sur votre espace")+" !";
+  ouvrirPage("Accueil",document.querySelector("nav button"));
+}
 
 function ouvrirPage(page,bouton){
- document.querySelectorAll("nav button").forEach(b=>b.classList.remove("actif"));
- if(bouton) bouton.classList.add("actif");
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("actif"));
+  if(bouton) bouton.classList.add("actif");
 
- el("titrePage").textContent=({
-  Accueil:"🏠 Accueil",
-  KIN:"🧴 KIN",
-  Pointage:"✓ Pointage",
-  Equipe:"👥 Équipe",
-  Historique:"📜 Historique",
-  Profil:"👤 Profil",
-  Admin:"⚙️ Administration",
-  Menu:"☰ Menu"
- })[page]||page;
+  const titres={
+    Accueil:"🏠 Accueil",KIN:"🧴 KIN",Pointage:"✓ Pointage",
+    Equipe:"👥 Équipe",Historique:"📜 Historique",
+    Profil:"👤 Profil",Admin:"⚙️ Administration",Menu:"☰ Menu"
+  };
+  $("titrePage").textContent=titres[page]||page;
 
- const contenu=el("contenuPage");
+  if(page==="Menu"){
+    $("contenu").innerHTML=
+      '<p><button class="jaune large" onclick="ouvrirPage(\'Equipe\')">👥 Équipe</button></p>'+
+      '<p><button class="jaune large" onclick="ouvrirPage(\'Historique\')">📜 Historique</button></p>'+
+      '<p><button class="jaune large" onclick="ouvrirPage(\'Profil\')">👤 Profil</button></p>'+
+      '<p><button class="bleu large" onclick="ouvrirPage(\'Admin\')">⚙️ Administration</button></p>';
+    return;
+  }
 
- if(page==="Menu"){
-  contenu.innerHTML=
-   '<button class="jaune large" onclick="ouvrirPage(\'Equipe\')">👥 Équipe</button><br><br>'+
-   '<button class="jaune large" onclick="ouvrirPage(\'Historique\')">📜 Historique</button><br><br>'+
-   '<button class="jaune large" onclick="ouvrirPage(\'Profil\')">👤 Profil</button><br><br>'+
-   '<button class="bleu large" onclick="ouvrirPage(\'Admin\')">⚙️ Administration</button>';
- }else if(page==="KIN"){
-  contenu.textContent="Les plans KIN seront affichés ici après configuration.";
- }else if(page==="Pointage"){
-  contenu.textContent="Votre pointage journalier apparaîtra ici après connexion à la base de données.";
- }else if(page==="Equipe"){
-  contenu.textContent="Les membres parrainés apparaîtront ici.";
- }else if(page==="Historique"){
-  contenu.textContent="L'historique des dépôts, retraits et opérations apparaîtra ici.";
- }else if(page==="Profil"){
-  contenu.textContent=utilisateur?"Compte : "+utilisateur.email:"Informations du profil.";
- }else if(page==="Admin"){
-  contenu.textContent="Espace administrateur à sécuriser côté serveur. Ne pas laisser les autorisations administrateur accessibles à tous les membres.";
- }else{
-  contenu.textContent="Bienvenue sur KINSHASA BUSINESS 🇨🇩";
- }
+  const contenus={
+    Accueil:"Bienvenue sur KINSHASA BUSINESS 🇨🇩",
+    KIN:"Les plans KIN seront affichés après leur configuration.",
+    Pointage:"Le pointage journalier nécessite une base de données configurée.",
+    Equipe:"Votre équipe et vos filleuls apparaîtront ici après configuration.",
+    Historique:"Vos dépôts, retraits et opérations apparaîtront ici après configuration.",
+    Profil:"E-mail : "+(utilisateur?.email||"Non disponible"),
+    Admin:"Espace de démonstration. L'administration réelle doit être protégée par des autorisations côté serveur."
+  };
+  $("contenu").textContent=contenus[page]||"Bienvenue.";
 }
 
-function deconnexion(){
- utilisateur=null;
- el("espace").classList.add("cache");
- el("menu").classList.add("cache");
- el("auth").classList.remove("cache");
- changerMode("connexion");
+async function deconnexion(){
+  await db.auth.signOut();
+  utilisateur=null;
+  $("espace").classList.add("cache");
+  $("menu").classList.add("cache");
+  $("auth").classList.remove("cache");
+  $("password").value="";
+  modeAuth("connexion");
 }
 
+async function restaurerSession(){
+  try{
+    const {data,error}=await db.auth.getSession();
+    if(!error&&data.session){
+      utilisateur=data.session.user;
+      afficherEspace();
+    }
+  }catch(e){
+    console.error("Session non restaurée",e);
+  }
+}
+
+restaurerSession();
+modeAuth("connexion");
 </script>
 </body>
 </html>
