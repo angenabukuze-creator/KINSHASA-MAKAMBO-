@@ -1,79 +1,67 @@
-<!doctype html>
+<!-- KINSHASA BUSINESS — index.html -->
+<!-- Remplacez uniquement après avoir sauvegardé votre version actuelle. -->
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#09090b">
 <title>KINSHASA BUSINESS 🇨🇩</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--red:#e50914;--bg:#09090b;--card:#17171c;--line:#303038;--muted:#aaa;--green:#19c37d}
+:root{--red:#e50914;--bg:#09090b;--card:#17171c;--line:#303038;--muted:#aaaab4;--green:#19c37d}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:white;font-family:Arial,sans-serif}
-button,input,select{font:inherit}button{cursor:pointer}
-.wrap{max-width:650px;margin:auto;padding:14px 14px 90px}
-header{position:sticky;top:0;background:#101014;padding:15px;border-bottom:1px solid var(--line);z-index:5}
-h1{font-size:21px;margin:0}h2{font-size:19px;margin-top:22px}
-h3{margin:8px 0}
-.muted{color:var(--muted);font-size:13px}
-.card,.item,.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
-.hero{background:linear-gradient(135deg,#a90009,#241018);padding:22px;border-radius:18px}
-.balance{font-size:29px;font-weight:bold;margin:12px 0}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-button,.btn{border:0;border-radius:10px;padding:12px;background:#33333b;color:white}
-.primary{background:var(--red);color:white}.good{background:#08784c}.danger{background:#9c1720}
-input,select{display:block;width:100%;padding:12px;border-radius:9px;border:1px solid #444;background:#0d0d11;color:white;margin:7px 0 13px}
-label{font-size:13px;color:#ddd}
-.hidden{display:none!important}
-nav{position:fixed;bottom:0;left:0;right:0;background:#111115;border-top:1px solid var(--line);display:flex;justify-content:center;z-index:8}
-nav .navinner{max-width:650px;width:100%;display:flex;justify-content:space-around;padding:8px 2px}
-nav button{background:transparent;font-size:11px;padding:9px 5px}
-nav button.active{color:#ff646a}
-.msg{padding:11px;border-radius:9px;background:#243a2e;margin:9px 0;overflow-wrap:anywhere}
-.err{background:#481d22}
-.small{font-size:12px;overflow-wrap:anywhere}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.row>*{flex:1}
-hr{border:0;border-top:1px solid var(--line);margin:14px 0}
-a{color:#ff777d}
+body{margin:0;background:var(--bg);color:#fff;font-family:Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:10px;padding:12px;font-weight:bold}
+input,select,textarea{width:100%;padding:12px;margin:6px 0 12px;background:#101014;color:#fff;border:1px solid var(--line);border-radius:10px}
+label{display:block;color:#ccc;font-size:13px}
+header{position:sticky;top:0;background:#101014;padding:15px;border-bottom:1px solid var(--line);z-index:3}
+h1{font-size:23px}h2{font-size:20px;margin-top:24px}
+main{max-width:760px;margin:auto;padding:15px;padding-bottom:50px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;overflow-wrap:anywhere}
+.btn{display:inline-block;margin:4px 3px 4px 0;background:#303038;color:white}
+.red{background:var(--red);color:white}.green{background:var(--green);color:#07150e}
+.danger{background:#65141a;color:#fff}.muted{color:var(--muted);font-size:13px}
+.row{display:flex;flex-wrap:wrap;gap:7px}.row>*{flex:1}
+.badge{display:inline-block;border-radius:20px;padding:5px 8px;background:#333;font-size:12px}
+.pending{background:#594311}.approved{background:#10472f}.rejected,.blocked{background:#65141a}
+.hidden{display:none!important}.notice{padding:12px;border-left:4px solid var(--red);background:#202026;border-radius:8px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+nav button{background:#25252b;color:white;flex:1;min-width:85px}
+hr{border:0;border-top:1px solid var(--line);margin:15px 0}
 </style>
 </head>
 <body>
-<header>
-  <h1>🇨🇩 KINSHASA BUSINESS</h1>
-  <div class="muted">République démocratique du Congo</div>
-</header>
-
-<section id="auth" class="wrap">
-  <div class="card">
-    <div class="grid">
-      <button id="loginTab" class="primary" onclick="authMode='login';showAuth()">Connexion</button>
-      <button id="signupTab" onclick="authMode='signup';showAuth()">Inscription</button>
-    </div>
-    <div id="authMessage"></div>
-    <label>Nom complet</label><input id="fullName" placeholder="Nom complet">
-    <label>Email</label><input id="email" type="email" placeholder="Email">
-    <label>Téléphone RDC (+243)</label><input id="phone" placeholder="+243...">
-    <label>Code de parrainage (facultatif)</label><input id="referral" placeholder="KINXXXXXXXX">
-    <label>Mot de passe</label><input id="password" type="password" placeholder="Minimum 6 caractères">
-    <button class="primary" style="width:100%" onclick="authenticate()">Continuer</button>
-    <button style="width:100%;margin-top:8px" onclick="resetPassword()">Mot de passe oublié ?</button>
-  </div>
-</section>
-
-<div id="app" class="hidden">
-<main class="wrap" id="content"></main>
-<nav><div class="navinner">
-<button onclick="page('home')">🏠<br>Accueil</button>
-<button onclick="page('products')">🧴<br>KIN</button>
-<button onclick="page('tasks')">✓<br>Pointage</button>
-<button onclick="page('team')">👥<br>Équipe</button>
-<button onclick="page('history')">📜<br>Historique</button>
-<button onclick="page('profile')">👤<br>Profil</button>
-<button id="adminNav" class="hidden" onclick="page('admin')">⚙️<br>Admin</button>
-</div></nav>
+<header><strong>🇨🇩 KINSHASA BUSINESS</strong></header>
+<main>
+<section id="auth">
+<h1>Connexion administrateur / membre</h1>
+<label>Email</label><input id="email" type="email" autocomplete="username">
+<label>Mot de passe</label><input id="password" type="password" autocomplete="current-password">
+<div class="row">
+<button class="red" onclick="login()">Connexion</button>
+<button class="btn" onclick="signup()">Inscription</button>
 </div>
-
+<button class="btn" onclick="resetPassword()">Réinitialiser mon mot de passe</button>
+<div id="authMessage" class="notice"></div>
+</section>
+<section id="app" class="hidden">
+<div class="row">
+<div><b id="memberName">Compte</b><div class="muted" id="memberEmail"></div></div>
+<button class="btn" onclick="logout()">Déconnexion</button>
+</div>
+<nav>
+<button onclick="showPage('home')">Accueil</button>
+<button onclick="showPage('deposit')">Dépôt</button>
+<button onclick="showPage('withdraw')">Retrait</button>
+<button onclick="showPage('team')">Équipe</button>
+<button onclick="showPage('profile')">Profil</button>
+<button id="adminNav" class="red hidden" onclick="showPage('admin')">Administration</button>
+</nav>
+<div id="content"></div>
+</section>
+</main>
 <script>
 const SUPABASE_URL="https://uewceocdzvekuopgsmpg.supabase.co";
 const SUPABASE_KEY="sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
@@ -93,191 +81,125 @@ const PLANS=[
  {id:"KIN6",price:600000,gain:120000,days:60,max:2},
  {id:"KIN7",price:1500000,gain:330000,days:60,max:2}
 ];
-let user=null,profile=null,wallet=null,authMode="login",currentPage="home";
+let user=null,profile=null,wallet=null,isAdmin=false;
+const $=id=>document.getElementById(id);
 const money=n=>Number(n||0).toLocaleString("fr-FR")+" FC";
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const say=(m)=>alert(m);
-function showAuth(){
- document.getElementById("fullName").style.display=authMode==="signup"?"block":"none";
- document.getElementById("phone").style.display=authMode==="signup"?"block":"none";
- document.getElementById("referral").style.display=authMode==="signup"?"block":"none";
- document.getElementById("signupTab").classList.toggle("primary",authMode==="signup");
- document.getElementById("loginTab").classList.toggle("primary",authMode==="login");
+function message(t){$("authMessage").textContent=t}
+async function login(){
+ const {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
+ if(error)return message(error.message);
+ await loadUser();
 }
-function referralCode(id){return "KIN"+String(id).replaceAll("-","").slice(0,8).toUpperCase()}
-async function authenticate(){
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
- const name=document.getElementById("fullName").value.trim();
- const phone=document.getElementById("phone").value.trim();
- const referred=document.getElementById("referral").value.trim().toUpperCase();
- const box=document.getElementById("authMessage");
- try{
-  let result;
-  if(authMode==="signup"){
-   if(!name||!email||password.length<6||!phone){throw Error("Remplissez le nom, téléphone, email et mot de passe (6 caractères minimum).")}
-   result=await sb.auth.signUp({email,password,options:{data:{full_name:name,phone}}});
-   if(result.error)throw result.error;
-   if(!result.data.user)throw Error("Compte non créé.");
-   if(!result.data.session){box.innerHTML="Compte créé. Connectez-vous si la confirmation email est désactivée dans Supabase.";return}
-   user=result.data.user;
-   const code=referralCode(user.id);
-   const p=await sb.from("profiles").upsert({id:user.id,full_name:name,phone,referral_code:code,referred_by_code:referred||null},{onConflict:"id"});
-   if(p.error)throw p.error;
-  }else{
-   result=await sb.auth.signInWithPassword({email,password});
-   if(result.error)throw result.error;
-   user=result.data.user;
-  }
-  await loadUser();
- }catch(e){box.innerHTML='<div class="msg err">'+esc(e.message)+'</div>'}
+async function signup(){
+ const {data,error}=await sb.auth.signUp({email:$("email").value.trim(),password:$("password").value});
+ if(error)return message(error.message);
+ message("Inscription envoyée. Connectez-vous si votre compte est actif.");
 }
 async function resetPassword(){
- const email=document.getElementById("email").value.trim();
- if(!email)return say("Entrez d’abord votre email.");
- const r=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});
- if(r.error)return say(r.error.message);
- say("Si ce compte existe, un lien de réinitialisation sera envoyé par email.");
+ const email=$("email").value.trim();
+ if(!email)return message("Entrez votre email.");
+ const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});
+ message(error?error.message:"Si le compte existe, un lien de réinitialisation sera envoyé.");
 }
+async function logout(){await sb.auth.signOut();location.reload()}
 async function loadUser(){
- const r=await sb.auth.getUser();
- user=r.data.user;
- if(!user){document.getElementById("auth").classList.remove("hidden");document.getElementById("app").classList.add("hidden");return}
+ const {data,error}=await sb.auth.getUser();
+ if(error||!data.user)return;
+ user=data.user;
  const p=await sb.from("profiles").select("*").eq("id",user.id).maybeSingle();
- profile=p.data||{id:user.id,full_name:user.user_metadata?.full_name||"Membre",role:"member"};
- if(!profile.referral_code){
-  const code=referralCode(user.id);
-  await sb.from("profiles").update({referral_code:code}).eq("id",user.id);
-  profile.referral_code=code;
- }
+ profile=p.data||{id:user.id,full_name:user.user_metadata?.name||"Membre",role:"member"};
+ isAdmin=profile.role==="admin"||user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
  const w=await sb.from("kin_wallets").select("*").eq("user_id",user.id).maybeSingle();
- wallet=w.data||{balance:2000,total_earnings:0};
- const admin=profile.role==="admin"||user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
- document.getElementById("adminNav").classList.toggle("hidden",!admin);
- document.getElementById("auth").classList.add("hidden");
- document.getElementById("app").classList.remove("hidden");
- page("home");
+ wallet=w.data||{balance:0,total_earnings:0};
+ $("auth").classList.add("hidden");$("app").classList.remove("hidden");
+ $("memberName").textContent=profile.full_name||"Membre";
+ $("memberEmail").textContent=user.email||"";
+ $("adminNav").classList.toggle("hidden",!isAdmin);
+ showPage("home");
 }
-function page(name){
- currentPage=name;
- if(name==="admin"&&profile?.role!=="admin"&&user?.email?.toLowerCase()!==ADMIN_EMAIL.toLowerCase())name="profile";
- const c=document.getElementById("content");
- if(name==="home")renderHome(c);
- if(name==="products")renderProducts(c);
- if(name==="tasks")renderTasks(c);
- if(name==="team")renderTeam(c);
- if(name==="history")renderHistory(c);
- if(name==="profile")renderProfile(c);
- if(name==="admin")renderAdmin(c);
+function showPage(p){
+ if(p==="admin"&&!isAdmin)return alert("Accès administrateur refusé.");
+ const c=$("content");
+ if(p==="home")c.innerHTML=`<div class="card"><h2>Bienvenue 🇨🇩</h2><h1>${money(wallet?.balance)}</h1>Solde disponible<hr>Gains cumulés : ${money(wallet?.total_earnings)}</div><div class="notice">Les gains affichés ne constituent pas une garantie de rendement.</div><h2>Produits KIN</h2>${PLANS.map(x=>`<div class="card"><b>${x.id}</b><p>Prix : ${money(x.price)}</p><p>Gain affiché : ${money(x.gain)} / jour</p><p>${x.days} jours · maximum ${x.max}</p></div>`).join("")}`;
+ if(p==="deposit")renderDeposit();
+ if(p==="withdraw")renderWithdraw();
+ if(p==="team")c.innerHTML=`<h2>Équipe et assistance</h2><div class="card">Votre code : <b>KIN${user.id.replaceAll("-","").slice(0,8).toUpperCase()}</b></div><div class="card"><a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps" target="_blank"><button class="green">Groupe WhatsApp</button></a><a href="https://t.me/francscongolais" target="_blank"><button class="btn">Groupe Telegram</button></a></div>`;
+ if(p==="profile")c.innerHTML=`<div class="card"><h2>Profil</h2>${esc(user.email)}<p>Rôle : ${isAdmin?"Administrateur":"Membre"}</p><button class="btn" onclick="resetPassword()">Envoyer un lien de réinitialisation</button></div>`;
+ if(p==="admin")renderAdmin();
 }
-function renderHome(c){
- c.innerHTML=`<section class="hero"><h2>Bienvenue 🇨🇩</h2>${esc(profile.full_name||"Membre")}<div class="balance">${money(wallet.balance)}</div><div>Solde disponible</div><hr>Gains cumulés : <b>${money(wallet.total_earnings)}</b></section>
- <div class="card">Les gains affichés sont des paramètres déclarés et ne garantissent pas un rendement.</div>
- <div class="grid"><button onclick="openDeposit()">＋ Dépôt</button><button onclick="openWithdraw()">↗ Retrait</button><button onclick="page('tasks')">✓ Pointage</button><button onclick="page('team')">👥 Équipe</button></div>
- <h2>Nos KIN</h2>${PLANS.map(p=>`<div class="item"><b>${p.id}</b><p>Prix : ${money(p.price)}</p><p>Gain affiché/jour : ${money(p.gain)}</p><p>Durée : ${p.days} jours · Maximum : ${p.max}</p><button class="primary" onclick="buyKin('${p.id}')">Demander ce KIN</button></div>`).join("")}`;
-}
-function renderProducts(c){renderHome(c)}
-function renderTasks(c){
- c.innerHTML=`<h2>Pointage quotidien</h2><div class="card">Récompense déclarée : 20 FC par jour.</div><button class="primary" onclick="checkin()">Faire mon pointage</button>`;
-}
-async function checkin(){
- const today=new Date().toISOString().slice(0,10);
- const r=await sb.from("kin_daily_checkins").insert({user_id:user.id,checkin_date:today,reward:20});
- if(r.error)return say(r.error.message);
- say("Pointage enregistré. Le crédit doit être appliqué côté serveur.");
-}
-async function renderTeam(c){
- c.innerHTML=`<h2>Mon équipe</h2><div class="card"><p>Mon code : <b>${esc(profile.referral_code||referralCode(user.id))}</b></p><button onclick="copyValue('${esc(profile.referral_code||referralCode(user.id))}')">Copier le code</button><p class="small">${esc(location.origin)}/?ref=${esc(profile.referral_code||referralCode(user.id))}</p><button onclick="copyValue('${esc(location.origin)}/?ref=${esc(profile.referral_code||referralCode(user.id))}')">Copier le lien</button></div><div id="teamStats">Chargement...</div>`;
- const r=await sb.rpc("get_my_team_stats");
- const el=document.getElementById("teamStats");
- if(r.error){el.innerHTML='<div class="msg err">Statistiques indisponibles : '+esc(r.error.message)+'</div>';return}
- const d=r.data||{};
- el.innerHTML=`<div class="grid"><div class="stat">Inscrits<b>${Number(d.registered||0)}</b></div><div class="stat">Validés<b>${Number(d.validated||0)}</b></div></div><div class="card">Commissions déclarées : ${money(d.commission||0)}</div>`;
-}
-async function renderHistory(c){
- c.innerHTML="<h2>📜 Historique des transactions</h2><div id='historyRows'>Chargement...</div>";
- const el=document.getElementById("historyRows");
- const results=await Promise.all([
-  sb.from("kin_transactions").select("*").eq("user_id",user.id).order("created_at",{ascending:false}),
-  sb.from("kin_deposit_requests").select("*").eq("user_id",user.id).order("created_at",{ascending:false}),
-  sb.from("kin_withdrawal_requests").select("*").eq("user_id",user.id).order("created_at",{ascending:false})
- ]);
- let rows=[];
- results.forEach((r,i)=>{if(!r.error)(r.data||[]).forEach(x=>rows.push({...x,_type:["Transaction","Dépôt","Retrait"][i]}))});
- rows.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
- if(!rows.length){el.innerHTML='<div class="card">Aucune transaction trouvée ou historique inaccessible.</div>';return}
- el.innerHTML=rows.map(x=>`<div class="item"><b>${esc(x._type)}</b> · ${money(x.amount)}<p class="small">Date : ${esc(x.created_at?new Date(x.created_at).toLocaleString("fr-FR"):"—")}</p><p>Statut : ${esc(x.status||x.type||"enregistré")}</p><p class="small">${esc(x.operator||"")} ${esc(x.reference||"")}</p></div>`).join("");
-}
-function renderProfile(c){
- c.innerHTML=`<h2>Mon profil</h2><div class="card"><p>Nom : ${esc(profile.full_name||"Membre")}</p><p>Email : ${esc(user.email||"")}</p><p>Code membre : ${esc(profile.referral_code||referralCode(user.id))}</p><p>Rôle : ${esc(profile.role||"member")}</p><button onclick="resetPassword()">Réinitialiser mon mot de passe</button><button class="danger" onclick="logout()">Déconnexion</button></div>
- <h2>Assistance</h2><div class="card"><p>WhatsApp : <a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps" target="_blank">Rejoindre le groupe</a></p><p>Telegram : <a href="https://t.me/francscongolais" target="_blank">Ouvrir Telegram</a></p></div>`;
-}
-async function openDeposit(){
- const c=document.getElementById("content");
- c.innerHTML=`<h2>Faire un dépôt</h2><div class="card"><label>Montant minimum : 15 000 FC</label><input id="depAmount" type="number" min="15000" placeholder="Montant"><label>Opérateur</label><select id="depOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator} — ${p.number} (${p.name})</option>`).join("")}</select><label>Référence du transfert</label><input id="depRef" placeholder="Référence facultative"><button class="primary" onclick="submitDeposit()">Envoyer la demande</button><button onclick="page('home')">Retour</button></div>`;
+function renderDeposit(){
+ $("content").innerHTML=`<h2>Demande de dépôt</h2><div class="notice">Minimum : 15 000 FC. La validation du transfert reste à confirmer par l'administration.</div><label>Montant FC</label><input id="depAmount" type="number" min="15000"><label>Opérateur</label><select id="depOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator} — ${p.number} — ${p.name}</option>`).join("")}</select><label>Référence du transfert</label><input id="depRef"><button class="red" onclick="submitDeposit()">Envoyer</button>`;
 }
 async function submitDeposit(){
- const amount=Number(document.getElementById("depAmount").value);
- const p=PAYMENTS[Number(document.getElementById("depOperator").value)];
- const reference=document.getElementById("depRef").value.trim();
- if(amount<15000)return say("Le dépôt minimum est de 15 000 FC.");
- const r=await sb.from("kin_deposit_requests").insert({user_id:user.id,amount,operator:p.operator,payment_number:p.number,payment_name:p.name,reference:reference||null,status:"pending"});
- if(r.error)return say("Dépôt non envoyé : "+r.error.message);
- say("Demande de dépôt envoyée. Elle doit être vérifiée par l'administration.");
- page("history");
+ const amount=Number($("depAmount").value),p=PAYMENTS[Number($("depOperator").value)];
+ if(amount<15000)return alert("Minimum 15 000 FC.");
+ const {error}=await sb.from("kin_deposit_requests").insert({user_id:user.id,amount,operator:p.operator,payment_number:p.number,payment_name:p.name,reference:$("depRef").value.trim()||null,status:"pending"});
+ alert(error?"Erreur : "+error.message:"Demande envoyée. Elle apparaîtra après actualisation.");
 }
-async function openWithdraw(){
- document.getElementById("content").innerHTML=`<h2>Demander un retrait</h2><div class="card"><p>Solde : ${money(wallet.balance)}</p><label>Montant minimum : 2 000 FC</label><input id="wdAmount" type="number" min="2000" placeholder="Montant à retirer"><label>Opérateur</label><select id="wdOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator}</option>`).join("")}</select><label>Numéro de réception</label><input id="wdNumber" placeholder="Numéro où recevoir"><button class="primary" onclick="submitWithdraw()">Envoyer la demande</button></div>`;
+function renderWithdraw(){
+ $("content").innerHTML=`<h2>Demande de retrait</h2><div class="notice">Minimum : 2 000 FC · frais indicatifs : 10 %.</div><label>Montant FC</label><input id="wdAmount" type="number" min="2000"><label>Opérateur de réception</label><select id="wdOperator">${PAYMENTS.map((p,i)=>`<option value="${i}">${p.operator}</option>`).join("")}</select><label>Votre numéro de réception</label><input id="wdNumber"><button class="red" onclick="submitWithdraw()">Envoyer la demande</button>`;
 }
 async function submitWithdraw(){
- const amount=Number(document.getElementById("wdAmount").value),number=document.getElementById("wdNumber").value.trim(),p=PAYMENTS[Number(document.getElementById("wdOperator").value)];
- if(amount<2000)return say("Le retrait minimum est de 2 000 FC.");
- if(amount>Number(wallet?.balance||0))return say("Solde insuffisant.");
- if(!number)return say("Entrez le numéro de réception.");
- const fee=amount*.10,net=amount-fee;
- const r=await sb.from("kin_withdrawal_requests").insert({user_id:user.id,amount,fee,net_amount:net,operator:p.operator,payment_number:number,status:"pending"});
- if(r.error)return say("Retrait non envoyé : "+r.error.message);
- say("Demande envoyée. Frais indicatifs 10 % : "+money(fee)+" ; net indicatif : "+money(net)+". En attente de vérification.");
- page("history");
+ const amount=Number($("wdAmount").value),number=$("wdNumber").value.trim(),p=PAYMENTS[Number($("wdOperator").value)];
+ if(amount<2000)return alert("Minimum 2 000 FC.");
+ if(amount>Number(wallet?.balance||0))return alert("Solde insuffisant.");
+ if(!number)return alert("Entrez le numéro de réception.");
+ const {error}=await sb.from("kin_withdrawal_requests").insert({user_id:user.id,amount,fee:amount*.1,net_amount:amount*.9,operator:p.operator,payment_number:number,status:"pending"});
+ alert(error?"Erreur : "+error.message:"Demande envoyée à l'administration.");
 }
-async function buyKin(id){
- say("La demande d'achat de "+id+" nécessite une fonction serveur sécurisée. Aucun débit n'a été effectué.");
+async function renderAdmin(){
+ $("content").innerHTML=`
+ <h2>⚙ Administration complète</h2>
+ <div class="notice">Les actions financières et les changements de statut doivent être autorisés par les fonctions sécurisées de Supabase. Les boutons affichent les erreurs si les fonctions ou permissions ne sont pas disponibles.</div>
+ <nav><button onclick="loadAdmin('members')">Membres</button><button onclick="loadAdmin('deposits')">Dépôts</button><button onclick="loadAdmin('withdrawals')">Retraits</button><button onclick="loadAdmin('settings')">Configuration</button></nav>
+ <div id="adminResults">Choisissez une section.</div>`;
 }
-async function renderAdmin(c){
- c.innerHTML=`<h2>⚙️ Administration</h2>
- <div class="card"><b>Compte administrateur</b><p>${esc(user.email)}</p><p class="muted">Les boutons financiers doivent être reliés à des fonctions sécurisées Supabase avant de créditer ou débiter un compte.</p></div>
- <h2>Membres</h2><input id="memberSearch" placeholder="Rechercher un membre" oninput="filterMembers()"><div id="members">Chargement...</div>
- <h2>Dépôts — tous les statuts</h2><div id="adminDeposits">Chargement...</div>
- <h2>Retraits — tous les statuts</h2><div id="adminWithdrawals">Chargement...</div>
- <h2>Paramètres et assistance</h2><div class="card"><p>Nom : KINSHASA BUSINESS</p><p>Minimum dépôt : 15 000 FC</p><p>Minimum retrait : 2 000 FC</p><p>Pointage : 20 FC/jour</p><p>WhatsApp : <a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps">Groupe WhatsApp</a></p><p>Telegram : <a href="https://t.me/francscongolais">Groupe Telegram</a></p><p class="muted">Ne modifiez pas directement les soldes ou les statuts financiers sans fonction serveur idempotente.</p></div>`;
- await loadAdminData();
-}
-let memberCache=[];
-async function loadAdminData(){
- const m=await sb.from("profiles").select("*").order("created_at",{ascending:false});
- const el=document.getElementById("members");
- if(m.error){el.innerHTML='<div class="msg err">'+esc(m.error.message)+'</div>'}else{memberCache=m.data||[];drawMembers(memberCache)}
- for(const [table,id] of [["kin_deposit_requests","adminDeposits"],["kin_withdrawal_requests","adminWithdrawals"]]){
-  const target=document.getElementById(id);
-  const r=await sb.from(table).select("*").order("created_at",{ascending:false});
-  if(r.error){target.innerHTML='<div class="msg err">'+esc(r.error.message)+'</div>';continue}
-  target.innerHTML=(r.data||[]).map(x=>`<div class="item"><b>${esc(x.status||"pending").toUpperCase()} — ${money(x.amount)}</b><p>Opérateur : ${esc(x.operator||"—")}</p><p>Numéro : ${esc(x.payment_number||x.withdrawal_number||"—")}</p><p>Référence : ${esc(x.reference||"—")}</p><p class="small">Date : ${esc(x.created_at?new Date(x.created_at).toLocaleString("fr-FR"):"—")}</p><p class="muted">ID demande : ${esc(x.id||x.transaction_id||"—")}</p></div>`).join("")||'<div class="card">Aucune demande.</div>';
+async function loadAdmin(kind){
+ if(!isAdmin)return alert("Accès refusé.");
+ const box=$("adminResults");box.textContent="Chargement...";
+ if(kind==="members"){
+  const r=await sb.from("profiles").select("*").order("created_at",{ascending:false});
+  if(r.error){box.textContent=r.error.message;return}
+  box.innerHTML=(r.data||[]).map(m=>`<div class="card"><b>${esc(m.full_name||"Membre")}</b><p class="muted">${esc(m.id)}</p><p>Code : ${esc(m.referral_code||"—")}</p><p>Rôle : ${esc(m.role||"member")}</p><p>Statut : ${esc(m.status||"non défini")}</p><div class="row"><button class="btn" onclick="adminAction('admin_toggle_member_block',{p_user_id:'${m.id}',p_blocked:true})">Bloquer</button><button class="btn" onclick="adminAction('admin_toggle_member_block',{p_user_id:'${m.id}',p_blocked:false})">Débloquer</button></div><button class="btn" onclick="adminReset('${esc(user.email||"")}')">Réinitialiser mon mot de passe admin</button><button class="btn" onclick="adminAction('admin_adjust_balance',{p_user_id:'${m.id}',p_amount:Number(prompt('Montant signé : + pour créditer, - pour débiter')),p_reason:prompt('Motif obligatoire')})">Ajuster solde</button><button class="btn" onclick="adminAction('admin_assign_kin',{p_user_id:'${m.id}',p_kin_id:prompt('KIN1 à KIN7'),p_reason:prompt('Motif')})">Attribuer un KIN</button></div>`).join("")||"Aucun membre.";
+ }
+ if(kind==="deposits")await loadRequests("kin_deposit_requests",box,"deposit");
+ if(kind==="withdrawals")await loadRequests("kin_withdrawal_requests",box,"withdrawal");
+ if(kind==="settings"){
+  box.innerHTML=`<div class="card"><h3>Liens d'assistance</h3><label>WhatsApp</label><input id="whatsapp" value="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps"><label>Telegram</label><input id="telegram" value="https://t.me/francscongolais"><button class="red" onclick="saveSupport()">Enregistrer les liens</button><p class="muted">L'enregistrement nécessite une table de configuration accessible aux administrateurs.</p></div><div class="card"><h3>Opérateurs de paiement</h3><p>Les numéros de paiement peuvent être modifiés dans la configuration Supabase; ne modifiez pas les numéros avant de confirmer le bénéficiaire.</p>${PAYMENTS.map(p=>`<p>${esc(p.operator)} : ${esc(p.number)} — ${esc(p.name)}</p>`).join("")}</div>`;
  }
 }
-function drawMembers(arr){
- const el=document.getElementById("members");
- el.innerHTML=arr.map(x=>`<div class="item"><b>${esc(x.full_name||"Membre")}</b><p class="small">ID : ${esc(x.id)}</p><p>Rôle : ${esc(x.role||"member")}</p><p>Code : ${esc(x.referral_code||"—")}</p><p class="small">Statut de blocage : ${esc(x.status||"non défini")}</p><button onclick="sayMemberSecurity()">Gestion sécurisée du membre</button></div>`).join("")||'<div class="card">Aucun membre.</div>';
+async function loadRequests(table,box,type){
+ const r=await sb.from(table).select("*").order("created_at",{ascending:false});
+ if(r.error){box.textContent=r.error.message;return}
+ box.innerHTML=(r.data||[]).map(x=>`<div class="card"><b>${money(x.amount)}</b><p>Statut : <span class="badge ${esc(x.status||"pending")}">${esc(x.status||"pending")}</span></p><p>Date : ${esc(x.created_at||"—")}</p><p>Opérateur : ${esc(x.operator||"—")}</p><p>Numéro : ${esc(x.payment_number||"—")}</p><p>Référence : ${esc(x.reference||"—")}</p><p>Net : ${money(x.net_amount)}</p><div class="row"><button class="green" onclick="reviewRequest('${type}','${x.id}','approved')">Valider</button><button class="danger" onclick="reviewRequest('${type}','${x.id}','rejected')">Rejeter</button></div></div>`).join("")||"Aucune demande.";
 }
-function filterMembers(){
- const q=document.getElementById("memberSearch").value.toLowerCase();
- drawMembers(memberCache.filter(x=>[x.full_name,x.email,x.phone,x.referral_code,x.id].some(v=>String(v||"").toLowerCase().includes(q))));
+async function reviewRequest(type,id,status){
+ if(!confirm(`Confirmer le statut ${status} ?`))return;
+ const fn=type==="deposit"?"admin_review_deposit":"admin_review_withdrawal";
+ const {error}=await sb.rpc(fn,{p_request_id:id,p_status:status,p_note:prompt("Motif ou note administrative")||""});
+ if(error)return alert("Action non exécutée : "+error.message+" — vérifiez le nom et les permissions de la fonction Supabase.");
+ alert("Statut envoyé à Supabase.");loadAdmin(type==="deposit"?"deposits":"withdrawals");
 }
-function sayMemberSecurity(){say("Pour bloquer un membre, changer son solde, attribuer un KIN ou valider un paiement, il faut d’abord installer les fonctions SQL sécurisées. Cette action n’a pas modifié le compte.")}
-async function copyValue(t){try{await navigator.clipboard.writeText(t);say("Copié.")}catch(e){say(t)}}
-async function logout(){await sb.auth.signOut();user=null;profile=null;wallet=null;document.getElementById("app").classList.add("hidden");document.getElementById("auth").classList.remove("hidden")}
-sb.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_IN"&&session)setTimeout(loadUser,100);if(event==="SIGNED_OUT"){document.getElementById("app").classList.add("hidden");document.getElementById("auth").classList.remove("hidden")}});
-const ref=new URLSearchParams(location.search).get("ref");if(ref)document.getElementById("referral").value=ref;
-showAuth();
+async function adminAction(fn,args){
+ if(!isAdmin)return alert("Accès refusé.");
+ if(Object.values(args).some(v=>v===null||v===undefined||v===""||(typeof v==="number"&&!Number.isFinite(v))))return alert("Action annulée : informations manquantes.");
+ const {error}=await sb.rpc(fn,args);
+ if(error)return alert("Action non exécutée : "+error.message+" — vérifiez la fonction Supabase.");
+ alert("Action envoyée à Supabase.");loadAdmin("members");
+}
+async function adminReset(email){
+ if(!email)return alert("Email manquant.");
+ if(!confirm("Envoyer un lien de réinitialisation à votre compte administrateur ?"))return;
+ const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});
+ alert(error?error.message:"Lien demandé. Vérifiez votre email.");
+}
+async function saveSupport(){
+ const settings={whatsapp:$("whatsapp").value.trim(),telegram:$("telegram").value.trim()};
+ const {error}=await sb.from("kin_settings").upsert([{key:"support_links",value:settings}],{onConflict:"key"});
+ alert(error?"Enregistrement impossible : "+error.message:"Liens enregistrés.");
+}
+sb.auth.onAuthStateChange((event,session)=>{if(session)setTimeout(loadUser,100)});
 loadUser();
 </script>
 </body>
