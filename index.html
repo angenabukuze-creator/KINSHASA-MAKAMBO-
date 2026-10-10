@@ -23,26 +23,25 @@ button.red{background:#ce1126}button.gold{background:#fcd116;color:#111}
 .pay{border:2px solid #fcd116;padding:12px;border-radius:10px;margin:8px 0}
 nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;flex-wrap:wrap;border-top:1px solid #ddd;z-index:5}
 nav button{flex:1;min-width:65px;width:auto;font-size:11px;padding:11px 3px;margin:0;border-radius:0}
-a{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
 <header>
 <h1>🇨🇩 KINSHASA BUSINESS</h1>
-<div>Espace membre et administration</div>
+<div>Votre espace membre et administration</div>
 </header>
 <main>
 <section id="auth">
 <div class="card">
 <h2>Connexion / Inscription</h2>
-<label>Nom complet</label><input id="name" autocomplete="name" placeholder="Votre nom">
+<label>Nom complet</label><input id="name" placeholder="Votre nom complet">
 <label>Téléphone</label><input id="phone" placeholder="+243...">
-<label>Email</label><input id="email" type="email" autocomplete="email" placeholder="Votre email">
-<label>Mot de passe</label><input id="password" type="password" autocomplete="current-password" placeholder="6 caractères minimum">
+<label>Email</label><input id="email" type="email" placeholder="Votre email">
+<label>Mot de passe</label><input id="password" type="password" placeholder="6 caractères minimum">
 <button onclick="signup()">Créer un compte</button>
 <button class="gold" onclick="login()">Se connecter</button>
 <button class="red" onclick="resetPassword()">Mot de passe oublié</button>
-<div id="authMsg" class="notice">Inscrivez-vous ou connectez-vous.</div>
+<div id="authMsg" class="notice">Créez un compte ou connectez-vous.</div>
 </div>
 </section>
 
@@ -53,29 +52,27 @@ a{overflow-wrap:anywhere}
 <div class="money"><span id="balance">0</span> FC</div>
 <div class="small">Code de parrainage : <b id="refCode">—</b></div>
 <button class="gold" onclick="copyReferral()">Copier mon code</button>
-<div id="generalMsg" class="notice"></div>
 </div>
 
 <section id="home">
 <div class="card">
-<h2>Accueil</h2>
-<p>Bienvenue sur KINSHASA BUSINESS.</p>
-<p>Les dépôts sont crédités après vérification réelle. Un retrait ne doit être confirmé qu'après le paiement effectif.</p>
-<button onclick="show('plans')">Voir les VIP</button>
+<h2>Bienvenue</h2>
+<p>Choisissez les services dont vous avez besoin.</p>
+<button onclick="show('plans')">Choisir un VIP</button>
 </div>
 </section>
 
 <section id="deposits" class="hidden">
 <div class="card">
 <h2>💰 Dépôt / Recharge</h2>
-<div class="notice">Montant minimum : 15 000 FC</div>
+<div class="notice">Minimum : 15 000 FC</div>
 <div class="pay"><b>Airtel Money</b><br>973087965<br>Nom : YVETTE</div>
 <div class="pay"><b>Orange Money</b><br>899532643<br>Nom : JEANCQUELLINE</div>
 <div class="pay"><b>M-Pesa</b><br>0861823718<br>Nom : REGINA</div>
 <label>Montant envoyé (FC)</label><input id="depAmount" type="number" min="15000">
 <label>Opérateur</label><select id="depMethod"><option>Airtel Money</option><option>Orange Money</option><option>M-Pesa</option></select>
 <label>Référence de transaction</label><input id="depRef" placeholder="Référence du transfert">
-<button onclick="requestDeposit()">Envoyer la demande</button>
+<button onclick="requestDeposit()">Envoyer la demande de dépôt</button>
 <div id="depMsg" class="notice"></div>
 </div>
 <div class="card"><h2>Mes dépôts</h2><div id="myDeposits"></div></div>
@@ -96,9 +93,10 @@ a{overflow-wrap:anywhere}
 
 <section id="plans" class="hidden">
 <div class="card">
-<h2>Plans VIP</h2>
-<p class="small">Les revenus affichés sont les paramètres annoncés, pas une garantie de gain. N'investissez que si vous comprenez les risques.</p>
+<h2>Choisissez le VIP qui vous convient</h2>
+<p>Consultez les prix et les conditions de chaque plan avant de choisir.</p>
 <div id="plansList"></div>
+<div id="vipMsg" class="notice"></div>
 </div>
 </section>
 
@@ -107,12 +105,12 @@ a{overflow-wrap:anywhere}
 <h2>👥 Équipe et parrainage</h2>
 <p>Votre code : <b id="refCode2">—</b></p>
 <button onclick="copyReferral()">Copier le code</button>
-<p class="small">Taux annoncés : niveau 1 : 30 %, niveau 2 : 2 %, niveau 3 : 1 %. Les commissions doivent être calculées par le serveur après une opération admissible vérifiée.</p>
+<p class="small">Taux annoncés : niveau 1 : 30 %, niveau 2 : 2 %, niveau 3 : 1 %.</p>
 </div>
 <div class="card">
 <h2>Assistance</h2>
-<a id="waLink" href="https://wa.me/" target="_blank" rel="noopener">WhatsApp</a><br>
-<a id="tgLink" href="https://t.me/" target="_blank" rel="noopener">Telegram</a>
+<a id="waLink" href="https://wa.me/" target="_blank" rel="noopener">Ouvrir WhatsApp</a><br>
+<a id="tgLink" href="https://t.me/" target="_blank" rel="noopener">Ouvrir Telegram</a>
 </div>
 </section>
 
@@ -133,7 +131,6 @@ a{overflow-wrap:anywhere}
 <section id="admin" class="hidden">
 <div class="card">
 <h2>🛠️ Administration</h2>
-<p class="small">Compte administrateur autorisé : angenabukuze@gmail.com</p>
 <button onclick="loadAdmin()">Actualiser</button>
 <div id="adminStats"></div>
 </div>
@@ -141,7 +138,7 @@ a{overflow-wrap:anywhere}
 <div class="card"><h2>Dépôts en attente</h2><div id="adminDeposits"></div></div>
 <div class="card"><h2>Retraits en attente</h2><div id="adminWithdrawals"></div></div>
 <div class="card">
-<h2>Assistance et liens communautaires</h2>
+<h2>Assistance</h2>
 <label>Lien WhatsApp</label><input id="setWa" placeholder="https://chat.whatsapp.com/...">
 <button onclick="saveOneLink('whatsapp')">Enregistrer WhatsApp</button>
 <label>Lien Telegram</label><input id="setTg" placeholder="https://t.me/...">
@@ -160,7 +157,7 @@ a{overflow-wrap:anywhere}
 <button onclick="show('team')">Équipe</button>
 <button onclick="show('history')">Historique</button>
 <button onclick="show('profile')">Profil</button>
-<button id="adminNav" class="hidden" onclick="show('admin');loadAdmin()">Admin</button>
+<button id="adminNav" class="hidden" onclick="show('admin')">Admin</button>
 </nav>
 
 <script>
@@ -169,7 +166,6 @@ const SUPABASE_KEY="sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
 const ADMIN_EMAIL="angenabukuze@gmail.com";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let currentUser=null,profile=null;
-
 const vipPlans=[
 {name:"VIP1",price:15000,daily:2000,days:60,limit:1},
 {name:"VIP2",price:30000,daily:4400,days:60,limit:2},
@@ -183,8 +179,6 @@ const $=id=>document.getElementById(id);
 const fc=n=>Number(n||0).toLocaleString("fr-FR")+" FC";
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const isAdmin=()=>currentUser?.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
-function msg(id,t){$(id).textContent=t}
-function errText(e){return e?.message||String(e||"Erreur inconnue")}
 function show(id){
 ["home","deposits","withdrawals","plans","team","history","profile","admin"].forEach(s=>$(s).classList.add("hidden"));
 $(id).classList.remove("hidden");
@@ -192,80 +186,61 @@ if(id==="deposits"||id==="withdrawals")loadMyRequests();
 if(id==="history")loadHistory();
 if(id==="admin")loadAdmin();
 }
-function authMessage(t){msg("authMsg",t)}
-
 async function signup(){
-const email=$("email").value.trim(),password=$("password").value;
-const name=$("name").value.trim(),phone=$("phone").value.trim();
-if(!name||!phone||!email||password.length<6){authMessage("Remplissez le nom, le téléphone, l’email et un mot de passe de 6 caractères minimum.");return}
+const email=$("email").value.trim(),password=$("password").value,name=$("name").value.trim(),phone=$("phone").value.trim();
+if(!email||password.length<6||!name||!phone){$("authMsg").textContent="Remplissez tous les champs et utilisez un mot de passe de 6 caractères minimum.";return}
 const {data,error}=await sb.auth.signUp({email,password,options:{data:{full_name:name,phone}}});
-if(error){authMessage("Inscription impossible : "+errText(error));return}
-if(data.session){await boot();authMessage("Compte créé.");}
-else authMessage("Inscription envoyée. Si Supabase demande une confirmation email, vous devez terminer cette confirmation avant de vous connecter.");
+if(error){$("authMsg").textContent="Erreur : "+error.message;return}
+if(data.session)await boot();
+else $("authMsg").textContent="Inscription envoyée. Si la confirmation email est activée, confirmez votre email avant la connexion.";
 }
 async function login(){
-const email=$("email").value.trim(),password=$("password").value;
-if(!email||!password){authMessage("Entrez votre email et votre mot de passe.");return}
-const {error}=await sb.auth.signInWithPassword({email,password});
-if(error){authMessage("Connexion impossible : "+errText(error));return}
+const {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
+if(error){$("authMsg").textContent="Connexion impossible : "+error.message;return}
 await boot();
 }
 async function resetPassword(){
 const email=$("email").value.trim();
-if(!email){authMessage("Entrez votre email.");return}
+if(!email){$("authMsg").textContent="Entrez votre email.";return}
 const {error}=await sb.auth.resetPasswordForEmail(email);
-authMessage(error?"Erreur : "+errText(error):"Si ce compte existe, un email de réinitialisation a été demandé.");
+$("authMsg").textContent=error?"Erreur : "+error.message:"Demande envoyée si le compte existe.";
 }
 async function logout(){await sb.auth.signOut();location.reload()}
-
 async function boot(){
-const {data:{user},error:authError}=await sb.auth.getUser();
-if(authError||!user)return;
+const {data:{user}}=await sb.auth.getUser();if(!user)return;
 currentUser=user;
-$("auth").classList.add("hidden");
-$("app").classList.remove("hidden");
-$("nav").classList.remove("hidden");
+$("auth").classList.add("hidden");$("app").classList.remove("hidden");$("nav").classList.remove("hidden");
 const {data:p,error}=await sb.from("profiles").select("*").eq("id",user.id).maybeSingle();
-if(error){alert("Erreur de profil : "+errText(error));return}
+if(error){alert("Erreur profil : "+error.message);return}
 profile=p||{};
-$("memberName").textContent=profile.full_name||user.user_metadata?.full_name||user.email||"Membre";
-$("profileName").value=profile.full_name||user.user_metadata?.full_name||"";
-$("profilePhone").value=profile.phone||user.user_metadata?.phone||"";
+$("memberName").textContent=profile.full_name||user.user_metadata?.full_name||user.email;
+$("profileName").value=profile.full_name||"";
+$("profilePhone").value=profile.phone||"";
 $("refCode").textContent=profile.referral_code||"En attente";
 $("refCode2").textContent=profile.referral_code||"En attente";
 if(isAdmin())$("adminNav").classList.remove("hidden");
-else $("adminNav").classList.add("hidden");
-await refreshWallet();
-renderPlans();
-await loadMyRequests();
-await loadHistory();
-await loadCommunityLinks();
-if(isAdmin())await loadAdmin();
+await refreshWallet();renderPlans();await loadMyRequests();await loadHistory();await loadCommunityLinks();
 }
 async function refreshWallet(){
 const {data,error}=await sb.from("kin_wallets").select("balance").eq("user_id",currentUser.id).maybeSingle();
-if(error){$("balance").textContent="—";msg("generalMsg","Solde indisponible : "+errText(error));return}
-$("balance").textContent=Number(data?.balance||0).toLocaleString("fr-FR");
+$("balance").textContent=error?"—":Number(data?.balance||0).toLocaleString("fr-FR");
 }
 async function requestDeposit(){
 const amount=Number($("depAmount").value),method=$("depMethod").value,reference=$("depRef").value.trim();
-if(!Number.isFinite(amount)||amount<15000||!reference){msg("depMsg","Minimum 15 000 FC et référence obligatoires.");return}
+if(amount<15000||!reference){$("depMsg").textContent="Minimum 15 000 FC et référence obligatoires.";return}
 const {error}=await sb.from("kin_deposit_requests").insert({user_id:currentUser.id,amount,method,reference,status:"pending"});
-if(error){msg("depMsg","Erreur : "+errText(error));return}
-msg("depMsg","Demande enregistrée en attente de vérification. Votre solde n’a pas encore été crédité.");
-$("depAmount").value="";$("depRef").value="";
-await loadMyRequests();
+$("depMsg").textContent=error?"Erreur : "+error.message:"Demande enregistrée en attente de vérification.";
+if(!error){$("depAmount").value="";$("depRef").value="";await loadMyRequests()}
 }
 async function requestWithdrawal(){
 const amount=Number($("wdAmount").value),method=$("wdMethod").value,phone=$("wdPhone").value.trim();
-if(!Number.isFinite(amount)||amount<2000||!phone){msg("wdMsg","Minimum 2 000 FC et numéro de réception obligatoires.");return}
+if(amount<2000||!phone){$("wdMsg").textContent="Minimum 2 000 FC et numéro obligatoire.";return}
 const {data:w,error:we}=await sb.from("kin_wallets").select("balance").eq("user_id",currentUser.id).maybeSingle();
-if(we){msg("wdMsg","Impossible de vérifier le solde : "+errText(we));return}
-if(Number(w?.balance||0)<amount){msg("wdMsg","Solde insuffisant.");return}
+if(we){$("wdMsg").textContent=we.message;return}
+if(Number(w?.balance||0)<amount){$("wdMsg").textContent="Solde insuffisant.";return}
 const {error}=await sb.from("kin_withdrawal_requests").insert({user_id:currentUser.id,amount,method,withdrawal_number:phone,status:"pending"});
-if(error){msg("wdMsg","Erreur : "+errText(error));return}
-msg("wdMsg","Demande enregistrée en attente de traitement.");
-$("wdAmount").value="";await loadMyRequests();
+$("wdMsg").textContent=error?"Erreur : "+error.message:"Demande enregistrée en attente.";
+if(!error)await loadMyRequests();
 }
 async function loadMyRequests(){
 if(!currentUser)return;
@@ -273,8 +248,8 @@ const [d,w]=await Promise.all([
 sb.from("kin_deposit_requests").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}),
 sb.from("kin_withdrawal_requests").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false})
 ]);
-$("myDeposits").innerHTML=d.error?safe(errText(d.error)):(d.data||[]).map(x=>`<div class="item">${fc(x.amount)} — ${safe(x.method)}<br>Statut : <b>${safe(x.status)}</b><br>${safe(x.reference||"")}</div>`).join("")||"Aucune demande.";
-$("myWithdrawals").innerHTML=w.error?safe(errText(w.error)):(w.data||[]).map(x=>`<div class="item">${fc(x.amount)} — ${safe(x.method)}<br>Statut : <b>${safe(x.status)}</b><br>Numéro : ${safe(x.withdrawal_number||"")}</div>`).join("")||"Aucune demande.";
+$("myDeposits").innerHTML=d.error?safe(d.error.message):(d.data||[]).map(x=>`<div class="item">${fc(x.amount)} — ${safe(x.method)}<br>Statut : ${safe(x.status)}<br>${safe(x.reference||"")}</div>`).join("")||"Aucune demande.";
+$("myWithdrawals").innerHTML=w.error?safe(w.error.message):(w.data||[]).map(x=>`<div class="item">${fc(x.amount)} — ${safe(x.method)}<br>Statut : ${safe(x.status)}</div>`).join("")||"Aucune demande.";
 }
 async function loadHistory(){
 if(!currentUser)return;
@@ -282,39 +257,28 @@ const [d,w]=await Promise.all([
 sb.from("kin_deposit_requests").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}),
 sb.from("kin_withdrawal_requests").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false})
 ]);
-if(d.error||w.error){$("historyList").textContent=errText(d.error||w.error);return}
-let all=[];
-(d.data||[]).forEach(x=>all.push({kind:"Dépôt",...x}));
-(w.data||[]).forEach(x=>all.push({kind:"Retrait",...x}));
-all.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
-$("historyList").innerHTML=all.map(x=>`<div class="item">${safe(x.kind)} — ${fc(x.amount)}<br>Statut : ${safe(x.status)}</div>`).join("")||"Aucun historique.";
+if(d.error||w.error){$("historyList").textContent=(d.error||w.error).message;return}
+const all=[...(d.data||[]).map(x=>({...x,kind:"Dépôt"})),...(w.data||[]).map(x=>({...x,kind:"Retrait"}))].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+$("historyList").innerHTML=all.map(x=>`<div class="item">${x.kind} — ${fc(x.amount)}<br>Statut : ${safe(x.status)}</div>`).join("")||"Aucun historique.";
 }
 function renderPlans(){
-$("plansList").innerHTML=vipPlans.map(p=>`<div class="item"><h3>${p.name}</h3>Prix : <b>${fc(p.price)}</b><br>Revenu quotidien annoncé : ${fc(p.daily)}<br>Durée : ${p.days} jours<br>Limite annoncée : ${p.limit}<button onclick="buyVip('${p.name}')">Demander l’achat ${p.name}</button><p class="small">Achat soumis à validation sécurisée du serveur. Les revenus ne sont pas garantis.</p></div>`).join("");
+$("plansList").innerHTML=vipPlans.map(p=>`<div class="item"><h3>${p.name}</h3>Prix : <b>${fc(p.price)}</b><br>Revenu quotidien annoncé : ${fc(p.daily)}<br>Durée : ${p.days} jours<br>Limite : ${p.limit}<button onclick="buyVip('${p.name}')">Choisir ${p.name}</button></div>`).join("");
 }
 async function buyVip(name){
-const plan=vipPlans.find(p=>p.name===name);
-if(!plan)return;
-if(!confirm("Demander l’achat de "+name+" au prix de "+fc(plan.price)+" ?"))return;
-const {data,error}=await sb.rpc("purchase_vip",{p_plan_name:plan.name});
-if(error){
-alert("Achat non effectué : "+errText(error)+". La fonction sécurisée purchase_vip doit exister dans Supabase.");
-return;
-}
-alert("Demande traitée par le serveur.");
-await refreshWallet();
-await loadHistory();
+const p=vipPlans.find(x=>x.name===name);if(!p)return;
+if(!confirm("Choisir "+p.name+" au prix de "+fc(p.price)+" ?"))return;
+const {error}=await sb.rpc("purchase_vip",{p_plan_name:p.name});
+if(error){$("vipMsg").textContent="Achat impossible : "+error.message;return}
+$("vipMsg").textContent="Achat enregistré.";
+await refreshWallet();await loadHistory();
 }
 async function copyReferral(){
-const c=profile?.referral_code;
-if(!c){alert("Votre code de parrainage n’est pas encore disponible.");return}
-try{await navigator.clipboard.writeText(c);alert("Code copié : "+c)}
-catch(e){prompt("Copiez votre code :",c)}
+const c=profile?.referral_code;if(!c){alert("Code indisponible.");return}
+try{await navigator.clipboard.writeText(c);alert("Code copié : "+c)}catch(e){prompt("Copiez votre code :",c)}
 }
 async function saveProfile(){
 const {error}=await sb.from("profiles").update({full_name:$("profileName").value.trim(),phone:$("profilePhone").value.trim()}).eq("id",currentUser.id);
-alert(error?"Erreur : "+errText(error):"Profil enregistré.");
-if(!error)await boot();
+alert(error?"Erreur : "+error.message:"Profil enregistré.");if(!error)await boot();
 }
 async function loadAdmin(){
 if(!isAdmin()){alert("Accès refusé.");return}
@@ -323,38 +287,32 @@ sb.from("profiles").select("*").order("created_at",{ascending:false}),
 sb.from("kin_deposit_requests").select("*").order("created_at",{ascending:false}),
 sb.from("kin_withdrawal_requests").select("*").order("created_at",{ascending:false})
 ]);
-const problem=m.error||d.error||w.error;
-if(problem){$("adminStats").textContent="Erreur de lecture : "+errText(problem);return}
-$("adminStats").innerHTML=`<div class="item">Membres : <b>${m.data.length}</b><br>Dépôts : <b>${d.data.length}</b><br>Retraits : <b>${w.data.length}</b><br>Dépôts en attente : <b>${d.data.filter(x=>x.status==="pending").length}</b><br>Retraits en attente : <b>${w.data.filter(x=>x.status==="pending").length}</b></div>`;
-$("adminMembers").innerHTML=(m.data||[]).map(x=>`<div class="item"><b>${safe(x.full_name||"Membre")}</b><br>Téléphone : ${safe(x.phone||"")}<br>ID : ${safe(x.id)}<br>Code : ${safe(x.referral_code||"")}<br>Statut : ${x.is_banned?"Bloqué":"Actif"}<button onclick="banMember('${x.id}',${!x.is_banned})">${x.is_banned?"Débloquer":"Bloquer"}</button></div>`).join("")||"Aucun membre.";
-$("adminDeposits").innerHTML=(d.data||[]).filter(x=>x.status==="pending").map(x=>`<div class="item"><b>${fc(x.amount)}</b><br>ID membre : ${safe(x.user_id)}<br>Méthode : ${safe(x.method)}<br>Référence : ${safe(x.reference||"")}<button onclick="processRequest('deposit','${x.id}','approved')">Valider dépôt</button><button class="red" onclick="processRequest('deposit','${x.id}','rejected')">Rejeter dépôt</button></div>`).join("")||"Aucun dépôt en attente.";
-$("adminWithdrawals").innerHTML=(w.data||[]).filter(x=>x.status==="pending").map(x=>`<div class="item"><b>${fc(x.amount)}</b><br>ID membre : ${safe(x.user_id)}<br>Méthode : ${safe(x.method)}<br>Numéro : ${safe(x.withdrawal_number||"")}<button onclick="processRequest('withdrawal','${x.id}','approved')">Confirmer après paiement réel</button><button class="red" onclick="processRequest('withdrawal','${x.id}','rejected')">Rejeter retrait</button></div>`).join("")||"Aucun retrait en attente.";
+const e=m.error||d.error||w.error;if(e){$("adminStats").textContent=e.message;return}
+$("adminStats").innerHTML=`<div class="item">Membres : ${m.data.length}<br>Dépôts : ${d.data.length}<br>Retraits : ${w.data.length}</div>`;
+$("adminMembers").innerHTML=(m.data||[]).map(x=>`<div class="item">${safe(x.full_name||"Membre")}<br>${safe(x.phone||"")}<br>${safe(x.id)}<br>${safe(x.referral_code||"")}<br>${x.is_banned?"Bloqué":"Actif"}<button onclick="banMember('${x.id}',${!x.is_banned})">${x.is_banned?"Débloquer":"Bloquer"}</button></div>`).join("")||"Aucun membre.";
+$("adminDeposits").innerHTML=(d.data||[]).filter(x=>x.status==="pending").map(x=>`<div class="item">${fc(x.amount)}<br>${safe(x.method)}<br>${safe(x.reference||"")}<button onclick="processRequest('deposit','${x.id}','approved')">Valider dépôt reçu</button><button class="red" onclick="processRequest('deposit','${x.id}','rejected')">Rejeter</button></div>`).join("")||"Aucun dépôt en attente.";
+$("adminWithdrawals").innerHTML=(w.data||[]).filter(x=>x.status==="pending").map(x=>`<div class="item">${fc(x.amount)}<br>${safe(x.method)}<br>${safe(x.withdrawal_number||"")}<button onclick="processRequest('withdrawal','${x.id}','approved')">Confirmer après paiement</button><button class="red" onclick="processRequest('withdrawal','${x.id}','rejected')">Rejeter</button></div>`).join("")||"Aucun retrait en attente.";
 }
 async function processRequest(type,id,status){
-if(!isAdmin()){alert("Accès refusé.");return}
-const text=status==="approved"
-?(type==="deposit"?"Confirmez uniquement après vérification du transfert reçu.":"Confirmez uniquement si le retrait a réellement été payé.")
-:"Confirmer le rejet de cette demande ?";
-if(!confirm(text))return;
+if(!isAdmin())return alert("Accès refusé.");
+if(!confirm(status==="approved"?"Confirmez uniquement après vérification du dépôt reçu ou paiement réel du retrait.":"Confirmer le rejet ?"))return;
 const fn=type==="deposit"?"admin_set_deposit_status":"admin_set_withdrawal_status";
 const {error}=await sb.rpc(fn,{p_request_id:id,p_status:status});
-if(error){alert("Opération refusée : "+errText(error));return}
-alert("Statut enregistré.");
-await loadAdmin();await refreshWallet();await loadMyRequests();
+if(error){alert("Erreur : "+error.message);return}
+alert("Statut enregistré.");await loadAdmin();await refreshWallet();await loadMyRequests();
 }
 async function banMember(id,banned){
-if(!isAdmin()){alert("Accès refusé.");return}
+if(!isAdmin())return alert("Accès refusé.");
 if(!confirm(banned?"Bloquer ce membre ?":"Débloquer ce membre ?"))return;
 const {error}=await sb.rpc("admin_set_member_ban",{p_user_id:id,p_is_banned:banned});
-if(error){alert("Erreur : "+errText(error));return}
-await loadAdmin();
+if(error){alert(error.message);return}await loadAdmin();
 }
 async function saveOneLink(platform){
-if(!isAdmin()){alert("Accès refusé.");return}
+if(!isAdmin())return alert("Accès refusé.");
 const url=platform==="whatsapp"?$("setWa").value.trim():$("setTg").value.trim();
-if(url&&!/^https:\/\/\S+$/i.test(url)){msg("settingsMsg","Utilisez un lien HTTPS valide.");return}
+if(url&&!/^https:\/\/\S+$/i.test(url)){msg("settingsMsg","Entrez un lien HTTPS valide.");return}
 const {error}=await sb.rpc("admin_save_community_links",{p_platform:platform,p_name:platform==="whatsapp"?"WhatsApp":"Telegram",p_url:url});
-if(error){msg("settingsMsg","Erreur : "+errText(error));return}
+if(error){msg("settingsMsg","Erreur : "+error.message);return}
 if(platform==="whatsapp")$("waLink").href=url||"https://wa.me/";
 else $("tgLink").href=url||"https://t.me/";
 msg("settingsMsg","Lien enregistré.");
@@ -363,19 +321,13 @@ async function loadCommunityLinks(){
 const {data,error}=await sb.from("community_links").select("*");
 if(error)return;
 for(const x of data||[]){
-const platform=String(x.platform||"").toLowerCase();
-if(platform.includes("whatsapp")&&x.url){$("waLink").href=x.url;$("setWa").value=x.url}
-if(platform.includes("telegram")&&x.url){$("tgLink").href=x.url;$("setTg").value=x.url}
+const p=String(x.platform||"").toLowerCase();
+if(p.includes("whatsapp")&&x.url){$("waLink").href=x.url;$("setWa").value=x.url}
+if(p.includes("telegram")&&x.url){$("tgLink").href=x.url;$("setTg").value=x.url}
 }
 }
-sb.auth.onAuthStateChange((event,session)=>{
-if(session?.user)setTimeout(()=>boot(),0);
-else if(event==="SIGNED_OUT")location.reload();
-});
-(async()=>{
-const {data:{session}}=await sb.auth.getSession();
-if(session)await boot();
-})();
+sb.auth.onAuthStateChange((event,session)=>{if(session?.user)setTimeout(boot,0)});
+(async()=>{const {data:{session}}=await sb.auth.getSession();if(session)await boot()})();
 </script>
 </body>
 </html>
