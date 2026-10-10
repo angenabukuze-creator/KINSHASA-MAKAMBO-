@@ -1,175 +1,316 @@
 
-async function adminAction(type, id, value) {
-  if (!isAdmin) {
-    alert("Accès administrateur refusé.");
-    return;
-  }
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KINSHASA BUSINESS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px Arial;background:#f2f5f8;color:#17202a}
+header{background:linear-gradient(120deg,#0057b8,#ce1126);color:white;padding:22px 16px;border-bottom:5px solid #fcd116}
+main{max-width:720px;margin:auto;padding:14px 14px 90px}
+.card{background:white;border-radius:15px;padding:16px;margin:12px 0;box-shadow:0 3px 12px #0001}
+h1{font-size:22px;margin:0}h2{font-size:20px;color:#0057b8}
+input,select,button{width:100%;padding:12px;margin:6px 0;border-radius:9px;font-size:15px}
+input,select{border:1px solid #ccd4dd;background:white}
+button{border:0;background:#0057b8;color:white;font-weight:bold;cursor:pointer}
+button.red{background:#ce1126}button.gold{background:#fcd116;color:#111}
+.hidden{display:none!important}.notice{background:#fff5cc;padding:12px;border-radius:10px;margin:8px 0}
+.item{border:1px solid #dbe1e7;border-radius:10px;padding:12px;margin:10px 0;overflow-wrap:anywhere}
+.small{font-size:13px;color:#56616e}.green{color:#087443}.redText{color:#c62828}
+nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;flex-wrap:wrap;justify-content:center;border-top:1px solid #ddd}
+nav button{width:auto;flex:1;min-width:70px;font-size:12px;padding:12px 4px;margin:0;border-radius:0}
+.money{font-size:28px;font-weight:bold}.pay{border:2px solid #fcd116;padding:12px;border-radius:12px;margin:8px 0}
+</style>
+</head>
+<body>
+<header><h1>🇨🇩 KINSHASA BUSINESS</h1><div>Votre espace membre et administration</div></header>
+<main>
+<section id="auth">
+ <div class="card">
+  <h2>Connexion / Inscription</h2>
+  <label>Nom complet (pour inscription)</label><input id="name" placeholder="Votre nom complet">
+  <label>Téléphone</label><input id="phone" placeholder="+243...">
+  <label>Email</label><input id="email" type="email" placeholder="Votre email">
+  <label>Mot de passe</label><input id="password" type="password" placeholder="6 caractères minimum">
+  <button onclick="signup()">Créer un compte</button>
+  <button class="gold" onclick="login()">Se connecter</button>
+  <button class="red" onclick="resetPassword()">Mot de passe oublié</button>
+  <div id="authMsg" class="notice">Pour créer un compte, utilisez votre email et un mot de passe personnel.</div>
+ </div>
+</section>
 
-  const labels = {
-    deposit: value === "approved" ? "valider ce dépôt" : "rejeter ce dépôt",
-    withdrawal: value === "approved" ? "confirmer ce retrait" : "rejeter ce retrait",
-    member: value ? "bloquer ce membre" : "débloquer ce membre"
-  };
+<section id="app" class="hidden">
+ <div class="card">
+  <h2>Bonjour, <span id="memberName">Membre</span></h2>
+  <div class="small">Solde disponible</div>
+  <div class="money"><span id="balance">0</span> FC</div>
+  <div class="small">Code de parrainage : <b id="refCode">—</b></div>
+  <button class="gold" onclick="copyReferral()">Copier mon code</button>
+ </div>
 
-  if (!confirm("Confirmez-vous : " + labels[type] + " ?")) return;
+ <section id="home">
+  <div class="card">
+   <h2>Bienvenue</h2>
+   <p>Gérez votre compte et consultez le statut de vos demandes.</p>
+   <div class="notice">Les dépôts ne sont crédités qu'après vérification effective du paiement. Les retraits ne sont confirmés qu'après paiement réel.</div>
+  </div>
+ </section>
 
-  try {
-    let result;
+ <section id="deposits" class="hidden">
+  <div class="card">
+   <h2>💰 Dépôt / Recharge</h2>
+   <div class="notice">Minimum : <b>15 000 FC</b></div>
+   <div class="pay"><b>Airtel Money</b><br>Numéro : 973087965<br>Nom : YVETTE</div>
+   <div class="pay"><b>Orange Money</b><br>Numéro : 899532643<br>Nom : JEANCQUELLINE</div>
+   <div class="pay"><b>M-Pesa</b><br>Numéro : 0861823718<br>Nom : REGINA</div>
+   <label>Montant envoyé (FC)</label><input id="depAmount" type="number" min="15000">
+   <label>Opérateur</label><select id="depMethod"><option>Airtel Money</option><option>Orange Money</option><option>M-Pesa</option></select>
+   <label>Référence de transaction</label><input id="depRef" placeholder="Référence reçue après transfert">
+   <button onclick="requestDeposit()">Envoyer la demande de dépôt</button>
+   <div id="depMsg" class="notice"></div>
+  </div>
+  <div class="card"><h2>Mes demandes de dépôt</h2><div id="myDeposits"></div></div>
+ </section>
 
-    if (type === "deposit") {
-      result = await sb.rpc("admin_set_deposit_status", {
-        p_request_id: id,
-        p_status: value,
-        p_note: null
-      });
-    } else if (type === "withdrawal") {
-      result = await sb.rpc("admin_set_withdrawal_status", {
-        p_request_id: id,
-        p_status: value,
-        p_note: null
-      });
-    } else {
-      result = await sb.rpc("admin_set_member_ban", {
-        p_user_id: id,
-        p_banned: value
-      });
-    }
+ <section id="withdrawals" class="hidden">
+  <div class="card">
+   <h2>💸 Retrait</h2>
+   <div class="notice">Minimum : 2 000 FC. Frais configurés : 10 %. Faites votre demande seulement si votre solde le permet.</div>
+   <label>Montant à retirer (FC)</label><input id="wdAmount" type="number" min="2000">
+   <label>Opérateur</label><select id="wdMethod"><option>Airtel Money</option><option>Orange Money</option><option>M-Pesa</option></select>
+   <label>Votre numéro de réception</label><input id="wdPhone" placeholder="+243...">
+   <button onclick="requestWithdrawal()">Envoyer la demande de retrait</button>
+   <div id="wdMsg" class="notice"></div>
+  </div>
+  <div class="card"><h2>Mes demandes de retrait</h2><div id="myWithdrawals"></div></div>
+ </section>
 
-    if (result.error) throw result.error;
+ <section id="plans" class="hidden">
+  <div class="card">
+   <h2>Plans VIP</h2>
+   <p>Consultez les conditions avant toute décision. Les revenus ne sont pas garantis et ne doivent pas être crédités sans activité réelle et financement vérifiable.</p>
+   <div id="plansList"></div>
+  </div>
+ </section>
 
-    alert("Opération enregistrée.");
-    await loadAdminData();
-  } catch (error) {
-    alert("Échec : " + (error.message || "erreur inconnue") +
-      "\nVérifiez les fonctions SQL et les autorisations.");
-  }
+ <section id="team" class="hidden">
+  <div class="card">
+   <h2>👥 Parrainage</h2>
+   <p>Votre code : <b id="refCode2"></b></p>
+   <button onclick="copyReferral()">Copier le code</button>
+   <p class="small">Taux configurés : niveau 1 : 30 %, niveau 2 : 2 %, niveau 3 : 1 %. Les commissions ne doivent être comptabilisées qu'après une opération admissible vérifiée.</p>
+  </div>
+  <div class="card">
+   <h2>Assistance</h2>
+   <a id="waLink" href="https://wa.me/" target="_blank">Ouvrir WhatsApp</a><br>
+   <a id="tgLink" href="https://t.me/" target="_blank">Ouvrir Telegram</a>
+  </div>
+ </section>
+
+ <section id="history" class="hidden">
+  <div class="card"><h2>Historique du compte</h2><div id="historyList"></div></div>
+ </section>
+
+ <section id="profile" class="hidden">
+  <div class="card">
+   <h2>Mon profil</h2>
+   <label>Nom</label><input id="profileName">
+   <label>Téléphone</label><input id="profilePhone">
+   <button onclick="saveProfile()">Enregistrer le profil</button>
+   <button class="red" onclick="logout()">Déconnexion</button>
+  </div>
+ </section>
+
+ <section id="admin" class="hidden">
+  <div class="card"><h2>🛠️ Administration</h2>
+   <p class="small">Accès administrateur réservé au compte autorisé côté Supabase.</p>
+   <button onclick="loadAdmin()">Actualiser le tableau de bord</button>
+   <div id="adminStats"></div>
+  </div>
+  <div class="card"><h2>Membres</h2><div id="adminMembers"></div></div>
+  <div class="card"><h2>Dépôts en attente</h2><div id="adminDeposits"></div></div>
+  <div class="card"><h2>Retraits en attente</h2><div id="adminWithdrawals"></div></div>
+  <div class="card"><h2>Paramètres et assistance</h2>
+   <label>Lien WhatsApp</label><input id="setWa" placeholder="https://chat.whatsapp.com/...">
+   <label>Lien Telegram</label><input id="setTg" placeholder="https://t.me/...">
+   <button onclick="saveLinks()">Enregistrer les liens</button>
+   <div id="settingsMsg"></div>
+  </div>
+ </section>
+</section>
+</main>
+
+<nav id="nav" class="hidden">
+ <button onclick="show('home')">Accueil</button>
+ <button onclick="show('deposits')">Dépôt</button>
+ <button onclick="show('withdrawals')">Retrait</button>
+ <button onclick="show('plans')">VIP</button>
+ <button onclick="show('team')">Équipe</button>
+ <button onclick="show('history')">Historique</button>
+ <button onclick="show('profile')">Profil</button>
+ <button id="adminNav" class="hidden" onclick="show('admin');loadAdmin()">Admin</button>
+</nav>
+
+<script>
+const SUPABASE_URL="https://uewceocdzvekuopgsmpg.supabase.co";
+const SUPABASE_KEY="sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
+const ADMIN_EMAIL="angenabukuze@gmail.com";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let currentUser=null, profile=null;
+
+const vipPlans=[
+ {name:"VIP1",price:15000,daily:2000,days:60,limit:1},
+ {name:"VIP2",price:30000,daily:4400,days:60,limit:2},
+ {name:"VIP3",price:80000,daily:12300,days:60,limit:3},
+ {name:"VIP4",price:150000,daily:24000,days:60,limit:3},
+ {name:"VIP5",price:300000,daily:52000,days:60,limit:5},
+ {name:"VIP6",price:600000,daily:120000,days:60,limit:2},
+ {name:"VIP7",price:1500000,daily:330000,days:60,limit:2}
+];
+const $=id=>document.getElementById(id);
+const fc=n=>Number(n||0).toLocaleString("fr-FR")+" FC";
+const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function msg(id,t){$(id).textContent=t}
+function show(id){
+ ["home","deposits","withdrawals","plans","team","history","profile","admin"].forEach(s=>$(s).classList.add("hidden"));
+ $(id).classList.remove("hidden");
+ if(id==="deposits")loadMyRequests();
+ if(id==="withdrawals")loadMyRequests();
+ if(id==="history")loadHistory();
 }
-
-async function renderAdmin() {
-  if (!isAdmin) {
-    alert("Cette page est réservée à l'administration.");
-    page("profile");
-    return;
-  }
-
-  document.getElementById("content").innerHTML = `
-    <h2 class="admin-title">⚙ Administration — KINSHASA BUSINESS</h2>
-
-    <button class="btn btn-dark" onclick="loadAdminData()">
-      Actualiser les données
-    </button>
-
-    <h3>Résumé</h3>
-    <div id="adminStats">Chargement…</div>
-
-    <h3>Membres inscrits</h3>
-    <div id="members">Chargement…</div>
-
-    <h3>Dépôts en attente</h3>
-    <div id="deposits">Chargement…</div>
-
-    <h3>Retraits en attente</h3>
-    <div id="withdrawals">Chargement…</div>
-
-    <p class="muted">
-      Un dépôt ne doit être validé qu'après vérification de la réception
-      effective de l'argent. Un retrait ne doit être confirmé qu'après
-      son paiement réel.
-    </p>
-  `;
-
-  await loadAdminData();
+function authMessage(t){msg("authMsg",t)}
+async function signup(){
+ const email=$("email").value.trim(),password=$("password").value;
+ const name=$("name").value.trim(),phone=$("phone").value.trim();
+ if(!email||password.length<6||!name){authMessage("Entrez votre nom, email et un mot de passe d'au moins 6 caractères.");return}
+ const {error}=await sb.auth.signUp({email,password,options:{data:{full_name:name,phone}}});
+ if(error){authMessage("Erreur : "+error.message);return}
+ authMessage("Inscription envoyée. Si la confirmation email est activée dans Supabase, ouvrez le message reçu avant de vous connecter.");
 }
-
-async function loadAdminData() {
-  if (!isAdmin) return;
-
-  const members = document.getElementById("members");
-  const deposits = document.getElementById("deposits");
-  const withdrawals = document.getElementById("withdrawals");
-  const stats = document.getElementById("adminStats");
-
-  if (!members || !deposits || !withdrawals || !stats) return;
-
-  members.innerHTML = "Chargement…";
-  deposits.innerHTML = "Chargement…";
-  withdrawals.innerHTML = "Chargement…";
-
-  const [m, d, w] = await Promise.all([
-    sb.from("profiles").select("*").order("created_at", { ascending: false }),
-    sb.from("kin_deposit_requests").select("*")
-      .order("created_at", { ascending: false }),
-    sb.from("kin_withdrawal_requests").select("*")
-      .order("created_at", { ascending: false })
-  ]);
-
-  if (m.error) members.innerHTML = msg(m.error.message, "err");
-  else {
-    const list = m.data || [];
-    stats.innerHTML = `
-      <div class="grid">
-        <div class="stat"><span>Membres inscrits</span><b>${list.length}</b></div>
-        <div class="stat"><span>Dépôts en attente</span><b>${(d.data || []).filter(x => x.status === "pending").length}</b></div>
-        <div class="stat"><span>Retraits en attente</span><b>${(w.data || []).filter(x => x.status === "pending").length}</b></div>
-      </div>`;
-
-    members.innerHTML = list.map(x => `
-      <div class="member">
-        <b>${esc(x.full_name || "Membre")}</b>
-        <div class="small">${esc(x.id)}</div>
-        <div>Email : ${esc(x.email || "Non disponible")}</div>
-        <div>Rôle : ${esc(x.role || "member")}</div>
-        <div>Statut : ${x.is_banned ? "Bloqué" : "Actif"}</div>
-        <button class="btn btn-dark"
-          onclick="adminAction('member','${esc(x.id)}',${!x.is_banned})">
-          ${x.is_banned ? "Débloquer" : "Bloquer"}
-        </button>
-      </div>
-    `).join("") || "Aucun membre trouvé.";
-  }
-
-  if (d.error) deposits.innerHTML = msg(d.error.message, "err");
-  else {
-    deposits.innerHTML = (d.data || [])
-      .filter(x => x.status === "pending")
-      .map(x => `
-        <div class="member">
-          <b>${money(x.amount)}</b>
-          <div>Membre : ${esc(x.user_id)}</div>
-          <div>Référence : ${esc(x.transaction_id || x.reference || "—")}</div>
-          <div>Statut : En attente</div>
-          <button class="btn btn-red"
-            onclick="adminAction('deposit','${esc(x.id)}','approved')">
-            Valider dépôt
-          </button>
-          <button class="btn btn-dark"
-            onclick="adminAction('deposit','${esc(x.id)}','rejected')">
-            Rejeter dépôt
-          </button>
-        </div>
-      `).join("") || "Aucun dépôt en attente.";
-  }
-
-  if (w.error) withdrawals.innerHTML = msg(w.error.message, "err");
-  else {
-    withdrawals.innerHTML = (w.data || [])
-      .filter(x => x.status === "pending")
-      .map(x => `
-        <div class="member">
-          <b>${money(x.amount)}</b>
-          <div>Membre : ${esc(x.user_id)}</div>
-          <div>Numéro : ${esc(x.payment_number || x.withdrawal_number || "—")}</div>
-          <div>Net estimé : ${money(x.net_amount)}</div>
-          <div>Statut : En attente</div>
-          <button class="btn btn-red"
-            onclick="adminAction('withdrawal','${esc(x.id)}','approved')">
-            Confirmer retrait payé
-          </button>
-          <button class="btn btn-dark"
-            onclick="adminAction('withdrawal','${esc(x.id)}','rejected')">
-            Rejeter retrait
-          </button>
-        </div>
-      `).join("") || "Aucun retrait en attente.";
-  }
+async function login(){
+ const email=$("email").value.trim(),password=$("password").value;
+ const {error}=await sb.auth.signInWithPassword({email,password});
+ if(error){authMessage("Connexion impossible : "+error.message);return}
+ await boot();
 }
+async function resetPassword(){
+ const email=$("email").value.trim();
+ if(!email){authMessage("Entrez d'abord votre email.");return}
+ const {error}=await sb.auth.resetPasswordForEmail(email);
+ authMessage(error?"Erreur : "+error.message:"Demande de réinitialisation envoyée si ce compte existe.");
+}
+async function logout(){await sb.auth.signOut();location.reload()}
+async function boot(){
+ const {data:{user}}=await sb.auth.getUser();
+ if(!user)return;
+ currentUser=user;
+ $("auth").classList.add("hidden");$("app").classList.remove("hidden");$("nav").classList.remove("hidden");
+ const {data:p,error}=await sb.from("profiles").select("*").eq("id",user.id).maybeSingle();
+ if(error){alert("Erreur profil : "+error.message);return}
+ profile=p||{};
+ $("memberName").textContent=profile.full_name||user.user_metadata?.full_name||user.email;
+ $("profileName").value=profile.full_name||"";
+ $("profilePhone").value=profile.phone||"";
+ $("refCode").textContent=profile.referral_code||"En attente";
+ $("refCode2").textContent=profile.referral_code||"En attente";
+ const admin=user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
+ if(admin)$("adminNav").classList.remove("hidden");
+ await refreshWallet();
+ renderPlans();
+ await loadMyRequests();
+ await loadHistory();
+}
+async function refreshWallet(){
+ const {data,error}=await sb.from("kin_wallets").select("*").eq("user_id",currentUser.id).maybeSingle();
+ if(error){$("balance").textContent="0";return}
+ $("balance").textContent=Number(data?.balance||0).toLocaleString("fr-FR");
+}
+async function requestDeposit(){
+ const amount=Number($("depAmount").value),method=$("depMethod").value,reference=$("depRef").value.trim();
+ if(!Number.isFinite(amount)||amount<15000||!reference){msg("depMsg","Montant minimum 15 000 FC et référence obligatoire.");return}
+ const {error}=await sb.from("kin_deposit_requests").insert({user_id:currentUser.id,amount,method,reference,status:"pending"});
+ msg("depMsg",error?"Erreur : "+error.message:"Demande enregistrée en attente de vérification. Le solde n'est pas encore crédité.");
+ if(!error){$("depAmount").value="";$("depRef").value="";await loadMyRequests()}
+}
+async function requestWithdrawal(){
+ const amount=Number($("wdAmount").value),method=$("wdMethod").value,phone=$("wdPhone").value.trim();
+ if(!Number.isFinite(amount)||amount<2000||!phone){msg("wdMsg","Montant minimum 2 000 FC et numéro obligatoire.");return}
+ const {data:w}=await sb.from("kin_wallets").select("balance").eq("user_id",currentUser.id).maybeSingle();
+ if(Number(w?.balance||0)<amount){msg("wdMsg","Solde insuffisant. Les frais de 10 % sont à prendre en compte.");return}
+ const {error}=await sb.from("kin_withdrawal_requests").insert({user_id:currentUser.id,amount,method,withdrawal_number:phone,status:"pending"});
+ msg("wdMsg",error?"Erreur : "+error.message:"Demande envoyée. Elle reste en attente jusqu'au traitement par l'administration.");
+ if(!error){$("wdAmount").value="";await loadMyRequests()}
+}
+async function loadMyRequests(){
+ if(!currentUser)return;
+ const [d,w]=await Promise.all([
+  sb.from("kin_deposit_requests").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}),
+  sb.from("kin_withdrawal_requests").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false})
+ ]);
+ $("myDeposits").innerHTML=d.error?safe(d.error.message):(d.data||[]).map(x=>`<div class="item">${fc(x.amount)} — ${safe(x.method)}<br>Statut : <b>${safe(x.status)}</b><br><span class="small">${safe(x.reference||"")}</span></div>`).join("")||"Aucune demande.";
+ $("myWithdrawals").innerHTML=w.error?safe(w.error.message):(w.data||[]).map(x=>`<div class="item">${fc(x.amount)} — ${safe(x.method)}<br>Statut : <b>${safe(x.status)}</b><br>Numéro : ${safe(x.withdrawal_number||"")}</div>`).join("")||"Aucune demande.";
+}
+async function loadHistory(){
+ if(!currentUser)return;
+ const [d,w]=await Promise.all([
+  sb.from("kin_deposit_requests").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}),
+  sb.from("kin_withdrawal_requests").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false})
+ ]);
+ let all=[];
+ (d.data||[]).forEach(x=>all.push({kind:"Dépôt",...x}));
+ (w.data||[]).forEach(x=>all.push({kind:"Retrait",...x}));
+ all.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+ $("historyList").innerHTML=all.map(x=>`<div class="item">${safe(x.kind)} — ${fc(x.amount)}<br>Statut : ${safe(x.status)}</div>`).join("")||"Aucun historique.";
+}
+function renderPlans(){
+ $("plansList").innerHTML=vipPlans.map(p=>`<div class="item"><b>${p.name}</b><br>Prix affiché : ${fc(p.price)}<br>Revenu quotidien annoncé : ${fc(p.daily)}<br>Durée : ${p.days} jours<br>Limite : ${p.limit}<p class="small">Ces montants sont des paramètres annoncés, pas une garantie de rendement.</p></div>`).join("");
+}
+async function copyReferral(){
+ const c=profile?.referral_code;
+ if(!c){alert("Code de parrainage pas encore disponible.");return}
+ try{await navigator.clipboard.writeText(c);alert("Code copié : "+c)}catch(e){prompt("Copiez votre code :",c)}
+}
+async function saveProfile(){
+ const {error}=await sb.from("profiles").update({full_name:$("profileName").value.trim(),phone:$("profilePhone").value.trim()}).eq("id",currentUser.id);
+ alert(error?"Erreur : "+error.message:"Profil enregistré.");
+ if(!error)await boot();
+}
+async function loadAdmin(){
+ if(currentUser?.email?.toLowerCase()!==ADMIN_EMAIL.toLowerCase()){alert("Accès refusé.");return}
+ const [m,d,w]=await Promise.all([
+  sb.from("profiles").select("*").order("created_at",{ascending:false}),
+  sb.from("kin_deposit_requests").select("*").order("created_at",{ascending:false}),
+  sb.from("kin_withdrawal_requests").select("*").order("created_at",{ascending:false})
+ ]);
+ if(m.error||d.error||w.error){$("adminStats").textContent="Erreur de lecture : "+(m.error||d.error||w.error).message;return}
+ $("adminStats").innerHTML=`<div class="item">Membres : <b>${m.data.length}</b><br>Dépôts enregistrés : <b>${d.data.length}</b><br>Retraits enregistrés : <b>${w.data.length}</b><br>Dépôts en attente : <b>${d.data.filter(x=>x.status==="pending").length}</b><br>Retraits en attente : <b>${w.data.filter(x=>x.status==="pending").length}</b></div>`;
+ $("adminMembers").innerHTML=m.data.map(x=>`<div class="item"><b>${safe(x.full_name||"Membre")}</b><br>Email : ${safe(x.email||"") }<br>Téléphone : ${safe(x.phone||"")}<br>ID : ${safe(x.id)}<br>Code : ${safe(x.referral_code||"")}<br>Statut : ${x.is_banned?"Bloqué":"Actif"}<button onclick="banMember('${x.id}',${!x.is_banned})">${x.is_banned?"Débloquer":"Bloquer"}</button></div>`).join("")||"Aucun membre.";
+ $("adminDeposits").innerHTML=d.data.filter(x=>x.status==="pending").map(x=>`<div class="item"><b>${fc(x.amount)}</b><br>Membre : ${safe(x.user_id)}<br>Méthode : ${safe(x.method)}<br>Référence : ${safe(x.reference||"")}<button onclick="processRequest('deposit','${x.id}','approved')">Valider dépôt</button><button class="red" onclick="processRequest('deposit','${x.id}','rejected')">Rejeter dépôt</button></div>`).join("")||"Aucun dépôt en attente.";
+ $("adminWithdrawals").innerHTML=w.data.filter(x=>x.status==="pending").map(x=>`<div class="item"><b>${fc(x.amount)}</b><br>Membre : ${safe(x.user_id)}<br>Méthode : ${safe(x.method)}<br>Numéro : ${safe(x.withdrawal_number||"")}<button onclick="processRequest('withdrawal','${x.id}','approved')">Confirmer retrait payé</button><button class="red" onclick="processRequest('withdrawal','${x.id}','rejected')">Rejeter retrait</button></div>`).join("")||"Aucun retrait en attente.";
+}
+async function processRequest(type,id,status){
+ if(!confirm(status==="approved"?"Confirmez seulement après vérification du dépôt ou paiement réel du retrait. Continuer ?":"Confirmer le rejet ?"))return;
+ const fn=type==="deposit"?"admin_set_deposit_status":"admin_set_withdrawal_status";
+ const {error}=await sb.rpc(fn,{p_request_id:id,p_status:status,p_note:null});
+ if(error){alert("Opération refusée : "+error.message);return}
+ alert("Statut enregistré.");await loadAdmin();await refreshWallet();await loadMyRequests();
+}
+async function banMember(id,banned){
+ if(!confirm(banned?"Bloquer ce membre ?":"Débloquer ce membre ?"))return;
+ const {error}=await sb.rpc("admin_set_member_ban",{p_user_id:id,p_banned:banned});
+ if(error){alert("Erreur : "+error.message);return}
+ await loadAdmin();
+}
+async function saveLinks(){
+ const wa=$("setWa").value.trim(),tg=$("setTg").value.trim();
+ const {error}=await sb.rpc("admin_save_community_links",{p_whatsapp:wa,p_telegram:tg});
+ $("settingsMsg").textContent=error?"Erreur : "+error.message:"Liens enregistrés.";
+ if(!error){$("waLink").href=wa||"https://wa.me/";$("tgLink").href=tg||"https://t.me/"}
+}
+sb.auth.onAuthStateChange((event,session)=>{if(session?.user)setTimeout(boot,0)});
+(async()=>{const {data:{session}}=await sb.auth.getSession();if(session)await boot()})();
+</script>
+</body>
+</html>
