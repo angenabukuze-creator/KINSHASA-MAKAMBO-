@@ -62,7 +62,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
  <div class="brand">KINSHASA <span>BUSINESS</span></div>
  <small id="headerSub">Votre espace membre</small>
 </header>
-
 <main>
 <section id="auth">
  <div class="card">
@@ -80,7 +79,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
   <p class="muted">Utilisez une adresse et un numéro qui vous appartiennent. Ne partagez jamais votre mot de passe.</p>
  </div>
 </section>
-
 <div id="app" class="hidden">
 <section id="page-home">
  <div class="banner"><div class="slides" id="slides">
@@ -110,7 +108,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
   <a class="btn red" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="https://t.me/Avis8995">Service client : @Avis8995</a>
  </div>
 </section>
-
 <section id="page-deposit" class="hidden"><div class="card">
  <h2>💳 Recharge du compte</h2>
  <p class="muted">Les demandes de dépôt peuvent être soumises 24 h/24. Le crédit intervient après vérification du paiement.</p>
@@ -121,7 +118,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
  <label>Référence de transaction</label><input id="depositReference" placeholder="Référence du paiement">
  <button style="width:100%" onclick="submitDeposit()">Soumettre mon dépôt</button>
 </div></section>
-
 <section id="page-withdraw" class="hidden"><div class="card">
  <h2>💸 Retrait</h2>
  <div class="notice">Les retraits sont prévus de 09 h à 18 h, heure locale. Un dépôt antérieur validé est nécessaire. Enregistrez votre numéro de paiement avant la demande.</div>
@@ -133,12 +129,10 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
  <p class="muted">Frais prévus : 10 %, sous réserve des paramètres en vigueur.</p>
  <button style="width:100%" onclick="submitWithdrawal()">Soumettre ma demande de retrait</button>
 </div></section>
-
 <section id="page-vip" class="hidden"><div class="card">
  <h2>⭐ VIP / Investir</h2>
  <div id="plansList"><p class="muted">Chargement des offres...</p></div>
 </div><div class="card"><h2>Mes VIP actifs</h2><div id="activePlans">Chargement...</div></div></section>
-
 <section id="page-team" class="hidden"><div class="card">
  <h2>👥 Mon équipe</h2><label>Mon lien de parrainage</label><input id="referralLink" readonly>
  <button style="width:100%" onclick="copyReferral()">Copier mon lien</button><hr>
@@ -148,9 +142,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
  <div class="row"><span>Commissions enregistrées</span><strong id="teamCommission">0 FC</strong></div>
  <p class="muted">Les taux de parrainage dépendent des paramètres et des opérations éligibles validées.</p><div id="teamList"></div>
 </div></section>
-
 <section id="page-history" class="hidden"><div class="card"><h2>📋 Historique des transactions</h2><button class="light" onclick="loadHistory()">Actualiser</button><div id="historyList"></div></div></section>
-
 <section id="page-me" class="hidden"><div class="card">
  <h2>👤 Mon compte</h2><div id="profileSummary"></div>
  <label>Nom complet</label><input id="profileName"><label>Numéro de téléphone</label><input id="profilePhone">
@@ -158,7 +150,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
  <button class="light" style="width:100%" onclick="changePassword()">Modifier mon mot de passe</button>
  <button class="red" style="width:100%;margin-top:9px" onclick="logout()">Déconnexion</button>
 </div></section>
-
 <section id="page-admin" class="hidden"><div class="card">
  <h2>🛡️ Administration</h2><p class="notice">Vérifiez chaque paiement réel avant de valider une demande.</p>
  <div class="grid">
@@ -169,7 +160,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
 </div></section>
 </div>
 </main>
-
 <nav id="bottomNav" class="bottom hidden">
  <button class="active" data-page="home" onclick="showPage('home')"><span>🏠</span>Accueil</button>
  <button data-page="vip" onclick="showPage('vip')"><span>⭐</span>VIP/Investir</button>
@@ -178,13 +168,11 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
 </nav>
 <div id="toast"></div>
 <footer>KINSHASA BUSINESS · Consultez les conditions avant toute opération.</footer>
-
 <script>
 const SUPABASE_URL="https://uewceocdzvekuopgsmpg.supabase.co";
 const SUPABASE_KEY="sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
 const ADMIN_EMAIL="angenabukuze@gmail.com";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-
 let user=null,profile=null,wallet=null,plans=[],paymentMethods=[],isSignup=true;
 let currentAdminTab="members";
 const $=id=>document.getElementById(id);
@@ -192,7 +180,6 @@ const money=n=>Number(n||0).toLocaleString("fr-FR")+" FC";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const errText=e=>e?.message||String(e||"Erreur inconnue");
 const val=(...a)=>a.find(v=>v!==undefined&&v!==null&&v!=="");
-
 function toast(s){
  $("toast").textContent=s;
  $("toast").style.display="block";
@@ -305,7 +292,6 @@ function addAdminShortcut(){
  };
  document.body.appendChild(b);
 }
-
 /* COORDONNÉES DE PAIEMENT */
 function fallbackPayment(method){
  const text=String(method||"").toLowerCase().replace(/[\s_-]/g,"");
@@ -426,21 +412,58 @@ function isWithinWithdrawalHours(){
  const n=h*60+m;
  return n>=540&&n<=1080;
 }
+
+/* CORRECTION : AFFICHAGE DES REVENUS JOURNALIERS KIN1 À KIN7 */
+function dailyIncomeForPlan(p){
+ const raw=val(
+  p.daily_income,p.daily_revenue,p.daily,p.daily_profit,
+  p.daily_earning,p.daily_earnings,p.revenue_per_day,
+  p.daily_amount,p.gain_per_day,p.revenu_journalier,
+  p.revenu_quotidien,p.gain_quotidien,p.revenu_par_jour,
+  p.income_per_day,p.profit_per_day
+ );
+ const stored=Number(raw||0);
+ if(Number.isFinite(stored)&&stored>0)return stored;
+
+ const label=String(val(p.name,p.plan_name,p.code,p.plan_code,p.vip_name,"")).toUpperCase().replace(/\s+/g,"");
+ const match=label.match(/KIN([1-7])/);
+ if(!match)return 0;
+
+ const fallbackDaily={
+  KIN1:2000,
+  KIN2:4400,
+  KIN3:12300,
+  KIN4:24000,
+  KIN5:52000,
+  KIN6:120000,
+  KIN7:330000
+ };
+ return fallbackDaily["KIN"+match[1]]||0;
+}
+
 async function loadPlans(){
  const box=$("plansList");
  try{
   const {data,error}=await db.from("kin_plans").select("*").order("price",{ascending:true});
   if(error)throw error;
   plans=(data||[]).filter(p=>p.active!==false&&p.is_active!==false);
-  if(!plans.length){box.innerHTML='<p class="muted">Aucune offre disponible pour le moment.</p>';return}
+  if(!plans.length){
+   box.innerHTML='<p class="muted">Aucune offre disponible pour le moment.</p>';
+   return;
+  }
   box.innerHTML=plans.map((p,i)=>{
-   const name=val(p.name,p.plan_name,p.code,"VIP"),price=Number(val(p.price,p.amount,0));
-   const daily=Number(val(p.daily_income,p.daily_revenue,p.daily,0)),days=Number(val(p.duration_days,p.days,60));
+   const name=val(p.name,p.plan_name,p.code,p.plan_code,"VIP");
+   const price=Number(val(p.price,p.amount,p.investment_amount,0));
+   const daily=dailyIncomeForPlan(p);
+   const days=Number(val(p.duration_days,p.days,p.duration,60));
    return `<div class="item"><div class="row"><h3>${esc(name)}</h3><span class="badge">${days} jours</span></div><p>Prix : <b>${money(price)}</b><br>Revenu quotidien annoncé : <b>${money(daily)}</b></p><button onclick="buyVipByIndex(${i})">Choisir ${esc(name)}</button></div>`;
   }).join("");
- }catch(e){box.innerHTML='<p class="muted">Impossible de charger les offres : '+esc(errText(e))+'</p>';console.error(e)}
+ }catch(e){
+  box.innerHTML='<p class="muted">Impossible de charger les offres : '+esc(errText(e))+'</p>';
+  console.error(e);
+ }
 }
-function buyVipByIndex(i){const p=plans[i];if(p)buyVip(val(p.name,p.plan_name,p.code,"VIP"))}
+function buyVipByIndex(i){const p=plans[i];if(p)buyVip(val(p.name,p.plan_name,p.code,p.plan_code,"VIP"))}
 async function buyVip(planName){
  if(!confirm("Confirmer votre demande concernant "+planName+" ? Vérifiez votre solde et toutes les conditions avant de continuer."))return;
  try{
@@ -540,7 +563,6 @@ async function loadCommunityLinks(){
   console.log("Liens officiels chargés",data?.length||0);
  }catch(e){console.warn("Liens officiels:",e.message)}
 }
-
 /* ADMINISTRATION */
 async function loadAdmin(tab){
  if(!isAdmin())return toast("Accès réservé à l'administration.");
@@ -674,7 +696,6 @@ async function saveLink(platform,name){
   toast("Lien enregistré.");
  }catch(e){fail(e)}
 }
-
 /* Rotation des bannières */
 let slideIndex=0;
 setInterval(()=>{
@@ -684,7 +705,6 @@ setInterval(()=>{
  slides.style.transform=`translateX(-${slideIndex*100}%)`;
  document.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("on",i===slideIndex));
 },4500);
-
 db.auth.onAuthStateChange((event,session)=>{
  if(event==="SIGNED_OUT"){
   user=null;profile=null;wallet=null;setLoggedIn(false);return;
