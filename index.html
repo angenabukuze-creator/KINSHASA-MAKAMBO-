@@ -3,487 +3,823 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#10469b">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1456d9">
 <title>KINSHASA BUSINESS</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--blue:#10469b;--yellow:#ffcf21;--red:#d71920;--bg:#f0f4fa;--ink:#17243b;--white:#fff}
+:root{--blue:#1456d9;--yellow:#ffd400;--red:#e53935;--ink:#17243c;--muted:#718096;--bg:#f3f6fc;--white:#fff}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--ink);padding-bottom:85px}
-header{background:linear-gradient(110deg,var(--blue) 0 65%,var(--red) 65%);color:white;padding:20px 16px;border-bottom:7px solid var(--yellow)}
-header h1{font-size:23px;margin:0 0 7px}
-header p{margin:0;font-size:14px}
-main{max-width:850px;margin:auto;padding:15px}
-.card{background:white;padding:18px;border-radius:19px;margin:14px 0;box-shadow:0 5px 18px #14294b12;overflow-wrap:anywhere}
-h2{color:var(--blue);font-size:21px;margin:0 0 14px}
-h3{font-size:17px;color:var(--blue)}
-input,select,textarea{width:100%;padding:13px;margin:6px 0 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px;background:#fff;color:var(--ink)}
-button,.button{display:inline-block;border:0;border-radius:11px;padding:13px 15px;font-size:15px;font-weight:bold;cursor:pointer;text-align:center;text-decoration:none}
-.primary{background:var(--blue);color:white;width:100%}
-.yellow{background:var(--yellow);color:#17243b}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif;padding-bottom:82px}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:11px;padding:12px 15px;font-weight:700}
+.primary{background:var(--blue);color:white}
+.yellow{background:var(--yellow);color:#222}
 .red{background:var(--red);color:white}
-.green{background:#18794e;color:white}
-button:disabled{opacity:.5}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.stat{padding:14px;border-radius:13px;background:#edf3ff;border-left:5px solid var(--blue)}
-.stat strong{display:block;font-size:20px;margin-top:6px}
-.small{font-size:13px;color:#596579;line-height:1.5}
-.notice{padding:13px;background:#fff6cc;border-left:5px solid var(--yellow);border-radius:10px;margin:12px 0;line-height:1.5}
-.error{background:#fff0f0;border-left-color:var(--red)}
-.success{background:#e9f8ef;border-left-color:#18794e}
-.plan{border:1px solid #dbe3ef;border-top:5px solid var(--yellow);border-radius:14px;padding:14px}
-.plan strong{color:var(--blue);font-size:20px}
-.pill{display:inline-block;padding:5px 9px;border-radius:20px;background:#e7edfa;font-size:12px}
-.item{border-bottom:1px solid #e6eaf0;padding:13px 0}
-.item:last-child{border:0}
-.item p{margin:6px 0;line-height:1.45}
-.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-.actions button{flex:1;min-width:90px}
-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:5px solid var(--yellow);display:grid;grid-template-columns:repeat(4,1fr);z-index:10;padding:7px 2px calc(7px + env(safe-area-inset-bottom))}
-nav button{background:white;color:#475569;padding:7px 2px;font-size:12px}
-nav button.active{color:var(--blue);background:#eef4ff}
-nav span{display:block;font-size:21px;margin-bottom:3px}
+.light{background:#eaf0ff;color:var(--blue)}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,select{width:100%;padding:12px;border:1px solid #dbe2ef;border-radius:10px;background:white;margin:6px 0 12px}
+label{font-size:13px;font-weight:700}
+h1,h2,h3,p{margin-top:0}
+h2{font-size:19px}
+.small{font-size:12px;color:var(--muted)}
+.muted{color:var(--muted)}
+header{background:var(--blue);color:white;padding:17px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{font-size:19px;font-weight:900;letter-spacing:.3px}
+.brand span{color:var(--yellow)}
+.wrap{max-width:760px;margin:auto;padding:14px}
+.card{background:white;border-radius:17px;padding:16px;margin:12px 0;box-shadow:0 4px 18px #142b5010}
+.row{display:flex;gap:10px;align-items:center}
+.row>*{flex:1;min-width:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{padding:17px 10px;text-align:center;background:white;border-radius:15px;box-shadow:0 3px 12px #142b5010;color:var(--ink);border:1px solid #edf0f6}
+.tile b{display:block;font-size:15px;margin-top:9px}
+.tile .ico{font-size:25px}
+.hero{height:185px;position:relative;overflow:hidden;border-radius:18px;color:white;margin:12px 0}
+.slide{position:absolute;inset:0;display:none;background-size:cover;background-position:center;padding:23px;align-items:flex-end}
+.slide.active{display:flex;animation:appear .6s}
+.slide:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#061b49df,#061b4930)}
+.slide-content{position:relative;z-index:1}
+.slide h2{font-size:27px;margin:7px 0}
+.slide .tag{background:var(--yellow);color:#17243c;border-radius:8px;padding:5px 9px;font-weight:900;font-size:12px}
+@keyframes appear{from{opacity:.5}to{opacity:1}}
+.bottom{position:fixed;z-index:20;bottom:0;left:0;right:0;background:white;border-top:1px solid #e3e8f2;display:flex;justify-content:space-around;padding:9px 4px max(9px,env(safe-area-inset-bottom))}
+.bottom button{background:white;color:#68748a;padding:7px 8px;font-size:11px;flex:1}
+.bottom button.active{color:var(--blue)}
+.bottom .navico{font-size:20px;display:block;margin-bottom:4px}
 .hidden{display:none!important}
-.banner{background:linear-gradient(120deg,var(--blue),#286bd0 65%,var(--red));color:white;border-radius:16px;padding:18px}
-.banner h2{color:white}
-.banner p{line-height:1.5}
-.banner img{width:100%;height:130px;object-fit:cover;border-radius:12px}
-footer{text-align:center;color:#64748b;font-size:12px;padding:22px}
-table{border-collapse:collapse;width:100%;font-size:13px}
-td,th{padding:9px;border-bottom:1px solid #e2e8f0;text-align:left}
-.tablewrap{overflow-x:auto}
-@media(min-width:600px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.banner img{height:180px}}
+.notice{padding:11px;border-radius:10px;background:#fff5cf;color:#664d00;font-size:13px;margin:10px 0}
+.success{background:#e5f8ec;color:#176b36}
+.error{background:#ffe8e8;color:#a52323}
+.pill{display:inline-block;background:#eaf0ff;color:var(--blue);border-radius:20px;padding:5px 9px;font-size:11px;font-weight:800}
+.money{font-size:23px;font-weight:900;color:var(--blue)}
+.plan{border:1px solid #e2e8f4;border-radius:13px;padding:14px;margin:10px 0}
+.plan h3{margin-bottom:8px}
+.listitem{padding:12px 0;border-bottom:1px solid #edf0f5}
+.listitem:last-child{border:0}
+.listitem p{margin:5px 0;font-size:13px;overflow-wrap:anywhere}
+.auth{max-width:480px;margin:25px auto;padding:18px}
+.auth .logo{background:var(--blue);color:white;text-align:center;padding:25px 10px;border-radius:17px;margin-bottom:15px}
+.auth .logo strong{font-size:24px}
+hr{border:0;border-top:1px solid #edf0f5;margin:14px 0}
+a{color:var(--blue);overflow-wrap:anywhere}
+.tablebox{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+td,th{padding:9px 6px;text-align:left;border-bottom:1px solid #edf0f5;vertical-align:top}
+.actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.actions button{padding:8px 10px;font-size:12px}
+footer{text-align:center;padding:15px;font-size:11px;color:var(--muted)}
 </style>
 </head>
 <body>
 <header>
-  <h1 id="brand">KINSHASA BUSINESS</h1>
-  <p id="subtitle">Votre espace membre • RDC • Franc congolais (Fc)</p>
+  <div class="brand">KINSHASA <span>BUSINESS</span></div>
+  <button class="yellow" onclick="logout()" id="logoutTop" style="display:none">Déconnexion</button>
 </header>
-<main>
-  <section id="auth">
-    <div class="card">
-      <h2>Bienvenue sur KINSHASA BUSINESS</h2>
-      <p>Créez votre compte ou connectez-vous pour consulter les offres et suivre vos opérations.</p>
-      <div class="notice">Utilisez une adresse e-mail à laquelle vous avez accès. Si Supabase demande une confirmation, celle-ci doit être configurée dans les paramètres d'authentification.</div>
-      <div class="row">
-        <button class="yellow" onclick="showAuth('signup')">Créer un compte</button>
-        <button class="primary" onclick="showAuth('login')">Connexion</button>
-      </div>
-      <form id="signupForm" class="hidden">
-        <h3>Inscription</h3>
-        <label>Nom complet</label><input id="suName" required autocomplete="name">
-        <label>Téléphone (+243)</label><input id="suPhone" required placeholder="+243..." autocomplete="tel">
-        <label>Adresse e-mail</label><input id="suEmail" type="email" required autocomplete="email">
-        <label>Mot de passe (8 caractères minimum)</label><input id="suPassword" type="password" minlength="8" required autocomplete="new-password">
-        <button class="primary" type="submit">S'inscrire</button>
-      </form>
-      <form id="loginForm" class="hidden">
-        <h3>Connexion</h3>
-        <label>Adresse e-mail</label><input id="liEmail" type="email" required autocomplete="email">
-        <label>Mot de passe</label><input id="liPassword" type="password" required autocomplete="current-password">
-        <button class="primary" type="submit">Se connecter</button>
-        <button class="yellow" type="button" onclick="resetPassword()">Mot de passe oublié</button>
-      </form>
-      <div id="authMsg" class="notice hidden"></div>
-    </div>
-  </section>
 
-  <section id="app" class="hidden">
-    <div class="card">
-      <div class="row" style="align-items:center">
-        <div><div class="small">Compte connecté</div><strong id="memberName">Membre</strong><div class="small" id="memberCode"></div></div>
-        <button class="yellow" onclick="logout()">Déconnexion</button>
-      </div>
+<section id="authScreen" class="auth">
+  <div class="logo">
+    <strong>KINSHASA BUSINESS</strong>
+    <p style="margin:10px 0 0">Votre espace membre</p>
+  </div>
+  <div class="card">
+    <div class="row">
+      <button id="loginTab" class="primary" onclick="showAuthMode('login')">Connexion</button>
+      <button id="signupTab" class="light" onclick="showAuthMode('signup')">S'inscrire</button>
     </div>
+    <form id="authForm" style="margin-top:16px">
+      <div id="signupFields" class="hidden">
+        <label>Nom complet</label>
+        <input id="fullName" autocomplete="name" placeholder="Votre nom complet">
+        <label>Numéro de téléphone</label>
+        <input id="phone" type="tel" placeholder="+243..." autocomplete="tel">
+      </div>
+      <label>Adresse e-mail</label>
+      <input id="email" type="email" required autocomplete="email" placeholder="nom@exemple.com">
+      <label>Mot de passe</label>
+      <input id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="6 caractères minimum">
+      <label id="confirmLabel" class="hidden">Confirmer le mot de passe</label>
+      <input id="confirmPassword" type="password" class="hidden" autocomplete="new-password" placeholder="Répéter le mot de passe">
+      <button class="primary" id="authSubmit" style="width:100%" type="submit">Connexion</button>
+      <div id="authMessage" class="notice hidden" style="margin-top:12px"></div>
+    </form>
+  </div>
+  <p class="small" style="text-align:center">Protégez votre mot de passe et ne le partagez avec personne.</p>
+</section>
 
-    <section id="homePage">
-      <div class="banner">
-        <h2 id="welcomeTitle">Bienvenue sur KINSHASA BUSINESS</h2>
-        <p>Consultez les offres, suivez vos demandes et découvrez les activités de votre équipe. Vérifiez les conditions et les risques avant tout paiement. Aucun revenu n'est garanti.</p>
-        <div class="grid">
-          <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=600&q=80" alt="Épargne et argent">
-          <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=80" alt="Gestion financière">
-          <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=600&q=80" alt="Paiement numérique">
+<main id="appScreen" class="hidden">
+  <div class="wrap">
+    <section id="page-home">
+      <div class="card" style="background:linear-gradient(120deg,#1456d9,#17336e);color:white">
+        <p class="small" style="color:#dce7ff;margin-bottom:7px">BIENVENUE SUR</p>
+        <h2 style="font-size:23px;margin-bottom:8px">KINSHASA BUSINESS</h2>
+        <p style="font-size:13px;line-height:1.6;margin:0">Découvrez nos offres, consultez votre espace et suivez vos demandes en toute transparence. Vérifiez les conditions de chaque offre avant de participer.</p>
+      </div>
+
+      <div class="hero" aria-label="Offres illustrées">
+        <div class="slide active" style="background-image:url('https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1000&q=80')">
+          <div class="slide-content"><span class="tag">OFFRE VIP</span><h2>20 000 Fc</h2><p style="margin:0">Découvrez les offres disponibles</p></div>
+        </div>
+        <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1000&q=80')">
+          <div class="slide-content"><span class="tag">ESPACE MEMBRE</span><h2>10 000 Fc</h2><p style="margin:0">Consultez les détails avant de choisir</p></div>
+        </div>
+        <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=1000&q=80')">
+          <div class="slide-content"><span class="tag">VOTRE COMPTE</span><h2>5 000 Fc</h2><p style="margin:0">Suivez vos opérations dans votre espace</p></div>
         </div>
       </div>
+
       <div class="grid">
-        <button class="yellow" onclick="go('deposit')">↗ RECHARGE</button>
-        <button class="red" onclick="go('withdraw')">↙ RETRAIT</button>
-        <button class="primary" onclick="go('vip')">★ PRODUITS ACTIFS</button>
-        <button class="primary" onclick="go('history')">▤ HISTORIQUES DES TRANSACTIONS</button>
+        <button class="tile" onclick="openPage('deposit')"><span class="ico">💳</span><b>RECHARGE</b></button>
+        <button class="tile" onclick="openPage('withdraw')"><span class="ico">💸</span><b>RETRAIT</b></button>
+        <button class="tile" onclick="openPage('vip')"><span class="ico">⭐</span><b>PRODUITS ACTIFS</b></button>
+        <button class="tile" onclick="openPage('history')"><span class="ico">📋</span><b>HISTORIQUES DES TRANSACTIONS</b></button>
       </div>
-      <div class="card"><h2>Mon compte</h2><div class="grid">
-        <div class="stat">Solde affiché<strong id="balance">— Fc</strong></div>
-        <div class="stat">Mes VIP actifs<strong id="activeVips">—</strong></div>
-        <div class="stat">Équipe inscrite<strong id="teamCount">—</strong></div>
-      </div><p class="small">Le solde affiché dépend des écritures validées par l'administration. Vérifiez toujours l'historique de vos opérations.</p></div>
-      <div class="card"><h2>Communauté et assistance</h2>
-        <p><a id="waLink" class="button primary" target="_blank" rel="noopener">Groupe officiel WhatsApp</a></p>
-        <p><a id="tgLink" class="button primary" target="_blank" rel="noopener">Groupe officiel Telegram</a></p>
-        <p><a id="supportLink" class="button red" target="_blank" rel="noopener">Service client</a></p>
+
+      <div class="card">
+        <h2>Informations importantes</h2>
+        <p>Recharge : demandes possibles 24 h/24. Leur traitement dépend de la vérification du paiement.</p>
+        <p>Retrait : demandes entre 09 h et 18 h. Un dépôt confirmé sur la plateforme et un numéro de paiement enregistré sont nécessaires.</p>
+        <p class="small">Les demandes restent en attente jusqu'à vérification. Ne versez jamais d'argent sur la base d'une promesse de rendement garanti.</p>
+      </div>
+      <div class="card">
+        <h2>Communauté et assistance</h2>
+        <div id="communityHome"></div>
       </div>
     </section>
 
-    <section id="vipPage" class="hidden">
-      <div class="card"><h2>Offres VIP</h2><p class="small">Prix et revenus journaliers affichés selon la configuration actuelle. Les montants affichés ne sont pas des promesses de rendement.</p><div id="vipList">Chargement des offres…</div></div>
-      <div class="card"><h2>Mes adhésions</h2><div id="myMemberships">Chargement…</div></div>
-    </section>
-
-    <section id="depositPage" class="hidden">
-      <div class="card"><h2>Recharge du compte</h2><p id="depositHours" class="notice">Les demandes peuvent être envoyées à tout moment. Le crédit intervient uniquement après vérification.</p>
-        <div id="paymentDetails"></div>
+    <section id="page-deposit" class="hidden">
+      <div class="card">
+        <h2>Recharger mon compte</h2>
+        <div class="notice">Les demandes de recharge sont ouvertes 24 h/24. Envoyez uniquement le montant affiché et gardez votre preuve de paiement.</div>
         <form id="depositForm">
-          <label>Montant (Fc)</label><input id="depAmount" type="number" min="1" required>
-          <label>Mode de paiement</label><select id="depMethod" required><option value="AIRTEL MONEY">AIRTEL MONEY</option><option value="ORANGE MONEY">ORANGE MONEY</option><option value="M-PESA">M-PESA</option></select>
-          <label>Numéro ayant envoyé le paiement</label><input id="depPhone" required placeholder="+243...">
-          <label>Référence du paiement</label><input id="depRef" required placeholder="Référence de transaction">
-          <button class="primary" type="submit">Envoyer la demande de recharge</button>
+          <label>Montant à déposer (Fc)</label>
+          <input id="depositAmount" type="number" min="15000" step="1" required placeholder="Minimum 15 000 Fc">
+          <label>Mode de paiement</label>
+          <select id="depositMethod" required><option value="">Choisir un mode de paiement</option></select>
+          <div id="paymentInstructions" class="notice hidden"></div>
+          <label>Numéro utilisé pour envoyer l'argent</label>
+          <input id="senderPhone" required placeholder="+243...">
+          <label>Référence de paiement / code de transaction</label>
+          <input id="depositReference" required placeholder="Référence visible sur le reçu">
+          <button class="primary" style="width:100%">Envoyer la demande</button>
         </form>
       </div>
     </section>
 
-    <section id="withdrawPage" class="hidden">
-      <div class="card"><h2>Retrait</h2><div class="notice">Horaires de traitement : 09 h à 18 h. Le retrait exige un dépôt validé et un solde vérifié. Des contrôles peuvent être nécessaires avant paiement.</div>
+    <section id="page-withdraw" class="hidden">
+      <div class="card">
+        <h2>Retirer mon argent</h2>
+        <div class="notice">Les demandes sont ouvertes de 09 h à 18 h. Vous devez avoir au moins un dépôt confirmé et enregistrer votre numéro de paiement.</div>
+        <form id="paymentProfileForm">
+          <label>Mode de paiement pour recevoir l'argent</label>
+          <select id="memberPaymentMethod" required>
+            <option value="">Choisir un mode</option>
+            <option>Airtel Money</option><option>Orange Money</option><option>M-Pesa</option><option>Autre</option>
+          </select>
+          <label>Numéro de paiement du membre</label>
+          <input id="memberPaymentPhone" required placeholder="+243...">
+          <button class="light" type="submit">Enregistrer mon numéro</button>
+        </form>
+        <hr>
         <form id="withdrawForm">
-          <label>Montant à retirer (Fc)</label><input id="wdAmount" type="number" min="1" required>
-          <label>Mode de paiement</label><select id="wdMethod" required><option value="AIRTEL MONEY">AIRTEL MONEY</option><option value="ORANGE MONEY">ORANGE MONEY</option><option value="M-PESA">M-PESA</option></select>
-          <label>Numéro de paiement du bénéficiaire</label><input id="wdPhone" required placeholder="+243...">
-          <button class="primary" type="submit">Envoyer la demande de retrait</button>
+          <label>Montant du retrait (Fc)</label>
+          <input id="withdrawAmount" type="number" min="5000" step="1" required placeholder="Minimum 5 000 Fc">
+          <p class="small">Les frais éventuels doivent être affichés et confirmés avant validation du retrait.</p>
+          <button class="primary" style="width:100%">Demander un retrait</button>
         </form>
-        <p id="withdrawFee" class="small"></p>
       </div>
     </section>
 
-    <section id="teamPage" class="hidden">
-      <div class="card"><h2>Mon équipe</h2>
-        <p>Partagez votre lien personnel d'invitation. Les statistiques dépendent des parrainages effectivement enregistrés.</p>
-        <label>Mon lien de parrainage</label><input id="refLink" readonly>
-        <button class="primary" onclick="copyReferral()">Copier mon lien</button>
-        <div class="grid" style="margin-top:14px">
-          <div class="stat">Membres inscrits<strong id="teamTotal">0</strong></div>
-          <div class="stat">Membres ayant déposé<strong id="teamDepositors">0</strong></div>
-          <div class="stat">Commissions enregistrées<strong id="teamCommission">0 Fc</strong></div>
+    <section id="page-vip" class="hidden">
+      <div class="card">
+        <h2>VIP / Investir</h2>
+        <p class="small">Consultez les prix, la durée et les conditions avant toute décision. L'activation intervient après confirmation du paiement et validation des règles applicables.</p>
+        <div id="plansList">Chargement des offres…</div>
+      </div>
+      <div class="card">
+        <h2>Mes produits actifs</h2>
+        <div id="myMemberships">Chargement…</div>
+      </div>
+    </section>
+
+    <section id="page-team" class="hidden">
+      <div class="card">
+        <h2>Mon équipe</h2>
+        <label>Mon lien de parrainage</label>
+        <input id="referralLink" readonly>
+        <button class="primary" onclick="copyReferral()" style="width:100%">Copier mon lien de parrainage</button>
+        <div class="grid" style="margin-top:13px">
+          <div class="tile"><span class="small">Membres</span><div class="money" id="teamCount">0</div></div>
+          <div class="tile"><span class="small">Membres avec dépôt confirmé</span><div class="money" id="teamDepositors">0</div></div>
         </div>
-        <h3>Pourcentages de parrainage</h3><div id="refRates">28% / 2% / 1% — à confirmer dans les paramètres.</div>
-        <div id="teamList">Chargement de l'équipe…</div>
+        <h3 style="margin-top:20px">Mes commissions</h3>
+        <div id="teamCommissions">Les commissions validées apparaîtront ici.</div>
+        <h3 style="margin-top:20px">Membres parrainés</h3>
+        <div id="teamList"></div>
       </div>
     </section>
 
-    <section id="historyPage" class="hidden">
-      <div class="card"><h2>Historique des transactions</h2><div id="historyList">Chargement…</div></div>
-      <div class="card"><h2>Mes demandes de recharge</h2><div id="depositHistory">Chargement…</div></div>
-      <div class="card"><h2>Mes demandes de retrait</h2><div id="withdrawHistory">Chargement…</div></div>
-    </section>
-
-    <section id="mePage" class="hidden">
-      <div class="card"><h2>Mon profil</h2><div id="profileInfo"></div>
-        <form id="profileForm"><label>Nom complet</label><input id="profileName" required><label>Téléphone</label><input id="profilePhone" required><button class="primary">Mettre à jour mon profil</button></form>
+    <section id="page-history" class="hidden">
+      <div class="card">
+        <h2>Historiques des transactions</h2>
+        <div id="historyList">Chargement…</div>
       </div>
     </section>
 
-    <section id="adminPage" class="hidden">
-      <div class="card"><h2>⚙️ Administration</h2><p class="small">Accès réservé aux comptes administrateurs autorisés dans Supabase.</p><div id="adminStats" class="grid"></div></div>
-      <div class="card"><h2>Demandes de recharge</h2><div id="adminDeposits">Chargement…</div></div>
-      <div class="card"><h2>Demandes de retrait</h2><div id="adminWithdrawals">Chargement…</div></div>
-      <div class="card"><h2>Adhésions VIP en attente</h2><div id="adminMemberships">Chargement…</div></div>
-      <div class="card"><h2>Membres et comptes</h2><div id="adminMembers">Chargement…</div></div>
-      <div class="card"><h2>Gestion des offres VIP</h2><div id="adminPlans">Chargement…</div>
-        <h3>Ajouter ou modifier une offre</h3><form id="planForm">
-          <label>Code VIP</label><input id="planCode" required placeholder="VIP1">
-          <label>Prix (Fc)</label><input id="planPrice" type="number" min="0" required>
-          <label>Revenu journalier affiché (Fc)</label><input id="planDaily" type="number" min="0" required>
-          <label>Durée (jours)</label><input id="planDays" type="number" min="1" value="60" required>
-          <label>Limite d'achat</label><input id="planLimit" type="number" min="1" value="1" required>
-          <label>Actif ?</label><select id="planActive"><option value="true">Oui</option><option value="false">Non</option></select>
-          <button class="primary">Enregistrer l'offre</button>
-        </form>
+    <section id="page-me" class="hidden">
+      <div class="card">
+        <h2>Mon compte</h2>
+        <p><b>Nom :</b> <span id="meName">—</span></p>
+        <p><b>E-mail :</b> <span id="meEmail">—</span></p>
+        <p><b>Téléphone :</b> <span id="mePhone">—</span></p>
+        <p><b>Code de membre :</b> <span id="meCode">—</span></p>
+        <p><b>Statut :</b> <span id="meStatus">—</span></p>
+        <button class="light" onclick="openPage('team')" style="width:100%">Mon équipe et mon parrainage</button>
+        <button class="red" onclick="logout()" style="width:100%;margin-top:10px">Déconnexion</button>
       </div>
-      <div class="card"><h2>Configuration de la plateforme</h2>
+      <div id="adminEntry" class="card hidden">
+        <h2>Administration</h2>
+        <p>Accès réservé aux comptes administrateurs autorisés.</p>
+        <button class="primary" onclick="openPage('admin')" style="width:100%">Ouvrir le tableau de bord admin</button>
+      </div>
+    </section>
+
+    <section id="page-admin" class="hidden">
+      <div class="card">
+        <h2>Administration — KINSHASA BUSINESS</h2>
+        <div class="notice">Vérifiez les preuves de paiement avant toute approbation. Ne communiquez jamais une clé secrète Supabase depuis cette page.</div>
+        <div class="grid">
+          <button class="light" onclick="loadAdmin()">Actualiser</button>
+          <button class="light" onclick="adminSection('requests')">Dépôts / Retraits</button>
+          <button class="light" onclick="adminSection('members')">Membres</button>
+          <button class="light" onclick="adminSection('settings')">Configuration</button>
+          <button class="light" onclick="adminSection('payments')">Modes de paiement</button>
+          <button class="light" onclick="adminSection('community')">Groupes / Support</button>
+          <button class="light" onclick="adminSection('plans')">Offres VIP</button>
+        </div>
+      </div>
+
+      <div id="admin-requests" class="card">
+        <h2>Demandes en attente</h2>
+        <h3>Dépôts</h3><div id="adminDeposits">Chargement…</div>
+        <hr>
+        <h3>Retraits</h3><div id="adminWithdrawals">Chargement…</div>
+      </div>
+
+      <div id="admin-members" class="card hidden">
+        <h2>Membres inscrits</h2>
+        <div id="adminMembers">Chargement…</div>
+      </div>
+
+      <div id="admin-settings" class="card hidden">
+        <h2>Configuration générale</h2>
         <form id="settingsForm">
-          <label>Nom de la plateforme</label><input id="setName" required>
-          <label>Mode maintenance</label><select id="setMaintenance"><option value="false">Désactivé</option><option value="true">Activé</option></select>
-          <label>Dépôt minimum (Fc)</label><input id="setMinDep" type="number" min="0">
-          <label>Retrait minimum (Fc)</label><input id="setMinWd" type="number" min="0">
-          <label>Frais de retrait (%)</label><input id="setFee" type="number" min="0" max="100">
-          <label>Horaires affichés</label><input id="setHours">
-          <h3>Airtel Money</h3><label>Numéro</label><input id="setAirtelNum"><label>Nom du bénéficiaire</label><input id="setAirtelName">
-          <h3>Orange Money</h3><label>Numéro</label><input id="setOrangeNum"><label>Nom du bénéficiaire</label><input id="setOrangeName">
-          <h3>M-Pesa</h3><label>Numéro</label><input id="setMpesaNum"><label>Nom du bénéficiaire</label><input id="setMpesaName">
-          <h3>Communauté et service client</h3><label>Lien WhatsApp</label><input id="setWA"><label>Lien Telegram</label><input id="setTG"><label>Lien service client</label><input id="setSupport">
-          <button class="primary">Enregistrer les paramètres</button>
+          <label>Nom de la plateforme</label><input id="settingName" required>
+          <label>Minimum de recharge (Fc)</label><input id="settingMinDeposit" type="number" min="0" required>
+          <label>Minimum de retrait (Fc)</label><input id="settingMinWithdraw" type="number" min="0" required>
+          <label>Frais de retrait (%)</label><input id="settingWithdrawFee" type="number" min="0" max="100" step=".1" required>
+          <label>Parrainage niveau 1 (%)</label><input id="settingRef1" type="number" min="0" max="100" step=".1" required>
+          <label>Parrainage niveau 2 (%)</label><input id="settingRef2" type="number" min="0" max="100" step=".1" required>
+          <label>Parrainage niveau 3 (%)</label><input id="settingRef3" type="number" min="0" max="100" step=".1" required>
+          <label>Heures de retrait</label><input id="settingHours" required>
+          <label>Groupe WhatsApp</label><input id="settingWhatsApp" type="url">
+          <label>Groupe Telegram</label><input id="settingTelegram" type="url">
+          <label>Service client (URL ou identifiant)</label><input id="settingService">
+          <button class="primary" style="width:100%">Enregistrer les paramètres</button>
         </form>
       </div>
+
+      <div id="admin-payments" class="card hidden">
+        <h2>Ajouter un mode de paiement</h2>
+        <form id="paymentMethodForm">
+          <label>Opérateur</label><input id="newPayName" required placeholder="Airtel Money, Orange Money…">
+          <label>Numéro du compte de réception</label><input id="newPayNumber" required>
+          <label>Nom du titulaire</label><input id="newPayHolder" required>
+          <button class="primary" style="width:100%">Ajouter le mode</button>
+        </form>
+        <hr><div id="adminPaymentList"></div>
+      </div>
+
+      <div id="admin-community" class="card hidden">
+        <h2>Ajouter un groupe ou un service</h2>
+        <form id="communityForm">
+          <label>Nom affiché</label><input id="newCommunityName" required>
+          <label>Lien (URL)</label><input id="newCommunityUrl" required>
+          <button class="primary" style="width:100%">Ajouter le lien</button>
+        </form>
+        <hr><div id="adminCommunityList"></div>
+      </div>
+
+      <div id="admin-plans" class="card hidden">
+        <h2>Offres VIP existantes</h2>
+        <p class="small">Cette version permet de consulter et activer/désactiver une offre. Les changements de prix nécessitent une vérification des règles et des demandes en cours.</p>
+        <div id="adminPlansList"></div>
+      </div>
     </section>
-    <div id="appMsg" class="notice hidden"></div>
-  </section>
+
+    <footer>KINSHASA BUSINESS · Consultez toujours les conditions avant une opération.</footer>
+  </div>
 </main>
 
-<nav id="bottomNav" class="hidden">
-  <button class="active" data-page="home"><span>⌂</span>Accueil</button>
-  <button data-page="vip"><span>⭐</span>VIP/Investir</button>
-  <button data-page="team"><span>👥</span>Équipe</button>
-  <button data-page="me"><span>🙂</span>Moi</button>
+<nav id="bottomNav" class="bottom hidden">
+  <button class="active" data-page="home" onclick="openPage('home')"><span class="navico">🏠</span>Accueil</button>
+  <button data-page="vip" onclick="openPage('vip')"><span class="navico">⭐</span>VIP/Investir</button>
+  <button data-page="team" onclick="openPage('team')"><span class="navico">👥</span>Équipe</button>
+  <button data-page="me" onclick="openPage('me')"><span class="navico">👤</span>Moi</button>
 </nav>
-<footer>KINSHASA BUSINESS · Consultez les conditions avant toute opération.</footer>
 
 <script>
 const SUPABASE_URL = "https://uewceocdzvekuopgsmpg.supabase.co";
-const SUPABASE_KEY = "sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let currentUser = null, profile = null, settings = null, plans = [];
+const SUPABASE_ANON_KEY = "sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentUser = null;
+let profile = null;
+let config = {};
+let community = [];
+let paymentMethods = [];
+let plans = [];
+let currentAuthMode = "login";
+let slideIndex = 0;
+let slideTimer = null;
 
 const $ = id => document.getElementById(id);
-const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const money = value => Number(value || 0).toLocaleString("fr-FR") + " Fc";
-function msg(text, error=false){$("appMsg").textContent=text;$("appMsg").classList.remove("hidden","error","success");$("appMsg").classList.add(error?"error":"success");window.scrollTo({top:0,behavior:"smooth"});}
-function authMsg(text,error=false){$("authMsg").textContent=text;$("authMsg").classList.remove("hidden","error","success");$("authMsg").classList.add(error?"error":"success");}
-function showAuth(type){$("signupForm").classList.toggle("hidden",type!=="signup");$("loginForm").classList.toggle("hidden",type!=="login");$("authMsg").classList.add("hidden");}
-function go(page){
-  const pages=["home","vip","deposit","withdraw","team","history","me","admin"];
-  pages.forEach(p=>$(p+"Page").classList.toggle("hidden",p!==page+"Page"));
-  document.querySelectorAll("#bottomNav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
-  if(page==="vip")loadPlans();
-  if(page==="team")loadTeam();
-  if(page==="history")loadHistory();
-  if(page==="deposit")loadPaymentDetails();
-  if(page==="admin")loadAdmin();
-  if(page==="me")showProfile();
+const money = n => Number(n || 0).toLocaleString("fr-FR") + " Fc";
+const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, c => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+function message(id, text, type="notice") {
+  const el = $(id);
+  if (!el) return;
+  el.textContent = text;
+  el.className = "notice " + type;
+  el.classList.remove("hidden");
+}
+function hideMessage(id) {
+  const el = $(id);
+  if (el) el.classList.add("hidden");
+}
+function showAuthMode(mode) {
+  currentAuthMode = mode;
+  $("signupFields").classList.toggle("hidden", mode !== "signup");
+  $("confirmLabel").classList.toggle("hidden", mode !== "signup");
+  $("confirmPassword").classList.toggle("hidden", mode !== "signup");
+  $("loginTab").className = mode === "login" ? "primary" : "light";
+  $("signupTab").className = mode === "signup" ? "primary" : "light";
+  $("authSubmit").textContent = mode === "login" ? "Connexion" : "Créer mon compte";
+  $("password").autocomplete = mode === "login" ? "current-password" : "new-password";
+  hideMessage("authMessage");
+}
+function openPage(page) {
+  const allowed = ["home","deposit","withdraw","vip","team","history","me","admin"];
+  if (!allowed.includes(page)) page = "home";
+  if (page === "admin" && profile?.role !== "admin") {
+    alert("Accès réservé à l'administration.");
+    page = "home";
+  }
+  allowed.forEach(p => $("page-" + p)?.classList.toggle("hidden", p !== page));
+  document.querySelectorAll(".bottom button").forEach(b =>
+    b.classList.toggle("active", b.dataset.page === page)
+  );
+  $("bottomNav").classList.toggle("hidden", page === "admin");
+  if (page === "history") loadHistory();
+  if (page === "team") loadTeam();
+  if (page === "vip") loadMemberships();
+  if (page === "admin") loadAdmin();
   window.scrollTo({top:0,behavior:"smooth"});
 }
-document.querySelectorAll("#bottomNav button").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
-function setBrand(){
-  const name=settings?.platform_name || "KINSHASA BUSINESS";
-  $("brand").textContent=name;$("welcomeTitle").textContent="Bienvenue sur "+name;
-  document.title=name;$("subtitle").textContent="Votre espace membre • RDC • Franc congolais (Fc)";
-  $("waLink").href=settings?.whatsapp_url||"https://chat.whatsapp.com/DrXnwNzMULU3y6bkdI6HaY";
-  $("tgLink").href=settings?.telegram_url||"https://t.me/+voYPAgYmMi0xZDc0";
-  $("supportLink").href=settings?.support_url||"https://t.me/Avis8995";
-  $("withdrawFee").textContent="Frais de retrait configurés : "+Number(settings?.withdrawal_fee_pct ?? 15)+"%. Vérifiez le montant net avant validation.";
+function startSlides() {
+  if (slideTimer) clearInterval(slideTimer);
+  slideTimer = setInterval(() => {
+    const slides = document.querySelectorAll(".slide");
+    if (!slides.length) return;
+    slides[slideIndex].classList.remove("active");
+    slideIndex = (slideIndex + 1) % slides.length;
+    slides[slideIndex].classList.add("active");
+  }, 4000);
 }
-async function loadSettings(){
-  const {data,error}=await db.from("platform_settings").select("*").order("id").limit(1).maybeSingle();
-  if(error)console.warn("Paramètres:",error.message);
-  settings=data||{platform_name:"KINSHASA BUSINESS",min_deposit_fc:15000,min_withdrawal_fc:5000,withdrawal_fee_pct:15,opening_hours:"09:00–18:00"};
-  setBrand();
+function referralCode() {
+  return profile?.referral_code || currentUser?.id || "";
 }
-async function loadProfile(){
-  const {data,error}=await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
-  if(error)throw error;
-  if(!data)throw new Error("Profil absent. Vérifiez le déclencheur de création du profil dans Supabase.");
-  profile=data;
-  $("memberName").textContent=profile.full_name||currentUser.email||"Membre";
-  $("memberCode").textContent="Code membre : "+(profile.member_code||profile.referral_code||"—");
-  $("balance").textContent=money(profile.balance);
-  $("refLink").value=location.origin+location.pathname+"?ref="+encodeURIComponent(profile.referral_code||profile.member_code||profile.id);
+async function startApp(user) {
+  currentUser = user;
+  $("authScreen").classList.add("hidden");
+  $("appScreen").classList.remove("hidden");
+  $("bottomNav").classList.remove("hidden");
+  $("logoutTop").style.display = "inline-block";
+
+  const {data, error} = await db.from("profiles").select("*").eq("id", user.id).maybeSingle();
+  if (error) {
+    alert("Connexion réussie, mais le profil ne se charge pas : " + error.message);
+    return;
+  }
+  profile = data;
+  if (!profile) {
+    alert("Profil introuvable. Vérifiez le déclencheur de création de profil dans Supabase.");
+    return;
+  }
+  if (profile.is_blocked) {
+    await db.auth.signOut();
+    currentUser = null;
+    profile = null;
+    $("appScreen").classList.add("hidden");
+    $("bottomNav").classList.add("hidden");
+    $("authScreen").classList.remove("hidden");
+    message("authMessage","Ce compte est temporairement bloqué. Contactez le service client.","error");
+    return;
+  }
+
+  $("meName").textContent = profile.full_name || "Membre";
+  $("meEmail").textContent = user.email || "—";
+  $("mePhone").textContent = profile.phone || "—";
+  $("meCode").textContent = profile.referral_code || "En attente";
+  $("meStatus").textContent = profile.role === "admin" ? "Administrateur" : "Membre actif";
+  $("adminEntry").classList.toggle("hidden", profile.role !== "admin");
+
+  const ref = referralCode();
+  $("referralLink").value = location.origin + location.pathname + "?ref=" + encodeURIComponent(ref);
+  await loadConfig();
+  await loadCommunity();
+  await loadPaymentMethods();
+  await loadPlans();
+  await loadHistory();
+  startSlides();
+  openPage("home");
 }
-async function enterApp(){
-  $("auth").classList.add("hidden");$("app").classList.remove("hidden");$("bottomNav").classList.remove("hidden");
-  try{
-    await loadSettings();await loadProfile();
-    const isAdmin=profile.role==="admin";
-    $("adminPage").classList.toggle("hidden",true);
-    if(isAdmin){const b=document.createElement("button");b.dataset.page="admin";b.innerHTML="<span>⚙️</span>Admin";b.onclick=()=>go("admin");$("bottomNav").appendChild(b);}
-    await refreshSummary();go("home");
-    if(settings.maintenance_mode && !isAdmin)msg("La plateforme est en maintenance. Certaines opérations sont temporairement indisponibles.",true);
-  }catch(e){msg("Erreur de chargement : "+e.message,true);}
-}
-async function refreshSummary(){
-  const {count}=await db.from("memberships").select("id",{count:"exact",head:true}).eq("user_id",currentUser.id).eq("status","active");
-  $("activeVips").textContent=count??0;
-  const {count:team}=await db.from("profiles").select("id",{count:"exact",head:true}).eq("referrer_id",currentUser.id);
-  $("teamCount").textContent=team??0;
-}
-$("signupForm").addEventListener("submit",async e=>{
+$("authForm").addEventListener("submit", async e => {
   e.preventDefault();
-  const name=$("suName").value.trim(),phone=$("suPhone").value.trim(),email=$("suEmail").value.trim(),password=$("suPassword").value;
-  if(!/^\+243\d{9}$/.test(phone.replace(/\s/g,""))){authMsg("Entrez un numéro RDC au format +243 suivi de 9 chiffres.",true);return;}
-  const {data,error}=await db.auth.signUp({email,password,options:{data:{full_name:name,phone}}});
-  if(error){authMsg(error.message,true);return;}
-  if(data.session){currentUser=data.user;await enterApp();}
-  else authMsg("Inscription envoyée. Si la confirmation e-mail est activée dans Supabase, confirmez l'adresse avant de vous connecter.");
+  hideMessage("authMessage");
+  const email = $("email").value.trim();
+  const password = $("password").value;
+  const btn = $("authSubmit");
+  btn.disabled = true;
+  try {
+    if (currentAuthMode === "signup") {
+      const fullName = $("fullName").value.trim();
+      const phone = $("phone").value.trim();
+      if (!fullName || !phone) throw new Error("Remplissez le nom et le numéro de téléphone.");
+      if (password.length < 6) throw new Error("Le mot de passe doit contenir au moins 6 caractères.");
+      if (password !== $("confirmPassword").value) throw new Error("Les deux mots de passe ne correspondent pas.");
+      const referral = new URLSearchParams(location.search).get("ref");
+      const {data,error} = await db.auth.signUp({
+        email,password,
+        options:{data:{full_name:fullName,phone,referral_code:referral || null}}
+      });
+      if (error) throw error;
+      if (data.session && data.user) {
+        await startApp(data.user);
+      } else {
+        message("authMessage","La demande d'inscription a été envoyée. Si la connexion n'est pas immédiate, vérifiez les réglages d'authentification Supabase ou contactez l'administrateur.","success");
+      }
+    } else {
+      const {data,error} = await db.auth.signInWithPassword({email,password});
+      if (error) throw error;
+      await startApp(data.user);
+    }
+  } catch(err) {
+    message("authMessage",err.message || "Une erreur est survenue.","error");
+  } finally {
+    btn.disabled = false;
+  }
 });
-$("loginForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const {data,error}=await db.auth.signInWithPassword({email:$("liEmail").value.trim(),password:$("liPassword").value});
-  if(error){authMsg(error.message,true);return;}
-  currentUser=data.user;await enterApp();
-});
-async function resetPassword(){
-  const email=$("liEmail").value.trim();
-  if(!email){authMsg("Entrez votre adresse e-mail dans le champ de connexion.",true);return;}
-  const {error}=await db.auth.resetPasswordForEmail(email);
-  authMsg(error?error.message:"Si cette adresse est enregistrée, les instructions de réinitialisation seront envoyées par e-mail.",!!error);
+async function logout() {
+  await db.auth.signOut();
+  currentUser = null; profile = null;
+  $("appScreen").classList.add("hidden");
+  $("bottomNav").classList.add("hidden");
+  $("authScreen").classList.remove("hidden");
+  $("logoutTop").style.display = "none";
+  showAuthMode("login");
 }
-async function logout(){await db.auth.signOut();location.reload();}
-async function loadPlans(){
-  const {data,error}=await db.from("vip_plans").select("*").order("id");
-  if(error){$("vipList").innerHTML='<div class="notice error">Impossible de charger les VIP : '+esc(error.message)+'</div>';return;}
-  plans=data||[];
-  $("vipList").innerHTML=plans.filter(p=>p.is_active).map(p=>`<div class="plan" style="margin:12px 0"><strong>${esc(p.code)}</strong><p>Prix : <b>${money(p.price_fc)}</b></p><p>Revenu journalier affiché : <b>${money(p.daily_revenue_fc)}</b></p><p>Durée : ${esc(p.duration_days)} jours · Limite : ${esc(p.purchase_limit)}</p><button class="primary" onclick="requestVip(${Number(p.id)})">Demander cette offre</button></div>`).join("")||"Aucune offre active.";
-  const {data:m}=await db.from("memberships").select("*,vip_plans(code,price_fc,duration_days)").eq("user_id",currentUser.id).order("created_at",{ascending:false});
-  $("myMemberships").innerHTML=(m||[]).map(x=>`<div class="item"><b>${esc(x.vip_plans?.code||"VIP")}</b> · ${esc(x.status)}<p class="small">Demandé : ${esc(new Date(x.created_at).toLocaleString("fr-FR"))}</p></div>`).join("")||"Aucune adhésion enregistrée.";
+async function loadConfig() {
+  const {data,error} = await db.from("platform_config").select("*");
+  if (error) { console.warn("Configuration:",error.message); return; }
+  (data || []).forEach(row => config[row.config_key] = row.config_value || {});
+  const general = config.general || {};
+  if (general.platform_name) {
+    document.title = general.platform_name;
+    document.querySelector(".brand").innerHTML = escapeHtml(general.platform_name).replace("BUSINESS","<span>BUSINESS</span>");
+  }
+  $("settingName").value = general.platform_name || "KINSHASA BUSINESS";
+  $("settingMinDeposit").value = general.minimum_deposit ?? 15000;
+  $("settingMinWithdraw").value = general.minimum_withdrawal ?? 5000;
+  $("settingWithdrawFee").value = general.withdrawal_fee_percent ?? 15;
+  $("settingRef1").value = general.referral_rate_1 ?? 28;
+  $("settingRef2").value = general.referral_rate_2 ?? 2;
+  $("settingRef3").value = general.referral_rate_3 ?? 1;
+  $("settingHours").value = general.withdrawal_hours || "09:00-18:00";
+  $("settingWhatsApp").value = (config.community || {}).whatsapp || "https://chat.whatsapp.com/DrXnwNzMULU3y6bkdI6HaY?s=cl&p=a&mlu=4&ilr=4";
+  $("settingTelegram").value = (config.community || {}).telegram || "https://t.me/+voYPAgYmMi0xZDc0";
+  $("settingService").value = (config.community || {}).customer_service || "@Avis8995";
 }
-async function requestVip(id){
-  if(settings?.maintenance_mode){msg("La plateforme est en maintenance.",true);return;}
-  const p=plans.find(x=>Number(x.id)===id);if(!p)return;
-  if(!confirm("Envoyer une demande pour "+p.code+" au prix de "+money(p.price_fc)+" ? Elle sera examinée par l'administration."))return;
-  const {error}=await db.from("memberships").insert({user_id:currentUser.id,plan_id:id,status:"pending"});
-  if(error){msg("Impossible d'envoyer la demande : "+error.message,true);return;}
-  msg("Demande VIP envoyée. L'activation n'est pas automatique tant que la demande n'a pas été vérifiée.");
-  loadPlans();
-}
-function loadPaymentDetails(){
-  const rows=[
-    ["AIRTEL MONEY",settings?.airtel_number,settings?.airtel_name],
-    ["ORANGE MONEY",settings?.orange_number,settings?.orange_name],
-    ["M-PESA",settings?.mpesa_number,settings?.mpesa_name]
+async function loadCommunity() {
+  const {data,error} = await db.from("community_links").select("*").eq("is_active",true).order("sort_order");
+  community = !error && data?.length ? data : [
+    {name:"Groupe officiel WhatsApp",url:"https://chat.whatsapp.com/DrXnwNzMULU3y6bkdI6HaY?s=cl&p=a&mlu=4&ilr=4"},
+    {name:"Groupe officiel Telegram",url:"https://t.me/+voYPAgYmMi0xZDc0"},
+    {name:"Service client",url:"https://t.me/Avis8995"}
   ];
-  $("paymentDetails").innerHTML=rows.map(r=>`<div class="item"><b>${r[0]}</b><p>Numéro : ${esc(r[1]||"À configurer")}</p><p>Bénéficiaire : ${esc(r[2]||"À configurer")}</p></div>`).join("");
+  $("communityHome").innerHTML = community.map(c =>
+    `<div class="listitem"><a href="${escapeHtml(c.url)}" target="_blank" rel="noopener">${escapeHtml(c.name)}</a></div>`
+  ).join("");
 }
-$("depositForm").addEventListener("submit",async e=>{
-  e.preventDefault();if(settings?.maintenance_mode){msg("Plateforme en maintenance.",true);return;}
-  const amount=Number($("depAmount").value),min=Number(settings?.min_deposit_fc||15000);
-  if(amount<min){msg("Le dépôt minimum est de "+money(min)+".",true);return;}
-  const {error}=await db.from("deposit_requests").insert({user_id:currentUser.id,amount_fc:amount,payment_method:$("depMethod").value,sender_phone:$("depPhone").value.trim(),payment_reference:$("depRef").value.trim(),status:"pending"});
-  if(error){msg("Demande non envoyée : "+error.message,true);return;}
-  $("depositForm").reset();msg("Demande de recharge enregistrée en attente de vérification.");
+async function loadPaymentMethods() {
+  const {data,error} = await db.from("payment_methods").select("*").eq("is_active",true).order("sort_order");
+  paymentMethods = !error ? (data || []) : [];
+  $("depositMethod").innerHTML = '<option value="">Choisir un mode de paiement</option>' +
+    paymentMethods.map(p => `<option value="${escapeHtml(p.name)}">${escapeHtml(p.name)}</option>`).join("");
+  $("depositMethod").onchange = () => {
+    const p = paymentMethods.find(x => x.name === $("depositMethod").value);
+    const el = $("paymentInstructions");
+    if (p) {
+      el.innerHTML = `Envoyez le paiement à <b>${escapeHtml(p.account_number)}</b><br>Nom : <b>${escapeHtml(p.account_name)}</b>`;
+      el.classList.remove("hidden");
+    } else el.classList.add("hidden");
+  };
+}
+async function loadPlans() {
+  const {data,error} = await db.from("vip_plans").select("*").eq("is_active",true).order("price_fc");
+  plans = data || [];
+  if (error) {
+    $("plansList").textContent = "Impossible de charger les offres : " + error.message;
+    return;
+  }
+  $("plansList").innerHTML = plans.length ? plans.map(p => `
+    <div class="plan">
+      <span class="pill">${escapeHtml(p.code || "VIP")}</span>
+      <h3>${escapeHtml(p.code || "Offre VIP")}</h3>
+      <div class="money">${money(p.price_fc)}</div>
+      <p>Durée : ${Number(p.duration_days || 60)} jours</p>
+      <p>Limite d'achat : ${Number(p.purchase_limit || 1)}</p>
+      <button class="primary" onclick="requestVipInfo('${escapeHtml(p.code || "")}')" style="width:100%">Choisir cette offre</button>
+    </div>`).join("") : "<p>Aucune offre active pour le moment.</p>";
+}
+function requestVipInfo(code) {
+  openPage("deposit");
+  alert("Vous avez choisi " + code + ". Rechargez votre compte, puis attendez la confirmation du paiement avant l'activation de l'offre.");
+}
+$("depositForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const amount = Number($("depositAmount").value);
+  const min = Number((config.general || {}).minimum_deposit ?? 15000);
+  if (amount < min) return alert("Le montant minimum est " + money(min) + ".");
+  const method = $("depositMethod").value;
+  if (!method) return alert("Choisissez un mode de paiement.");
+  const {error} = await db.from("deposit_requests").insert({
+    user_id:currentUser.id,amount_fc:amount,payment_method:method,
+    sender_phone:$("senderPhone").value.trim(),
+    payment_reference:$("depositReference").value.trim(),
+    status:"pending"
+  });
+  if (error) return alert("Demande non enregistrée : " + error.message);
+  alert("Demande de recharge envoyée. Elle sera vérifiée avant validation.");
+  $("depositForm").reset();
+  $("paymentInstructions").classList.add("hidden");
+  loadHistory();
 });
-$("withdrawForm").addEventListener("submit",async e=>{
-  e.preventDefault();if(settings?.maintenance_mode){msg("Plateforme en maintenance.",true);return;}
-  const amount=Number($("wdAmount").value),min=Number(settings?.min_withdrawal_fc||5000);
-  if(amount<min){msg("Le retrait minimum est de "+money(min)+".",true);return;}
-  const {count}=await db.from("deposit_requests").select("id",{count:"exact",head:true}).eq("user_id",currentUser.id).eq("status","approved");
-  if(!count){msg("Vous devez d'abord avoir un dépôt validé.",true);return;}
-  const {error}=await db.from("withdrawal_requests").insert({user_id:currentUser.id,amount_fc:amount,payment_phone:$("wdPhone").value.trim(),status:"pending"});
-  if(error){msg("Demande non envoyée : "+error.message,true);return;}
-  $("withdrawForm").reset();msg("Demande de retrait enregistrée en attente de vérification. Aucun transfert n'a encore été effectué.");
+$("paymentProfileForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const method = $("memberPaymentMethod").value;
+  const phone = $("memberPaymentPhone").value.trim();
+  if (!method || !phone) return alert("Enregistrez le mode et le numéro de paiement.");
+  const {error} = await db.from("profiles").update({
+    payment_method:method,payment_phone:phone
+  }).eq("id",currentUser.id);
+  if (error) return alert("Impossible d'enregistrer le numéro : " + error.message);
+  profile.payment_method = method; profile.payment_phone = phone;
+  alert("Votre numéro de paiement a été enregistré.");
 });
-async function loadHistory(){
-  const {data:tx,error}=await db.from("transactions").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(100);
-  $("historyList").innerHTML=error?'<div class="notice error">'+esc(error.message)+'</div>':(tx||[]).map(x=>`<div class="item"><b>${esc(x.transaction_type)}</b> · ${money(x.amount_fc)}<p>${esc(x.status)} — ${esc(x.description||"")}</p><p class="small">${esc(new Date(x.created_at).toLocaleString("fr-FR"))}</p></div>`).join("")||"Aucune transaction.";
-  for(const [table,el] of [["deposit_requests","depositHistory"],["withdrawal_requests","withdrawHistory"]]){
-    const {data,error}=await db.from(table).select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(100);
-    $(el).innerHTML=error?'<div class="notice error">'+esc(error.message)+'</div>':(data||[]).map(x=>`<div class="item"><b>${table==="deposit_requests"?"Recharge":"Retrait"}</b> · ${money(x.amount_fc)}<p>Statut : ${esc(x.status)}</p><p class="small">${esc(new Date(x.created_at).toLocaleString("fr-FR"))}</p></div>`).join("")||"Aucune demande.";
+$("withdrawForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const now = new Date();
+  const hour = now.getHours();
+  if (hour < 9 || hour >= 18) return alert("Les demandes de retrait sont ouvertes entre 09 h et 18 h, heure locale du navigateur.");
+  const amount = Number($("withdrawAmount").value);
+  const min = Number((config.general || {}).minimum_withdrawal ?? 5000);
+  if (amount < min) return alert("Le retrait minimum est " + money(min) + ".");
+  if (!profile.payment_phone || !profile.payment_method) return alert("Enregistrez d'abord votre numéro de paiement.");
+  const {data:deposits,error:depositError} = await db.from("deposit_requests")
+    .select("id").eq("user_id",currentUser.id).eq("status","approved").limit(1);
+  if (depositError) return alert("Impossible de vérifier vos dépôts : " + depositError.message);
+  if (!deposits || !deposits.length) return alert("Vous devez avoir au moins un dépôt confirmé avant de demander un retrait.");
+  const {error} = await db.from("withdrawal_requests").insert({
+    user_id:currentUser.id,amount_fc:amount,payment_phone:profile.payment_phone,status:"pending"
+  });
+  if (error) return alert("Demande non enregistrée : " + error.message);
+  alert("Demande de retrait envoyée pour vérification.");
+  $("withdrawForm").reset();
+  loadHistory();
+});
+async function loadHistory() {
+  if (!currentUser) return;
+  const [d,w] = await Promise.all([
+    db.from("deposit_requests").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(30),
+    db.from("withdrawal_requests").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(30)
+  ]);
+  const rows = [
+    ...(d.data || []).map(x=>({...x,kind:"Recharge"})),
+    ...(w.data || []).map(x=>({...x,kind:"Retrait"}))
+  ].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+  $("historyList").innerHTML = rows.length ? rows.map(x=>`
+    <div class="listitem"><b>${x.kind} · ${money(x.amount_fc)}</b>
+    <p>Statut : ${escapeHtml(x.status || "pending")}</p>
+    <p class="small">${x.created_at ? new Date(x.created_at).toLocaleString("fr-FR") : ""}</p></div>
+  `).join("") : "<p>Aucune transaction enregistrée.</p>";
+}
+async function loadMemberships() {
+  const {data,error} = await db.from("memberships").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false});
+  $("myMemberships").innerHTML = error ? "Impossible de charger les produits actifs." :
+    (data?.length ? data.map(m=>`<div class="listitem"><b>${escapeHtml(m.plan_code || m.vip_code || "VIP")}</b><p>Statut : ${escapeHtml(m.status || "En vérification")}</p><p class="small">Expiration : ${m.expires_at ? new Date(m.expires_at).toLocaleDateString("fr-FR") : "Non renseignée"}</p></div>`).join("") : "<p>Aucun produit actif pour le moment.</p>");
+}
+async function copyReferral() {
+  try {
+    await navigator.clipboard.writeText($("referralLink").value);
+    alert("Lien de parrainage copié.");
+  } catch {
+    $("referralLink").select();
+    alert("Sélectionnez le lien puis choisissez Copier.");
   }
 }
-async function loadTeam(){
-  $("refLink").value=location.origin+location.pathname+"?ref="+encodeURIComponent(profile.referral_code||profile.member_code||profile.id);
-  const {data:team,error}=await db.from("profiles").select("id,full_name,phone,created_at,referrer_id,referrer_id").eq("referrer_id",currentUser.id).order("created_at",{ascending:false});
-  if(error){$("teamList").innerHTML='<div class="notice error">Impossible de charger l’équipe : '+esc(error.message)+'. Vérifiez les politiques d’accès Supabase.</div>';return;}
-  const members=team||[];$("teamTotal").textContent=members.length;
-  let depositors=0;
-  for(const m of members){const r=await db.from("deposit_requests").select("id",{count:"exact",head:true}).eq("user_id",m.id).eq("status","approved");if((r.count||0)>0)depositors++;}
-  $("teamDepositors").textContent=depositors;
-  const {data:comm}=await db.from("transactions").select("amount_fc").eq("user_id",currentUser.id).eq("transaction_type","commission").eq("status","approved");
-  $("teamCommission").textContent=money((comm||[]).reduce((s,x)=>s+Number(x.amount_fc||0),0));
-  $("teamList").innerHTML=members.map(m=>`<div class="item"><b>${esc(m.full_name||"Membre")}</b><p>${esc(m.phone||"Téléphone non renseigné")}</p><p class="small">Inscription : ${esc(new Date(m.created_at).toLocaleDateString("fr-FR"))}</p></div>`).join("")||"Aucun membre parrainé enregistré.";
+async function loadTeam() {
+  const code = profile?.referral_code;
+  if (!code) {
+    $("teamList").innerHTML = "<p>Votre code de parrainage n'est pas encore créé. Contactez l'administration.</p>";
+    return;
+  }
+  const {data,error} = await db.from("profiles").select("id,full_name,phone,created_at")
+    .eq("referred_by",code).limit(100);
+  if (error) {
+    $("teamList").textContent = "Impossible de charger l'équipe. Vérifiez la configuration du parrainage.";
+    return;
+  }
+  const team = data || [];
+  $("teamCount").textContent = team.length;
+  let depositors = 0;
+  let html = "";
+  for (const m of team) {
+    const result = await db.from("deposit_requests").select("id")
+      .eq("user_id",m.id).eq("status","approved").limit(1);
+    const hasDeposit = !!result.data?.length;
+    if (hasDeposit) depositors++;
+    html += `<div class="listitem"><b>${escapeHtml(m.full_name || "Membre")}</b><p>${escapeHtml(m.phone || "Numéro non renseigné")}</p><span class="pill">${hasDeposit ? "Dépôt confirmé" : "Pas encore de dépôt confirmé"}</span></div>`;
+  }
+  $("teamDepositors").textContent = depositors;
+  $("teamList").innerHTML = html || "<p>Aucun membre parrainé pour le moment.</p>";
+  const {data:commissions,error:commError} = await db.from("referral_commissions")
+    .select("level,rate_percent,amount,status,created_at").eq("referrer_id",currentUser.id)
+    .order("created_at",{ascending:false}).limit(100);
+  $("teamCommissions").innerHTML = commError ? "Les commissions ne sont pas encore disponibles." :
+    (commissions?.length ? commissions.map(c=>`<div class="listitem"><b>${money(c.amount)}</b><p>Niveau ${c.level} · Taux ${c.rate_percent}% · ${escapeHtml(c.status)}</p></div>`).join("") : "Aucune commission enregistrée.");
 }
-async function copyReferral(){try{await navigator.clipboard.writeText($("refLink").value);msg("Lien copié.");}catch(e){$("refLink").select();msg("Sélectionnez le lien puis utilisez Copier.");}}
-function showProfile(){
-  $("profileInfo").innerHTML="<p>E-mail : "+esc(currentUser.email)+"</p><p>Code membre : "+esc(profile.member_code||profile.referral_code||"—")+"</p>";
-  $("profileName").value=profile.full_name||"";$("profilePhone").value=profile.phone||"";
+function adminSection(section) {
+  ["requests","members","settings","payments","community","plans"].forEach(s =>
+    $("admin-"+s).classList.toggle("hidden",s!==section)
+  );
 }
-$("profileForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const {error}=await db.from("profiles").update({full_name:$("profileName").value.trim(),phone:$("profilePhone").value.trim()}).eq("id",currentUser.id);
-  if(error){msg("Profil non modifié : "+error.message,true);return;}
-  await loadProfile();msg("Profil mis à jour.");
-});
-async function adminOnly(){
-  if(profile?.role!=="admin")throw new Error("Accès réservé à l'administrateur.");
+async function loadAdmin() {
+  if (profile?.role !== "admin") return;
+  await Promise.all([loadAdminRequests(),loadAdminMembers(),loadAdminPaymentList(),loadAdminCommunity(),loadAdminPlans()]);
+  await loadConfig();
 }
-function adminCard(x,type){
-  const isDep=type==="deposit",isWd=type==="withdrawal",isMem=type==="membership";
-  const amount=isMem?x.vip_plans?.price_fc:x.amount_fc;
-  const title=isMem?(x.vip_plans?.code||"VIP"):(isDep?"Recharge":"Retrait");
-  return `<div class="item"><b>${esc(title)} · ${money(amount)}</b><p>Compte : ${esc(x.profiles?.full_name||x.user_id||"—")}</p><p>Statut : <span class="pill">${esc(x.status)}</span></p>${isDep?`<p>Téléphone : ${esc(x.sender_phone)} · Référence : ${esc(x.payment_reference)}</p>`:""}${isWd?`<p>Numéro de paiement : ${esc(x.payment_phone)}</p>`:""}<div class="actions"><button class="green" onclick="reviewItem('${type}','${x.id}','approved')">Valider</button><button class="red" onclick="reviewItem('${type}','${x.id}','rejected')">Rejeter</button></div></div>`;
-}
-async function loadAdmin(){
-  try{await adminOnly();}catch(e){msg(e.message,true);return;}
-  const [members,deps,wds,memberships,tx]=await Promise.all([
-    db.from("profiles").select("*"),
-    db.from("deposit_requests").select("*").order("created_at",{ascending:false}),
-    db.from("withdrawal_requests").select("*").order("created_at",{ascending:false}),
-    db.from("memberships").select("*,vip_plans(code,price_fc),profiles(full_name)").order("created_at",{ascending:false}),
-    db.from("transactions").select("*")
+async function loadAdminRequests() {
+  const [d,w] = await Promise.all([
+    db.from("deposit_requests").select("*").order("created_at",{ascending:false}).limit(100),
+    db.from("withdrawal_requests").select("*").order("created_at",{ascending:false}).limit(100)
   ]);
-  if(members.error||deps.error||wds.error||memberships.error||tx.error){msg("Certaines données d'administration sont inaccessibles. Vérifiez les politiques RLS de Supabase.",true);}
-  const ms=members.data||[],ds=deps.data||[],ws=wds.data||[],mems=memberships.data||[],trs=tx.data||[];
-  const approvedD=ds.filter(x=>x.status==="approved");
-  const approvedW=ws.filter(x=>x.status==="approved");
-  $("adminStats").innerHTML=[
-    ["Membres inscrits",ms.length],
-    ["Membres bloqués",ms.filter(x=>x.is_blocked||x.blocked||x.banned).length],
-    ["Dépôts validés",approvedD.length],
-    ["Total des dépôts validés",money(approvedD.reduce((s,x)=>s+Number(x.amount_fc||0),0))],
-    ["Retraits validés",approvedW.length],
-    ["Total des retraits validés",money(approvedW.reduce((s,x)=>s+Number(x.amount_fc||0),0))]
-  ].map(x=>`<div class="stat">${esc(x[0])}<strong>${esc(x[1])}</strong></div>`).join("");
-  $("adminDeposits").innerHTML=ds.map(x=>adminCard(x,"deposit")).join("")||"Aucune demande de recharge.";
-  $("adminWithdrawals").innerHTML=ws.map(x=>adminCard(x,"withdrawal")).join("")||"Aucune demande de retrait.";
-  $("adminMemberships").innerHTML=mems.map(x=>adminCard(x,"membership")).join("")||"Aucune demande VIP.";
-  $("adminMembers").innerHTML=ms.map(m=>`<div class="item"><b>${esc(m.full_name||"Membre")}</b><p>${esc(m.phone||"")} · ${esc(m.id)}</p><p>Solde affiché : ${money(m.balance)} · Statut : ${esc(m.status||"actif")}</p><div class="actions"><button class="yellow" onclick="toggleBlock('${m.id}',${!!(m.is_blocked||m.blocked||m.banned)})">${(m.is_blocked||m.blocked||m.banned)?"Débloquer":"Bloquer"}</button></div></div>`).join("")||"Aucun membre.";
-  $("adminPlans").innerHTML=(plans.length?plans:[]).map(p=>`<div class="item"><b>${esc(p.code)}</b> · ${money(p.price_fc)} · ${money(p.daily_revenue_fc)}/jour · ${p.is_active?"Actif":"Inactif"}<div class="actions"><button class="yellow" onclick="editPlan(${p.id})">Modifier</button></div></div>`).join("")||"Aucune offre chargée. Ouvrez VIP/Investir puis revenez ici.";
-  fillSettingsForm();
+  $("adminDeposits").innerHTML = d.error ? escapeHtml(d.error.message) :
+    (d.data?.length ? d.data.map(x=>`
+      <div class="listitem"><b>${money(x.amount_fc)} · ${escapeHtml(x.payment_method || "Recharge")}</b>
+      <p>Membre : ${escapeHtml(x.user_id)}</p><p>Numéro : ${escapeHtml(x.sender_phone || "—")}</p>
+      <p>Référence : ${escapeHtml(x.payment_reference || "—")}</p><p>Statut : ${escapeHtml(x.status)}</p>
+      ${x.status==="pending" ? `<div class="actions"><button class="primary" onclick="reviewRequest('deposit_requests','${x.id}','approved')">Confirmer</button><button class="red" onclick="reviewRequest('deposit_requests','${x.id}','rejected')">Rejeter</button></div>` : ""}
+      </div>`).join("") : "<p>Aucun dépôt.</p>");
+  $("adminWithdrawals").innerHTML = w.error ? escapeHtml(w.error.message) :
+    (w.data?.length ? w.data.map(x=>`
+      <div class="listitem"><b>${money(x.amount_fc)} · Retrait</b>
+      <p>Membre : ${escapeHtml(x.user_id)}</p><p>Numéro destinataire : ${escapeHtml(x.payment_phone || "—")}</p>
+      <p>Statut : ${escapeHtml(x.status)}</p>
+      ${x.status==="pending" ? `<div class="actions"><button class="primary" onclick="reviewRequest('withdrawal_requests','${x.id}','approved')">Marquer validé</button><button class="red" onclick="reviewRequest('withdrawal_requests','${x.id}','rejected')">Rejeter</button></div>` : ""}
+      </div>`).join("") : "<p>Aucun retrait.</p>");
 }
-async function reviewItem(type,id,status){
-  if(!confirm((status==="approved"?"Valider":"Rejeter")+" cette demande ?"))return;
-  const table=type==="deposit"?"deposit_requests":type==="withdrawal"?"withdrawal_requests":"memberships";
-  const {error}=await db.from(table).update({status,reviewed_by:currentUser.id,reviewed_at:new Date().toISOString()}).eq("id",id).eq("status","pending");
-  if(error){msg("Action refusée par Supabase : "+error.message,true);return;}
-  msg("Statut mis à jour. Vérifiez le registre et le solde avant tout transfert réel.");
-  await loadAdmin();
+async function reviewRequest(table,id,status) {
+  if (!confirm("Confirmer le statut « "+status+" » ? Vérifiez d'abord le paiement réel.")) return;
+  const {error} = await db.from(table).update({
+    status,reviewed_by:currentUser.id,reviewed_at:new Date().toISOString()
+  }).eq("id",id);
+  if (error) return alert("Mise à jour refusée : " + error.message);
+  alert("Statut mis à jour. Cette action ne transfère pas d'argent automatiquement.");
+  await loadAdminRequests();
 }
-async function toggleBlock(id,blocked){
-  if(id===currentUser.id){msg("Vous ne pouvez pas bloquer votre propre compte.",true);return;}
-  if(!confirm(blocked?"Débloquer ce membre ?":"Bloquer ce membre ?"))return;
-  const {error}=await db.from("profiles").update({is_blocked:!blocked,blocked:!blocked,banned:!blocked,blocked_at:!blocked?new Date().toISOString():null,blocked_by:!blocked?currentUser.id:null}).eq("id",id);
-  if(error){msg("Modification refusée : "+error.message,true);return;}
-  msg("État du compte mis à jour.");loadAdmin();
+async function loadAdminMembers() {
+  const {data,error} = await db.from("profiles").select("*").order("created_at",{ascending:false}).limit(150);
+  if (error) { $("adminMembers").textContent = error.message; return; }
+  $("adminMembers").innerHTML = (data||[]).map(m=>`
+    <div class="listitem"><b>${escapeHtml(m.full_name || "Membre")}</b>
+    <p>Téléphone : ${escapeHtml(m.phone || "—")}</p>
+    <p>Code : ${escapeHtml(m.referral_code || "—")} · Rôle : ${escapeHtml(m.role || "member")}</p>
+    <p>État : ${m.is_blocked ? "Bloqué" : "Actif"}</p>
+    <div class="actions">
+      <button class="${m.is_blocked?'primary':'red'}" onclick="toggleBlock('${m.id}',${!m.is_blocked})">${m.is_blocked?'Débloquer':'Bloquer'}</button>
+    </div></div>`).join("") || "<p>Aucun membre.</p>";
 }
-function editPlan(id){
-  const p=plans.find(x=>Number(x.id)===Number(id));if(!p)return;
-  $("planCode").value=p.code;$("planPrice").value=p.price_fc;$("planDaily").value=p.daily_revenue_fc||0;$("planDays").value=p.duration_days;$("planLimit").value=p.purchase_limit;$("planActive").value=String(p.is_active);
-  $("planForm").dataset.id=p.id;window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
-}
-$("planForm").addEventListener("submit",async e=>{
-  e.preventDefault();await adminOnly().catch(err=>{throw err;});
-  const id=$("planForm").dataset.id;
-  const payload={code:$("planCode").value.trim(),price_fc:Number($("planPrice").value),daily_revenue_fc:Number($("planDaily").value),duration_days:Number($("planDays").value),purchase_limit:Number($("planLimit").value),is_active:$("planActive").value==="true"};
-  const result=id?await db.from("vip_plans").update(payload).eq("id",id):await db.from("vip_plans").insert(payload);
-  if(result.error){msg("Offre non enregistrée : "+result.error.message,true);return;}
-  $("planForm").reset();delete $("planForm").dataset.id;msg("Offre enregistrée.");await loadPlans();await loadAdmin();
-});
-function fillSettingsForm(){
-  const s=settings||{};
-  $("setName").value=s.platform_name||"KINSHASA BUSINESS";$("setMaintenance").value=String(!!s.maintenance_mode);
-  $("setMinDep").value=s.min_deposit_fc??15000;$("setMinWd").value=s.min_withdrawal_fc??5000;$("setFee").value=s.withdrawal_fee_pct??15;$("setHours").value=s.opening_hours||"09:00–18:00";
-  $("setAirtelNum").value=s.airtel_number||"";$("setAirtelName").value=s.airtel_name||"";
-  $("setOrangeNum").value=s.orange_number||"";$("setOrangeName").value=s.orange_name||"";
-  $("setMpesaNum").value=s.mpesa_number||"";$("setMpesaName").value=s.mpesa_name||"";
-  $("setWA").value=s.whatsapp_url||"";$("setTG").value=s.telegram_url||"";$("setSupport").value=s.support_url||"";
+async function toggleBlock(id,blocked) {
+  if (!confirm((blocked?"Bloquer":"Débloquer")+" ce membre ?")) return;
+  const {error} = await db.from("profiles").update({is_blocked:blocked}).eq("id",id);
+  if (error) return alert("Action refusée : " + error.message);
+  await db.from("admin_audit_logs").insert({admin_id:currentUser.id,action:blocked?"member_blocked":"member_unblocked",target_user_id:id,details:{}});
+  loadAdminMembers();
 }
 $("settingsForm").addEventListener("submit",async e=>{
-  e.preventDefault();try{await adminOnly();}catch(err){msg(err.message,true);return;}
-  const payload={platform_name:$("setName").value.trim(),maintenance_mode:$("setMaintenance").value==="true",min_deposit_fc:Number($("setMinDep").value),min_withdrawal_fc:Number($("setMinWd").value),withdrawal_fee_pct:Number($("setFee").value),opening_hours:$("setHours").value.trim(),airtel_number:$("setAirtelNum").value.trim(),airtel_name:$("setAirtelName").value.trim(),orange_number:$("setOrangeNum").value.trim(),orange_name:$("setOrangeName").value.trim(),mpesa_number:$("setMpesaNum").value.trim(),mpesa_name:$("setMpesaName").value.trim(),whatsapp_url:$("setWA").value.trim(),telegram_url:$("setTG").value.trim(),support_url:$("setSupport").value.trim(),updated_at:new Date().toISOString()};
-  let result;
-  if(settings?.id)result=await db.from("platform_settings").update(payload).eq("id",settings.id);
-  else result=await db.from("platform_settings").insert(payload);
-  if(result.error){msg("Paramètres non enregistrés : "+result.error.message,true);return;}
-  await loadSettings();msg("Paramètres enregistrés.");
+  e.preventDefault();
+  if (profile?.role!=="admin") return;
+  const general = {
+    ...(config.general||{}),
+    platform_name:$("settingName").value.trim(),
+    currency:"Fc",
+    primary_color:"#1456d9",secondary_color:"#ffd400",accent_color:"#e53935",
+    minimum_deposit:Number($("settingMinDeposit").value),
+    minimum_withdrawal:Number($("settingMinWithdraw").value),
+    withdrawal_fee_percent:Number($("settingWithdrawFee").value),
+    referral_rate_1:Number($("settingRef1").value),
+    referral_rate_2:Number($("settingRef2").value),
+    referral_rate_3:Number($("settingRef3").value),
+    deposit_hours:"24h/24",withdrawal_hours:$("settingHours").value.trim()
+  };
+  const communitySettings = {
+    ...(config.community||{}),
+    whatsapp:$("settingWhatsApp").value.trim(),
+    telegram:$("settingTelegram").value.trim(),
+    customer_service:$("settingService").value.trim()
+  };
+  const r1=await db.from("platform_config").upsert({config_key:"general",config_value:general,updated_at:new Date().toISOString()});
+  if (r1.error) return alert("Enregistrement impossible : "+r1.error.message);
+  const r2=await db.from("platform_config").upsert({config_key:"community",config_value:communitySettings,updated_at:new Date().toISOString()});
+  if (r2.error) return alert("Paramètres généraux enregistrés, mais liens non enregistrés : "+r2.error.message);
+  config.general=general;config.community=communitySettings;
+  alert("Configuration enregistrée.");
+  await loadCommunity();
 });
-async function boot(){
-  await loadSettings();
-  const {data:{session}}=await db.auth.getSession();
-  if(session){currentUser=session.user;await enterApp();}
+$("paymentMethodForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const {error}=await db.from("payment_methods").insert({
+    name:$("newPayName").value.trim(),account_number:$("newPayNumber").value.trim(),
+    account_name:$("newPayHolder").value.trim(),is_active:true
+  });
+  if(error)return alert("Impossible d'ajouter le mode : "+error.message);
+  e.target.reset();await loadAdminPaymentList();await loadPaymentMethods();
+});
+async function loadAdminPaymentList(){
+  const {data,error}=await db.from("payment_methods").select("*").order("sort_order");
+  $("adminPaymentList").innerHTML=error?escapeHtml(error.message):(data||[]).map(p=>`
+    <div class="listitem"><b>${escapeHtml(p.name)}</b><p>${escapeHtml(p.account_number)} · ${escapeHtml(p.account_name)}</p>
+    <span class="pill">${p.is_active?"Actif":"Désactivé"}</span>
+    <div class="actions"><button class="light" onclick="togglePayment('${p.id}',${!p.is_active})">${p.is_active?"Désactiver":"Activer"}</button></div></div>`).join("")||"<p>Aucun mode ajouté.</p>";
 }
-db.auth.onAuthStateChange((_event,session)=>{
-  if(session && !currentUser){currentUser=session.user;setTimeout(()=>enterApp(),0);}
+async function togglePayment(id,active){
+  const {error}=await db.from("payment_methods").update({is_active:active}).eq("id",id);
+  if(error)return alert(error.message);
+  await loadAdminPaymentList();await loadPaymentMethods();
+}
+$("communityForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const {error}=await db.from("community_links").insert({
+    name:$("newCommunityName").value.trim(),url:$("newCommunityUrl").value.trim(),is_active:true
+  });
+  if(error)return alert("Impossible d'ajouter le lien : "+error.message);
+  e.target.reset();await loadAdminCommunity();await loadCommunity();
 });
-boot().catch(e=>authMsg("Erreur : "+e.message,true));
+async function loadAdminCommunity(){
+  const {data,error}=await db.from("community_links").select("*").order("sort_order");
+  $("adminCommunityList").innerHTML=error?escapeHtml(error.message):(data||[]).map(c=>`
+    <div class="listitem"><b>${escapeHtml(c.name)}</b><p><a href="${escapeHtml(c.url)}" target="_blank" rel="noopener">${escapeHtml(c.url)}</a></p>
+    <button class="light" onclick="toggleCommunity('${c.id}',${!c.is_active})">${c.is_active?"Désactiver":"Activer"}</button></div>`).join("")||"<p>Aucun lien.</p>";
+}
+async function toggleCommunity(id,active){
+  const {error}=await db.from("community_links").update({is_active:active}).eq("id",id);
+  if(error)return alert(error.message);
+  await loadAdminCommunity();await loadCommunity();
+}
+async function loadAdminPlans(){
+  const {data,error}=await db.from("vip_plans").select("*").order("price_fc");
+  $("adminPlansList").innerHTML=error?escapeHtml(error.message):(data||[]).map(p=>`
+    <div class="listitem"><b>${escapeHtml(p.code)}</b><p>${money(p.price_fc)} · ${p.duration_days} jours · limite ${p.purchase_limit}</p>
+    <span class="pill">${p.is_active?"Actif":"Désactivé"}</span>
+    <div class="actions"><button class="light" onclick="togglePlan('${p.id}',${!p.is_active})">${p.is_active?"Désactiver":"Activer"}</button></div></div>`).join("")||"<p>Aucune offre VIP.</p>";
+}
+async function togglePlan(id,active){
+  if(!confirm((active?"Activer":"Désactiver")+" cette offre ?"))return;
+  const {error}=await db.from("vip_plans").update({is_active:active}).eq("id",id);
+  if(error)return alert("Modification refusée : "+error.message);
+  await loadPlans();await loadAdminPlans();
+}
+(async()=>{
+  showAuthMode("login");
+  const {data:{session}}=await db.auth.getSession();
+  if(session?.user) await startApp(session.user);
+  db.auth.onAuthStateChange(async(event,session)=>{
+    if(event==="SIGNED_IN" && session?.user && !currentUser) await startApp(session.user);
+  });
+})();
 </script>
 </body>
 </html>
