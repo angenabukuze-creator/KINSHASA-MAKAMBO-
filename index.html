@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -47,6 +46,10 @@ nav.bottom button{background:transparent;color:#66748b;padding:7px 2px;font-size
 nav.bottom button.active{color:var(--blue);background:#eaf1ff}
 nav.bottom span{display:block;font-size:20px;margin-bottom:4px}
 .notice{background:#fff6d7;border-left:4px solid var(--yellow);padding:11px;border-radius:8px;font-size:13px}
+.payment-box{background:#eef5ff;border:2px solid #0757c8;border-radius:14px;padding:15px;margin:12px 0;overflow-wrap:anywhere}
+.payment-number{display:block;font-size:25px;font-weight:900;letter-spacing:1px;color:#0757c8;padding:10px 0;overflow-wrap:anywhere}
+.payment-name{font-size:18px;font-weight:800;color:#17243a;overflow-wrap:anywhere}
+.payment-warning{font-size:13px;background:#fff6d7;border-radius:9px;padding:10px;margin-top:10px}
 hr{border:0;border-top:1px solid #e8edf4;margin:14px 0}
 #toast{position:fixed;left:12px;right:12px;bottom:85px;background:#17243a;color:white;padding:13px;border-radius:10px;z-index:50;display:none}
 footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
@@ -111,7 +114,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
  <h2>💳 Recharge du compte</h2>
  <p class="muted">Les demandes de dépôt peuvent être soumises 24 h/24. Le crédit intervient après vérification du paiement.</p>
  <label>Mode de paiement</label><select id="depositMethod"></select>
- <div id="paymentInstructions" class="notice"></div>
+ <div id="paymentInstructions" class="notice">Chargement des coordonnées de paiement...</div>
  <label>Montant à déposer (FC)</label><input id="depositAmount" type="number" min="15000" placeholder="Minimum 15000 FC">
  <label>Numéro ayant envoyé l'argent</label><input id="depositSender" placeholder="+243...">
  <label>Référence de transaction</label><input id="depositReference" placeholder="Référence du paiement">
@@ -189,7 +192,13 @@ const money=n=>Number(n||0).toLocaleString("fr-FR")+" FC";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const errText=e=>e?.message||String(e||"Erreur inconnue");
 const val=(...a)=>a.find(v=>v!==undefined&&v!==null&&v!=="");
-function toast(s){$("toast").textContent=s;$("toast").style.display="block";clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>$("toast").style.display="none",4000)}
+
+function toast(s){
+ $("toast").textContent=s;
+ $("toast").style.display="block";
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>$("toast").style.display="none",4000);
+}
 function fail(e){console.error(e);toast(errText(e))}
 function statusBadge(s){
  const v=String(s||"en attente").toLowerCase();
@@ -198,22 +207,27 @@ function statusBadge(s){
 }
 function showPage(page){
  document.querySelectorAll('[id^="page-"]').forEach(e=>e.classList.add("hidden"));
- const target=$("page-"+page);if(target)target.classList.remove("hidden");
+ const target=$("page-"+page);
+ if(target)target.classList.remove("hidden");
  document.querySelectorAll("#bottomNav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
  if(page==="team")loadTeam();
  if(page==="history")loadHistory();
  if(page==="vip"){loadPlans();loadMemberships()}
  if(page==="me")fillProfile();
+ if(page==="deposit")showPaymentInstructions();
  window.scrollTo({top:0,behavior:"smooth"});
 }
 function setLoggedIn(on){
- $("auth").classList.toggle("hidden",on);$("app").classList.toggle("hidden",!on);$("bottomNav").classList.toggle("hidden",!on);
+ $("auth").classList.toggle("hidden",on);
+ $("app").classList.toggle("hidden",!on);
+ $("bottomNav").classList.toggle("hidden",!on);
 }
 function toggleAuth(){
  isSignup=!isSignup;
  $("authTitle").textContent=isSignup?"Créer mon compte":"Connexion à mon compte";
  $("authButton").textContent=isSignup?"S'inscrire":"Se connecter";
- $("signupFields").classList.toggle("hidden",!isSignup);$("confirmField").classList.toggle("hidden",!isSignup);
+ $("signupFields").classList.toggle("hidden",!isSignup);
+ $("confirmField").classList.toggle("hidden",!isSignup);
  $("toggleAuthButton").textContent=isSignup?"J'ai déjà un compte : Connexion":"Nouveau membre : S'inscrire";
 }
 async function submitAuth(){
@@ -231,56 +245,187 @@ async function submitAuth(){
    user=data.user;
   }else{
    const {data,error}=await db.auth.signInWithPassword({email,password});
-   if(error)throw error;user=data.user;
+   if(error)throw error;
+   user=data.user;
   }
   await initApp();
  }catch(e){fail(e)}
 }
 async function logout(){
- await db.auth.signOut();user=null;profile=null;wallet=null;setLoggedIn(false);$("headerSub").textContent="Votre espace membre";document.getElementById("adminShortcut")?.remove();toast("Déconnexion effectuée.");
+ await db.auth.signOut();
+ user=null;profile=null;wallet=null;
+ setLoggedIn(false);
+ $("headerSub").textContent="Votre espace membre";
+ document.getElementById("adminShortcut")?.remove();
+ toast("Déconnexion effectuée.");
 }
 async function initApp(){
- const {data,error}=await db.auth.getSession();if(error)throw error;
+ const {data,error}=await db.auth.getSession();
+ if(error)throw error;
  user=data.session?.user;
  if(!user){setLoggedIn(false);return}
  setLoggedIn(true);
  $("headerSub").textContent="Bonjour "+(user.user_metadata?.full_name||user.email||"membre");
- await loadProfileWallet();await loadPaymentMethods();await loadPlans();await loadMemberships();await loadHistory();await loadTeam();await loadCommunityLinks();
- if(isAdmin()){$("headerSub").textContent="Administration · "+(user.email||"");addAdminShortcut()}
+ await loadProfileWallet();
+ await loadPaymentMethods();
+ await loadPlans();
+ await loadMemberships();
+ await loadHistory();
+ await loadTeam();
+ await loadCommunityLinks();
+ if(isAdmin()){
+  $("headerSub").textContent="Administration · "+(user.email||"");
+  addAdminShortcut();
+ }
  showPage("home");
 }
-function isAdmin(){return user?.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase()||profile?.role==="admin"}
+function isAdmin(){
+ return user?.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase()||profile?.role==="admin";
+}
 async function loadProfileWallet(){
  const p=await db.from("profiles").select("*").eq("id",user.id).maybeSingle();
- if(!p.error&&p.data)profile=p.data;else if(p.error)console.warn("Profil:",p.error.message);
+ if(!p.error&&p.data)profile=p.data;
+ else if(p.error)console.warn("Profil:",p.error.message);
  const w=await db.from("kin_wallets").select("*").eq("user_id",user.id).maybeSingle();
- if(!w.error&&w.data)wallet=w.data;else if(w.error)console.warn("Portefeuille:",w.error.message);
+ if(!w.error&&w.data)wallet=w.data;
+ else if(w.error)console.warn("Portefeuille:",w.error.message);
  $("homeBalance").textContent=money(val(wallet?.balance,wallet?.available_balance,wallet?.solde,0));
  if(isAdmin())addAdminShortcut();
 }
 function addAdminShortcut(){
  if($("adminShortcut"))return;
- const b=document.createElement("button");b.id="adminShortcut";b.className="red";
+ const b=document.createElement("button");
+ b.id="adminShortcut";b.className="red";
  b.style.cssText="position:fixed;right:10px;top:90px;z-index:9;padding:9px";
- b.textContent="Admin";b.onclick=()=>{if(!isAdmin())return toast("Accès non autorisé.");showPage("admin");loadAdmin("members")};
+ b.textContent="Admin";
+ b.onclick=()=>{
+  if(!isAdmin())return toast("Accès non autorisé.");
+  showPage("admin");
+  loadAdmin("members");
+ };
  document.body.appendChild(b);
 }
+
+/* COORDONNÉES DE PAIEMENT : VERSION CORRIGÉE */
+function fallbackPayment(method){
+ const text=String(method||"").toLowerCase().replace(/[\s_-]/g,"");
+ if(text.includes("airtel")){
+  return {number:"973087965",name:"YVETTE"};
+ }
+ if(text.includes("orange")){
+  return {number:"899532643",name:"JEANCQUELLINE"};
+ }
+ if(text.includes("m-pesa")||text.includes("mpesa")||text.includes("vodacom")){
+  return {number:"0861823718",name:"REGINA"};
+ }
+ return {number:"",name:""};
+}
+
+function getPaymentNumber(m,method){
+ const fallback=fallbackPayment(method);
+ if(!m)return fallback.number;
+ return val(
+  m.payment_number,m.phone_number,m.account_number,
+  m.phone,m.number,m.telephone,m.mobile,m.msisdn,
+  m.payment_phone,m.wallet_number,m.numero_paiement,
+  m.numero,m.numero_compte,m.account_no,
+  fallback.number
+ )||"";
+}
+
+function getPaymentName(m,method){
+ const fallback=fallbackPayment(method);
+ if(!m)return fallback.name;
+ return val(
+  m.account_name,m.account_holder,m.holder_name,
+  m.recipient_name,m.owner_name,m.nom_titulaire,
+  m.titulaire,m.accountName,m.payment_name,
+  fallback.name
+ )||"";
+}
+
 async function loadPaymentMethods(){
- const {data,error}=await db.from("kin_payment_methods").select("*");
- if(error){console.warn("Modes de paiement:",error.message);return}
- paymentMethods=data||[];
- $("depositMethod").innerHTML=paymentMethods.length
-  ?paymentMethods.map(m=>`<option value="${esc(val(m.name,m.method,m.title,m.id))}">${esc(val(m.name,m.method,m.title,"Paiement"))}</option>`).join("")
-  :'<option>Airtel Money</option><option>Orange Money</option><option>M-Pesa</option>';
- $("depositMethod").onchange=showPaymentInstructions;showPaymentInstructions();
+ const sel=$("depositMethod");
+ let data=null;
+ const {data:rows,error}=await db.from("kin_payment_methods").select("*");
+
+ if(error){
+  console.warn("Modes de paiement dans la base:",error.message);
+  paymentMethods=[];
+ }else{
+  paymentMethods=rows||[];
+ }
+
+ if(paymentMethods.length){
+  sel.innerHTML=paymentMethods.map(m=>{
+   const method=val(m.name,m.method,m.title,m.platform,m.provider,m.id,"Paiement");
+   return `<option value="${esc(method)}">${esc(method)}</option>`;
+  }).join("");
+ }else{
+  sel.innerHTML=
+   '<option value="Airtel Money">Airtel Money</option>'+
+   '<option value="Orange Money">Orange Money</option>'+
+   '<option value="M-Pesa">M-Pesa</option>';
+ }
+
+ sel.onchange=showPaymentInstructions;
+ showPaymentInstructions();
 }
+
 function showPaymentInstructions(){
- const method=$("depositMethod").value;
- const m=paymentMethods.find(x=>String(val(x.name,x.method,x.title,x.id))===String(method));
- $("paymentInstructions").textContent=m
-  ?String(val(m.instructions,m.details,m.account_name,"Effectuez le paiement puis soumettez la demande."))
-  :"Effectuez le paiement, conservez la référence et soumettez votre demande. Le crédit est effectué après validation.";
+ const sel=$("depositMethod");
+ const method=sel?.value||"Airtel Money";
+ const m=paymentMethods.find(x=>
+  String(val(x.name,x.method,x.title,x.platform,x.provider,x.id,"Paiement"))===String(method)
+ );
+ const number=getPaymentNumber(m,method);
+ const name=getPaymentName(m,method);
+ const instructions=m?val(m.instructions,m.details,m.description,""):"";
+
+ let html=
+  '<strong>📲 ENVOYEZ VOTRE PAIEMENT À CES COORDONNÉES</strong>'+
+  '<div class="payment-box">'+
+  '<div class="muted">Mode de paiement</div>'+
+  '<div class="payment-name">'+esc(method)+'</div>'+
+  '<hr>'+
+  '<div class="muted">Nom du titulaire du compte</div>'+
+  '<div class="payment-name">'+esc(name||"Nom non configuré")+'</div>'+
+  '<div class="muted" style="margin-top:12px">NUMÉRO À UTILISER POUR LE DÉPÔT</div>'+
+  '<span class="payment-number">'+esc(number||"NUMÉRO NON CONFIGURÉ")+'</span>';
+
+ if(number){
+  html+='<button type="button" class="light" onclick="copyPaymentNumber()">📋 Copier le numéro</button>';
+ }
+ html+='</div>';
+
+ if(instructions){
+  html+='<p><strong>Instructions complémentaires :</strong><br>'+esc(instructions)+'</p>';
+ }
+
+ if(!number){
+  html+='<div class="payment-warning"><strong>Attention :</strong> aucun numéro n’est configuré pour ce mode de paiement. N’envoyez pas d’argent avant que l’administration confirme le bon numéro.</div>';
+ }else{
+  html+='<div class="payment-warning"><strong>Avant d’envoyer l’argent :</strong> vérifiez le nom du titulaire et le numéro. Après le paiement, saisissez ci-dessous le numéro utilisé pour envoyer l’argent et la référence de la transaction.</div>';
+ }
+
+ $("paymentInstructions").innerHTML=html;
 }
+
+async function copyPaymentNumber(){
+ const method=$("depositMethod").value;
+ const m=paymentMethods.find(x=>
+  String(val(x.name,x.method,x.title,x.platform,x.provider,x.id,"Paiement"))===String(method)
+ );
+ const number=getPaymentNumber(m,method);
+ if(!number)return toast("Aucun numéro de paiement configuré.");
+ try{
+  await navigator.clipboard.writeText(number);
+  toast("Numéro de paiement copié : "+number);
+ }catch(e){
+  toast("Numéro de paiement : "+number);
+ }
+}
+
 async function submitDeposit(){
  const amount=Number($("depositAmount").value),method=$("depositMethod").value;
  if(!amount||amount<15000)return toast("Le dépôt minimum est de 15 000 FC.");
@@ -290,8 +435,11 @@ async function submitDeposit(){
  try{
   const {error}=await db.from("kin_deposit_requests").insert({user_id:user.id,amount,method,phone,reference,status:"pending"});
   if(error)throw error;
-  $("depositAmount").value="";$("depositSender").value="";$("depositReference").value="";
-  toast("Demande envoyée. Attendez la vérification du paiement.");await loadHistory();
+  $("depositAmount").value="";
+  $("depositSender").value="";
+  $("depositReference").value="";
+  toast("Demande envoyée. Attendez la vérification du paiement.");
+  await loadHistory();
  }catch(e){fail(e)}
 }
 async function hasValidatedDeposit(){
@@ -304,7 +452,8 @@ async function savePaymentProfile(){
  if(!number||!name)return toast("Entrez le numéro de paiement et le nom du titulaire.");
  try{
   const {error}=await db.from("kb_payment_profiles").upsert({user_id:user.id,payment_method:method,payment_number:number,account_name:name,updated_at:new Date().toISOString()},{onConflict:"user_id"});
-  if(error)throw error;toast("Coordonnées de paiement enregistrées.");
+  if(error)throw error;
+  toast("Coordonnées de paiement enregistrées.");
  }catch(e){fail(e)}
 }
 async function submitWithdrawal(){
@@ -315,17 +464,21 @@ async function submitWithdrawal(){
   const number=$("withdrawNumber").value.trim(),name=$("withdrawName").value.trim();
   if(!number||!name)return toast("Entrez et enregistrez d'abord votre numéro de paiement.");
   const {data:pp,error:pe}=await db.from("kb_payment_profiles").select("user_id").eq("user_id",user.id).maybeSingle();
-  if(pe)throw pe;if(!pp)return toast("Cliquez d'abord sur Enregistrer mes coordonnées de paiement.");
+  if(pe)throw pe;
+  if(!pp)return toast("Cliquez d'abord sur Enregistrer mes coordonnées de paiement.");
   if(!(await hasValidatedDeposit()))return toast("Un dépôt doit être validé avant de demander un retrait.");
   const {error}=await db.from("kin_withdrawal_requests").insert({user_id:user.id,amount,method:$("withdrawMethod").value,payment_number:number,account_name:name,status:"pending"});
   if(error)throw error;
-  $("withdrawAmount").value="";toast("Demande de retrait envoyée pour vérification.");await loadHistory();
+  $("withdrawAmount").value="";
+  toast("Demande de retrait envoyée pour vérification.");
+  await loadHistory();
  }catch(e){fail(e)}
 }
 function isWithinWithdrawalHours(){
  const parts=new Intl.DateTimeFormat("en-GB",{hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date());
  const h=Number(parts.find(p=>p.type==="hour").value),m=Number(parts.find(p=>p.type==="minute").value);
- const n=h*60+m;return n>=540&&n<=1080;
+ const n=h*60+m;
+ return n>=540&&n<=1080;
 }
 async function loadPlans(){
  const box=$("plansList");
@@ -341,12 +494,19 @@ async function loadPlans(){
   }).join("");
  }catch(e){box.innerHTML='<p class="muted">Impossible de charger les offres : '+esc(errText(e))+'</p>';console.error(e)}
 }
-function buyVipByIndex(i){const p=plans[i];if(p)buyVip(val(p.name,p.plan_name,p.code,"VIP"))}
+function buyVipByIndex(i){
+ const p=plans[i];
+ if(p)buyVip(val(p.name,p.plan_name,p.code,"VIP"));
+}
 async function buyVip(planName){
  if(!confirm("Confirmer votre demande concernant "+planName+" ? Vérifiez votre solde et toutes les conditions avant de continuer."))return;
  try{
   const {error}=await db.rpc("purchase_vip",{p_plan_name:planName});
-  if(error)throw error;toast("Demande transmise au serveur.");await loadProfileWallet();await loadMemberships();await loadHistory();
+  if(error)throw error;
+  toast("Demande transmise au serveur.");
+  await loadProfileWallet();
+  await loadMemberships();
+  await loadHistory();
  }catch(e){fail(e)}
 }
 async function loadMemberships(){
@@ -358,7 +518,8 @@ async function loadMemberships(){
  }catch(e){box.innerHTML='<p class="muted">Les VIP ne peuvent pas être chargés avec les droits actuels.</p>';console.warn(e.message)}
 }
 async function loadHistory(){
- const box=$("historyList");if(!box||!user)return;
+ const box=$("historyList");
+ if(!box||!user)return;
  try{
   const [d,w,t]=await Promise.all([
    db.from("kin_deposit_requests").select("*").eq("user_id",user.id).order("created_at",{ascending:false}).limit(30),
@@ -377,55 +538,82 @@ function fillProfile(){
  $("profileName").value=val(profile?.full_name,profile?.name,user?.user_metadata?.full_name,"");
  $("profilePhone").value=val(profile?.phone,user?.user_metadata?.phone,"");
  $("profileSummary").innerHTML=`<p>${esc(user.email||"")}</p><p class="muted">Identifiant membre : ${esc(user.id)}</p>`;
- const base=location.href.split("?")[0];$("referralLink").value=base+"?ref="+encodeURIComponent(val(profile?.referral_code,profile?.referralCode,user.id));
+ const base=location.href.split("?")[0];
+ $("referralLink").value=base+"?ref="+encodeURIComponent(val(profile?.referral_code,profile?.referralCode,user.id));
 }
 async function saveProfile(){
  const name=$("profileName").value.trim(),phone=$("profilePhone").value.trim();
  try{
   const {error}=await db.from("profiles").upsert({id:user.id,full_name:name,phone,updated_at:new Date().toISOString()},{onConflict:"id"});
-  if(error)throw error;profile={...(profile||{}),full_name:name,phone};toast("Profil enregistré.");fillProfile();
+  if(error)throw error;
+  profile={...(profile||{}),full_name:name,phone};
+  toast("Profil enregistré.");
+  fillProfile();
  }catch(e){fail(e)}
 }
 async function changePassword(){
  const password=prompt("Entrez votre nouveau mot de passe (6 caractères minimum) :");
- if(password===null)return;if(password.length<6)return toast("Mot de passe trop court.");
- try{const {error}=await db.auth.updateUser({password});if(error)throw error;toast("Mot de passe modifié.");}catch(e){fail(e)}
+ if(password===null)return;
+ if(password.length<6)return toast("Mot de passe trop court.");
+ try{
+  const {error}=await db.auth.updateUser({password});
+  if(error)throw error;
+  toast("Mot de passe modifié.");
+ }catch(e){fail(e)}
 }
 async function copyReferral(){
- try{await navigator.clipboard.writeText($("referralLink").value);toast("Lien de parrainage copié.");}
- catch(e){$("referralLink").select();toast("Sélectionnez puis copiez le lien.")}
+ try{
+  await navigator.clipboard.writeText($("referralLink").value);
+  toast("Lien de parrainage copié.");
+ }catch(e){
+  $("referralLink").select();
+  toast("Sélectionnez puis copiez le lien.");
+ }
 }
 async function loadTeam(){
  if(!user)return;
  try{
   const code=val(profile?.referral_code,profile?.referralCode);
   let q=db.from("profiles").select("id,full_name,phone,created_at,referral_code");
-  if(code)q=q.eq("referred_by",code);else q=q.eq("referred_by",user.id);
-  const {data,error}=await q;if(error)throw error;
-  const members=data||[];$("teamCount").textContent=members.length;
-  let deposited=0,commission=0;const list=[];
+  if(code)q=q.eq("referred_by",code);
+  else q=q.eq("referred_by",user.id);
+  const {data,error}=await q;
+  if(error)throw error;
+  const members=data||[];
+  $("teamCount").textContent=members.length;
+  let deposited=0,commission=0;
+  const list=[];
   for(const m of members){
    const {data:deps}=await db.from("kin_deposit_requests").select("id,status").eq("user_id",m.id);
    const yes=(deps||[]).some(d=>/approved|valid|confirmed|paid/i.test(String(d.status||"")));
    if(yes)deposited++;
    list.push(`<div class="item"><b>${esc(m.full_name||"Membre")}</b><p>${esc(m.phone||"Numéro non renseigné")}<br>${yes?'<span class="badge status-approved">Dépôt validé</span>':'<span class="badge status-pending">Pas de dépôt validé</span>'}</p></div>`);
   }
-  $("teamDeposited").textContent=deposited;$("teamNotDeposited").textContent=members.length-deposited;
+  $("teamDeposited").textContent=deposited;
+  $("teamNotDeposited").textContent=members.length-deposited;
   const {data:comm,error:ce}=await db.from("referral_commissions").select("*").eq("user_id",user.id);
   if(!ce)commission=(comm||[]).reduce((s,x)=>s+Number(val(x.amount,x.commission,0)),0);
   $("teamCommission").textContent=money(commission);
   $("teamList").innerHTML=list.join("")||'<p class="muted">Aucun membre parrainé affiché.</p>';
- }catch(e){console.warn("Équipe:",e.message);$("teamList").innerHTML='<p class="muted">Les informations de l’équipe ne sont pas disponibles avec les droits actuels.</p>'}
+ }catch(e){
+  console.warn("Équipe:",e.message);
+  $("teamList").innerHTML='<p class="muted">Les informations de l’équipe ne sont pas disponibles avec les droits actuels.</p>';
+ }
 }
 async function loadCommunityLinks(){
- try{const {data,error}=await db.from("kb_community_links").select("*");if(error)throw error;console.log("Liens officiels chargés",data?.length||0)}
- catch(e){console.warn("Liens officiels:",e.message)}
+ try{
+  const {data,error}=await db.from("kb_community_links").select("*");
+  if(error)throw error;
+  console.log("Liens officiels chargés",data?.length||0);
+ }catch(e){console.warn("Liens officiels:",e.message)}
 }
 
 /* ADMINISTRATION */
 async function loadAdmin(tab){
  if(!isAdmin())return toast("Accès réservé à l'administration.");
- currentAdminTab=tab;const box=$("adminContent");box.innerHTML="<p>Chargement...</p>";
+ currentAdminTab=tab;
+ const box=$("adminContent");
+ box.innerHTML="<p>Chargement...</p>";
  try{
   if(tab==="members"){
    const {data,error}=await db.from("profiles").select("*").order("created_at",{ascending:false}).limit(100);
@@ -436,7 +624,6 @@ async function loadAdmin(tab){
    const {data,error}=await db.from(table).select("*").order("created_at",{ascending:false}).limit(100);
    if(error)throw error;
    const requests=data||[];
-   /* Récupère les profils pour afficher le nom et le téléphone du membre. */
    const ids=[...new Set(requests.map(x=>x.user_id).filter(Boolean))];
    let profilesById={},paymentsById={};
    if(ids.length){
@@ -475,7 +662,8 @@ async function loadAdmin(tab){
    box.innerHTML="<h3>VIP des membres</h3>"+(data||[]).map(x=>`<div class="item"><b>${esc(x.user_id)}</b><p>${esc(val(x.plan_name,x.plan,"VIP"))} · ${money(val(x.amount,x.price,0))}<br>${statusBadge(x.status)}</p></div>`).join("")||"Aucun VIP enregistré.";
   }else if(tab==="settings"){
    const {data,error}=await db.from("kb_platform_settings").select("*").eq("id",1).maybeSingle();
-   if(error)throw error;const s=data||{};
+   if(error)throw error;
+   const s=data||{};
    box.innerHTML=`<h3>Configuration de la plateforme</h3>
     <label>Nom de la plateforme</label><input id="sName" value="${esc(s.platform_name||"KINSHASA BUSINESS")}">
     <label>Couleur bleue</label><input id="sBlue" type="color" value="${esc(s.primary_color||"#0757C8")}">
@@ -491,13 +679,15 @@ async function loadAdmin(tab){
    if(error)throw error;
    box.innerHTML="<h3>Liens officiels</h3>"+(data||[]).map(x=>`<div class="item"><label>${esc(x.display_name)}</label><input id="link-${esc(x.platform)}" value="${esc(x.url)}"><button onclick="saveLink('${esc(x.platform)}','${esc(x.display_name)}')">Enregistrer</button></div>`).join("")+"<p class='muted'>Les modes de paiement et les plans VIP nécessitent les tables et fonctions administratives correspondantes.</p>";
   }
- }catch(e){box.innerHTML='<p class="notice">Erreur : '+esc(errText(e))+'</p>';console.error(e)}
+ }catch(e){
+  box.innerHTML='<p class="notice">Erreur : '+esc(errText(e))+'</p>';
+  console.error(e);
+ }
 }
 async function reviewRequest(id,type,status){
  if(!confirm((status==="approved"?"Valider":"Rejeter")+" cette demande ? Vérifiez d'abord le paiement réel."))return;
  try{
   if(type==="deposits"){
-   /* Correction de l'appel ambigu : le paramètre p_note est fourni explicitement. */
    const note=status==="approved"?"Dépôt vérifié et validé par l'administration":"Dépôt rejeté par l'administration";
    const {error}=await db.rpc("admin_set_deposit_status",{p_request_id:id,p_status:status,p_note:note});
    if(error)throw error;
@@ -513,23 +703,31 @@ async function adminBan(id,banned){
  if(!confirm(banned?"Bloquer ce membre ?":"Débloquer ce membre ?"))return;
  try{
   const {error}=await db.rpc("admin_set_member_ban",{p_user_id:id,p_is_banned:banned});
-  if(error)throw error;toast("Action transmise.");await loadAdmin("members");
+  if(error)throw error;
+  toast("Action transmise.");
+  await loadAdmin("members");
  }catch(e){fail(e)}
 }
 async function adminAdjust(id){
  const amount=Number(prompt("Montant à ajuster en FC. Utilisez un nombre négatif pour une déduction :"));
  if(!Number.isFinite(amount)||amount===0)return;
- const reason=prompt("Motif obligatoire de l'ajustement :");if(!reason)return;
+ const reason=prompt("Motif obligatoire de l'ajustement :");
+ if(!reason)return;
  try{
   const {error}=await db.rpc("admin_adjust_balance",{p_user_id:id,p_amount:amount,p_reason:reason});
-  if(error)throw error;toast("Ajustement transmis au serveur.");await loadAdmin("members");
+  if(error)throw error;
+  toast("Ajustement transmis au serveur.");
+  await loadAdmin("members");
  }catch(e){fail(e)}
 }
 async function adminAssign(id){
- const name=prompt("Nom exact du VIP à attribuer :");if(!name)return;
+ const name=prompt("Nom exact du VIP à attribuer :");
+ if(!name)return;
  try{
   const {error}=await db.rpc("admin_assign_kin",{p_user_id:id,p_plan_name:name});
-  if(error)throw error;toast("Attribution transmise au serveur.");await loadAdmin("members");
+  if(error)throw error;
+  toast("Attribution transmise au serveur.");
+  await loadAdmin("members");
  }catch(e){fail(e)}
 }
 async function saveAdminSettings(){
@@ -550,28 +748,40 @@ async function saveAdminSettings(){
   document.documentElement.style.setProperty("--red",$("sRed").value);
   document.querySelector(".brand").innerHTML=esc($("sName").value);
   $("headerSub").textContent=$("sName").value;
-  document.title=$("sName").value;toast("Paramètres enregistrés.");
+  document.title=$("sName").value;
+  toast("Paramètres enregistrés.");
  }catch(e){fail(e)}
 }
 async function saveLink(platform,name){
  try{
-  const url=$("link-"+platform).value.trim();if(!url)return toast("Entrez une adresse de lien.");
+  const url=$("link-"+platform).value.trim();
+  if(!url)return toast("Entrez une adresse de lien.");
   const {error}=await db.from("kb_community_links").upsert({platform,display_name:name,url,updated_at:new Date().toISOString()},{onConflict:"platform"});
-  if(error)throw error;toast("Lien enregistré.");
+  if(error)throw error;
+  toast("Lien enregistré.");
  }catch(e){fail(e)}
 }
 
 /* Rotation des bannières */
 let slideIndex=0;
 setInterval(()=>{
- const slides=$("slides");if(!slides)return;
- slideIndex=(slideIndex+1)%3;slides.style.transform=`translateX(-${slideIndex*100}%)`;
+ const slides=$("slides");
+ if(!slides)return;
+ slideIndex=(slideIndex+1)%3;
+ slides.style.transform=`translateX(-${slideIndex*100}%)`;
  document.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("on",i===slideIndex));
 },4500);
 
 db.auth.onAuthStateChange((event,session)=>{
- if(event==="SIGNED_OUT"){user=null;profile=null;wallet=null;setLoggedIn(false);return}
- if(session?.user&&!user){user=session.user;setTimeout(()=>initApp().catch(fail),0)}
+ if(event==="SIGNED_OUT"){
+  user=null;profile=null;wallet=null;
+  setLoggedIn(false);
+  return;
+ }
+ if(session?.user&&!user){
+  user=session.user;
+  setTimeout(()=>initApp().catch(fail),0);
+ }
 });
 (async()=>{try{await initApp()}catch(e){fail(e)}})();
 </script>
