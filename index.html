@@ -1,69 +1,283 @@
-/* REMPLACEMENT À COLLER DANS index.html
-   Remplacez uniquement la fonction buyVip() actuelle par celle-ci.
-   L'achat reste traité par Supabase, côté serveur. */
 
-async function buyVip(planName) {
-  if (!user) {
-    toast("Connectez-vous avant de choisir un VIP.");
-    return;
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KINSHASA BUSINESS</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}
+    header{background:#075e45;color:white;padding:22px 16px;text-align:center}
+    main{max-width:720px;margin:20px auto;padding:14px}
+    section{background:white;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 3px 12px #0000000c}
+    h2{margin-top:0;color:#075e45}
+    input,button{width:100%;padding:13px;margin:6px 0;border-radius:8px;font-size:16px}
+    input{border:1px solid #cbd5e1}
+    button{border:0;background:#087f5b;color:white;font-weight:bold;cursor:pointer}
+    button.secondary{background:#334155}
+    .vip{border:1px solid #dbe4e8;padding:12px;border-radius:10px;margin:10px 0}
+    .muted{color:#64748b;font-size:14px}
+    #message{white-space:pre-wrap;overflow-wrap:anywhere}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+<header>
+  <h1>KINSHASA BUSINESS</h1>
+  <p>Votre espace membre</p>
+</header>
+
+<main>
+  <section id="auth">
+    <h2>Connexion / Inscription</h2>
+    <input id="name" placeholder="Nom complet pour l'inscription">
+    <input id="email" type="email" placeholder="Adresse e-mail">
+    <input id="password" type="password" placeholder="Mot de passe (6 caractères minimum)">
+    <button onclick="signUp()">Créer mon compte</button>
+    <button class="secondary" onclick="signIn()">Me connecter</button>
+    <button class="secondary" onclick="resetPassword()">Mot de passe oublié</button>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <h2>Tableau de bord</h2>
+    <p>Compte : <strong id="memberEmail">—</strong></p>
+    <p>Solde disponible : <strong id="balance">Vérification…</strong></p>
+    <button onclick="refreshAccount()">Actualiser mon solde</button>
+    <button class="secondary" onclick="signOut()">Déconnexion</button>
+  </section>
+
+  <section id="plans">
+    <h2>Offres VIP</h2>
+    <p class="muted">Les prix et gains affichés doivent être confirmés par l'administrateur avant toute transaction.</p>
+    <div id="planList">Chargement des offres…</div>
+  </section>
+
+  <section>
+    <h2>Message</h2>
+    <p id="message" role="status">Bienvenue sur KINSHASA BUSINESS.</p>
+  </section>
+</main>
+
+<script>
+(() => {
+  // Configuration Supabase du projet
+  const SUPABASE_URL = "https://uewceocdzvekuopgsmpg.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
+
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const $ = id => document.getElementById(id);
+  let currentUser = null;
+
+  function message(text) {
+    $("message").textContent = text;
   }
 
-  const plan = plans.find(p =>
-    String(val(p.name, p.plan_name, p.code, p.plan_code, "VIP")) ===
-    String(planName)
-  );
-
-  if (!plan) {
-    toast("Offre VIP introuvable. Actualisez la page.");
-    return;
+  function showDashboard(user) {
+    currentUser = user || null;
+    $("auth").classList.toggle("hidden", !!user);
+    $("dashboard").classList.toggle("hidden", !user);
+    $("memberEmail").textContent = user?.email || "—";
   }
 
-  const price = Number(val(plan.price, plan.amount, plan.investment_amount, 0));
+  async function signUp() {
+    const name = $("name").value.trim();
+    const email = $("email").value.trim();
+    const password = $("password").value;
 
-  if (!Number.isFinite(price) || price <= 0) {
-    toast("Le prix de cette offre n'est pas correctement configuré.");
-    return;
+    if (!name || !email || password.length < 6) {
+      message("Entrez votre nom, votre e-mail et un mot de passe de 6 caractères minimum.");
+      return;
+    }
+
+    try {
+      const { data, error } = await db.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: name } }
+      });
+
+      if (error) throw error;
+
+      if (data.session) {
+        showDashboard(data.user);
+        await refreshAccount();
+        message("Compte créé avec succès.");
+      } else {
+        message("Demande d'inscription envoyée. Si Supabase demande une confirmation par e-mail, celle-ci doit être configurée dans les paramètres d'authentification.");
+      }
+    } catch (e) {
+      message("Inscription impossible : " + e.message);
+    }
   }
 
-  const balance = Number(
-    val(wallet?.balance, wallet?.available_balance, wallet?.solde, 0)
-  );
+  async function signIn() {
+    const email = $("email").value.trim();
+    const password = $("password").value;
 
-  if (balance < price) {
-    toast(
-      "Solde insuffisant. Prix : " +
-      money(price) +
-      " · Solde disponible : " +
-      money(balance)
-    );
-    return;
+    if (!email || !password) {
+      message("Entrez votre e-mail et votre mot de passe.");
+      return;
+    }
+
+    try {
+      const { data, error } = await db.auth.signInWithPassword({
+        email, password
+      });
+      if (error) throw error;
+
+      showDashboard(data.user);
+      await refreshAccount();
+      message("Connexion réussie.");
+    } catch (e) {
+      message("Connexion impossible : " + e.message);
+    }
   }
 
-  if (!confirm(
-    "Confirmer l'achat de " + planName +
-    " au prix de " + money(price) +
-    " ? Le serveur vérifiera votre solde avant de débiter votre compte."
-  )) {
-    return;
+  async function resetPassword() {
+    const email = $("email").value.trim();
+    if (!email) {
+      message("Entrez d'abord votre adresse e-mail.");
+      return;
+    }
+
+    try {
+      const { error } = await db.auth.resetPasswordForEmail(email);
+      if (error) throw error;
+      message("Si la demande est acceptée, suivez les instructions envoyées par e-mail.");
+    } catch (e) {
+      message("Demande impossible : " + e.message);
+    }
   }
 
-  try {
-    const { error } = await db.rpc("purchase_vip", {
-      p_plan_name: planName
-    });
+  async function refreshAccount() {
+    if (!currentUser) {
+      message("Connectez-vous d'abord.");
+      return;
+    }
 
-    if (error) throw error;
+    $("balance").textContent = "Indisponible";
 
-    toast("Achat VIP enregistré par le serveur.");
+    try {
+      const { data, error } = await db
+        .from("kin_wallets")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
 
-    await Promise.all([
-      loadProfileWallet(),
-      loadMemberships(),
-      loadHistory()
-    ]);
+      if (error) throw error;
 
-  } catch (e) {
-    console.error("Erreur achat VIP :", e);
-    toast("Achat non confirmé : " + errText(e));
+      const amount = data?.balance ?? data?.available_balance ?? data?.solde;
+      $("balance").textContent =
+        amount == null ? "Solde non disponible" :
+        Number(amount).toLocaleString("fr-FR") + " Fc";
+    } catch (e) {
+      message("Impossible de charger le solde. Vérifiez les droits d'accès et la table kin_wallets dans Supabase. " + e.message);
+    }
   }
-}
+
+  async function loadPlans() {
+    const target = $("planList");
+    try {
+      const { data, error } = await db.from("kin_plans").select("*");
+      if (error) throw error;
+
+      if (!data || !data.length) {
+        target.textContent = "Aucune offre disponible pour le moment.";
+        return;
+      }
+
+      target.replaceChildren();
+
+      data.forEach(plan => {
+        const name = plan.name || plan.plan_name || plan.code || plan.plan_code || "Offre VIP";
+        const price = Number(plan.price ?? plan.amount ?? plan.investment_amount ?? 0);
+        const daily = Number(plan.daily_income ?? plan.daily_revenue ?? 0);
+
+        const card = document.createElement("div");
+        card.className = "vip";
+
+        const title = document.createElement("h3");
+        title.textContent = name;
+
+        const details = document.createElement("p");
+        details.textContent = "Prix : " + price.toLocaleString("fr-FR") +
+          " Fc · Gain journalier configuré : " +
+          daily.toLocaleString("fr-FR") + " Fc";
+
+        const button = document.createElement("button");
+        button.textContent = "Choisir cette offre";
+        button.onclick = () => buyVip(name);
+
+        card.append(title, details, button);
+        target.appendChild(card);
+      });
+    } catch (e) {
+      target.textContent = "Impossible de charger les offres. Vérifiez la table kin_plans et ses autorisations.";
+    }
+  }
+
+  async function buyVip(planName) {
+    if (!currentUser) {
+      message("Connectez-vous avant de choisir une offre VIP.");
+      return;
+    }
+
+    if (!confirm("Confirmez-vous votre demande pour " + planName + " ?")) return;
+
+    try {
+      const { error } = await db.rpc("purchase_vip", {
+        p_plan_name: planName
+      });
+      if (error) throw error;
+
+      message("Demande transmise. Actualisez votre compte pour vérifier le résultat.");
+      await refreshAccount();
+    } catch (e) {
+      message("Achat non confirmé : " + e.message +
+        ". Aucune réussite ne doit être considérée comme acquise tant que le serveur n'a pas confirmé l'opération.");
+    }
+  }
+
+  async function signOut() {
+    const { error } = await db.auth.signOut();
+    if (error) {
+      message("Déconnexion impossible : " + error.message);
+      return;
+    }
+    showDashboard(null);
+    $("balance").textContent = "—";
+    message("Vous êtes déconnecté.");
+  }
+
+  async function init() {
+    try {
+      const { data, error } = await db.auth.getSession();
+      if (error) throw error;
+      showDashboard(data.session?.user || null);
+      if (data.session?.user) await refreshAccount();
+
+      db.auth.onAuthStateChange((_event, session) => {
+        showDashboard(session?.user || null);
+      });
+
+      await loadPlans();
+    } catch (e) {
+      message("Initialisation impossible : " + e.message);
+    }
+  }
+
+  window.signUp = signUp;
+  window.signIn = signIn;
+  window.resetPassword = resetPassword;
+  window.refreshAccount = refreshAccount;
+  window.buyVip = buyVip;
+  window.signOut = signOut;
+
+  init();
+})();
+</script>
+</body>
+</html>
