@@ -1,3 +1,10 @@
+/* =========================================================
+   KINSHASA BUSINESS 🇨🇩
+   CORRECTION DU DÉPÔT UNIQUEMENT
+   Remplace la constante PAYMENTS existante et les fonctions
+   openDeposit(), updatePaymentInfo() et submitDeposit()
+   par celles-ci. Ne supprime pas le reste du fichier.
+   ========================================================= */
 
 const PAYMENTS = [
   {
@@ -17,230 +24,193 @@ const PAYMENTS = [
   }
 ];
 
-function DepositSection() {
-  const [selectedPayment, setSelectedPayment] = React.useState("AIRTEL MONEY");
-  const [amount, setAmount] = React.useState("");
-  const [transactionId, setTransactionId] = React.useState("");
-  const [message, setMessage] = React.useState("");
-
-  const payment = PAYMENTS.find(
-    (item) => item.operator === selectedPayment
-  );
-
-  function copyNumber() {
-    if (!payment) return;
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(payment.number)
-        .then(() => setMessage("Numéro copié : " + payment.number))
-        .catch(() => setMessage("Veuillez copier le numéro manuellement : " + payment.number));
-    } else {
-      setMessage("Veuillez copier le numéro manuellement : " + payment.number);
-    }
+async function openDeposit() {
+  if (!user) {
+    alert("Veuillez vous connecter avant de faire un dépôt.");
+    return;
   }
 
-  function submitDeposit(event) {
-    event.preventDefault();
+  showModal(`
+    <button class="close" onclick="closeModal()">×</button>
 
-    const value = Number(amount);
+    <h2>💰 Faire un dépôt</h2>
 
-    if (!Number.isFinite(value) || value < 15000) {
-      setMessage("Le dépôt minimum est de 15 000 Fc.");
-      return;
-    }
+    <div class="notice">
+      Dépôt minimum : <b>15 000 FC</b><br>
+      Choisissez l'opérateur, puis transférez l'argent au numéro affiché.
+    </div>
 
-    if (!transactionId.trim()) {
-      setMessage("Veuillez saisir la référence de votre transaction.");
-      return;
-    }
+    <label>Montant du dépôt (FC)</label>
+    <input
+      id="depAmount"
+      type="number"
+      min="15000"
+      step="1"
+      placeholder="Exemple : 15000"
+    >
 
-    setMessage(
-      "Demande préparée pour " + payment.operator +
-      ". Montant : " + value.toLocaleString("fr-FR") +
-      " Fc. Référence : " + transactionId.trim() +
-      ". Votre dépôt doit être vérifié par l'administration."
-    );
+    <label>Opérateur de paiement</label>
+    <select id="depOperator">
+      ${PAYMENTS.map((p, i) => `
+        <option value="${i}">
+          ${p.operator} — ${p.number} — ${p.name}
+        </option>
+      `).join("")}
+    </select>
+
+    <div id="paymentInfo"></div>
+
+    <label>Référence du transfert (si disponible)</label>
+    <input
+      id="depRef"
+      type="text"
+      placeholder="Référence ou nom du transfert"
+    >
+
+    <button
+      class="btn btn-red"
+      id="submitDepositBtn"
+      onclick="submitDeposit()"
+    >
+      Envoyer ma demande de dépôt
+    </button>
+
+    <button class="btn btn-dark" onclick="closeModal()">
+      Annuler
+    </button>
+  `);
+
+  updatePaymentInfo();
+
+  const selector = document.getElementById("depOperator");
+  if (selector) {
+    selector.addEventListener("change", updatePaymentInfo);
   }
-
-  return (
-    <section style={{
-      maxWidth: "520px",
-      margin: "20px auto",
-      padding: "20px",
-      borderRadius: "16px",
-      background: "#ffffff",
-      color: "#172033",
-      boxShadow: "0 4px 20px rgba(0,0,0,0.10)",
-      fontFamily: "Arial, sans-serif"
-    }}>
-      <h2 style={{ textAlign: "center", color: "#087443" }}>
-        DÉPÔT — KINSHASA MAKAMBO
-      </h2>
-
-      <p style={{ textAlign: "center" }}>
-        Choisissez votre moyen de paiement et effectuez votre transfert.
-      </p>
-
-      <label htmlFor="depositOperator"
-        style={{ display: "block", fontWeight: "bold", marginBottom: "8px" }}>
-        Moyen de paiement
-      </label>
-
-      <select
-        id="depositOperator"
-        value={selectedPayment}
-        onChange={(event) => {
-          setSelectedPayment(event.target.value);
-          setMessage("");
-        }}
-        style={{
-          width: "100%",
-          padding: "12px",
-          marginBottom: "18px",
-          borderRadius: "8px",
-          border: "1px solid #cbd5e1",
-          fontSize: "16px"
-        }}
-      >
-        {PAYMENTS.map((item) => (
-          <option key={item.operator} value={item.operator}>
-            {item.operator}
-          </option>
-        ))}
-      </select>
-
-      <div style={{
-        padding: "18px",
-        border: "2px solid #087443",
-        borderRadius: "12px",
-        background: "#f0fdf4",
-        textAlign: "center",
-        marginBottom: "18px"
-      }}>
-        <p style={{ margin: "0 0 8px", fontWeight: "bold" }}>
-          {payment.operator}
-        </p>
-
-        <p style={{
-          margin: "8px 0",
-          fontSize: "28px",
-          fontWeight: "bold",
-          color: "#087443",
-          overflowWrap: "anywhere"
-        }}>
-          {payment.number}
-        </p>
-
-        <p style={{ margin: "8px 0 14px", fontSize: "17px" }}>
-          Nom du bénéficiaire : <strong>{payment.name}</strong>
-        </p>
-
-        <button
-          type="button"
-          onClick={copyNumber}
-          style={{
-            padding: "11px 18px",
-            border: "none",
-            borderRadius: "8px",
-            background: "#087443",
-            color: "#ffffff",
-            fontWeight: "bold",
-            cursor: "pointer"
-          }}
-        >
-          Copier le numéro
-        </button>
-      </div>
-
-      <form onSubmit={submitDeposit}>
-        <label htmlFor="depositAmount"
-          style={{ display: "block", fontWeight: "bold", marginBottom: "8px" }}>
-          Montant envoyé (Fc)
-        </label>
-
-        <input
-          id="depositAmount"
-          type="number"
-          min="15000"
-          step="1"
-          required
-          value={amount}
-          onChange={(event) => setAmount(event.target.value)}
-          placeholder="Minimum : 15 000 Fc"
-          style={{
-            width: "100%",
-            boxSizing: "border-box",
-            padding: "12px",
-            marginBottom: "16px",
-            borderRadius: "8px",
-            border: "1px solid #cbd5e1",
-            fontSize: "16px"
-          }}
-        />
-
-        <label htmlFor="depositReference"
-          style={{ display: "block", fontWeight: "bold", marginBottom: "8px" }}>
-          Référence de la transaction
-        </label>
-
-        <input
-          id="depositReference"
-          type="text"
-          required
-          value={transactionId}
-          onChange={(event) => setTransactionId(event.target.value)}
-          placeholder="Référence reçue après le transfert"
-          style={{
-            width: "100%",
-            boxSizing: "border-box",
-            padding: "12px",
-            marginBottom: "16px",
-            borderRadius: "8px",
-            border: "1px solid #cbd5e1",
-            fontSize: "16px"
-          }}
-        />
-
-        <button
-          type="submit"
-          style={{
-            width: "100%",
-            padding: "14px",
-            border: "none",
-            borderRadius: "8px",
-            background: "#14532d",
-            color: "#ffffff",
-            fontSize: "16px",
-            fontWeight: "bold",
-            cursor: "pointer"
-          }}
-        >
-          SOUMETTRE MA DEMANDE DE DÉPÔT
-        </button>
-      </form>
-
-      {message && (
-        <p role="status" style={{
-          marginTop: "16px",
-          padding: "12px",
-          background: "#eff6ff",
-          borderRadius: "8px",
-          overflowWrap: "anywhere"
-        }}>
-          {message}
-        </p>
-      )}
-
-      <p style={{
-        fontSize: "13px",
-        color: "#64748b",
-        marginTop: "16px"
-      }}>
-        Important : cette interface prépare une demande, mais ne confirme
-        pas automatiquement le paiement. La vérification et l'enregistrement
-        dans la base de données doivent être reliés au système existant.
-      </p>
-    </section>
-  );
 }
 
+function updatePaymentInfo() {
+  const selector = document.getElementById("depOperator");
+  const box = document.getElementById("paymentInfo");
+
+  if (!selector || !box) return;
+
+  const index = Number(selector.value);
+  const payment = PAYMENTS[index];
+
+  if (!payment) {
+    box.innerHTML = `
+      <div class="msg err">Moyen de paiement introuvable.</div>
+    `;
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="pay" style="border:2px solid var(--green);padding:16px">
+      <div class="muted">OPÉRATEUR SÉLECTIONNÉ</div>
+
+      <strong style="font-size:19px;display:block;margin-top:7px">
+        ${esc(payment.operator)}
+      </strong>
+
+      <div class="muted" style="margin-top:12px">
+        NUMÉRO À UTILISER
+      </div>
+
+      <div class="number"
+           style="font-size:28px;font-weight:900;letter-spacing:1px">
+        ${esc(payment.number)}
+      </div>
+
+      <div style="font-size:17px;margin-top:8px">
+        Bénéficiaire :
+        <b>${esc(payment.name)}</b>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-dark"
+        onclick="copyText('${payment.number}')"
+      >
+        📋 Copier le numéro
+      </button>
+
+      <div class="notice" style="margin-top:12px;margin-bottom:0">
+        Vérifiez le numéro et le nom du bénéficiaire avant de transférer.
+        Envoyer une demande ne signifie pas que le paiement est déjà validé.
+      </div>
+    </div>
+  `;
+}
+
+async function submitDeposit() {
+  if (!user) {
+    alert("Votre session a expiré. Connectez-vous à nouveau.");
+    return;
+  }
+
+  const amountInput = document.getElementById("depAmount");
+  const refInput = document.getElementById("depRef");
+  const operatorInput = document.getElementById("depOperator");
+  const submitButton = document.getElementById("submitDepositBtn");
+
+  if (!amountInput || !refInput || !operatorInput) {
+    alert("Le formulaire de dépôt est incomplet. Fermez-le et réessayez.");
+    return;
+  }
+
+  const amount = Number(amountInput.value);
+  const reference = refInput.value.trim();
+  const payment = PAYMENTS[Number(operatorInput.value)];
+
+  if (!Number.isFinite(amount) || amount < 15000) {
+    alert("Le dépôt minimum est de 15 000 FC.");
+    return;
+  }
+
+  if (!payment) {
+    alert("Veuillez sélectionner un opérateur de paiement.");
+    return;
+  }
+
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = "Envoi en cours…";
+  }
+
+  try {
+    const { error } = await sb
+      .from("kin_deposit_requests")
+      .insert({
+        user_id: user.id,
+        amount: amount,
+        operator: payment.operator,
+        payment_number: payment.number,
+        payment_name: payment.name,
+        reference: reference || null,
+        status: "pending"
+      });
+
+    if (error) throw error;
+
+    closeModal();
+
+    alert(
+      "Votre demande de dépôt a été envoyée.\n\n" +
+      "Opérateur : " + payment.operator + "\n" +
+      "Numéro : " + payment.number + "\n" +
+      "Bénéficiaire : " + payment.name + "\n" +
+      "Montant : " + money(amount) + "\n\n" +
+      "Votre demande reste en attente jusqu'à sa vérification par l'administration."
+    );
+  } catch (error) {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = "Envoyer ma demande de dépôt";
+    }
+
+    alert(
+      "Impossible d'envoyer la demande de dépôt.\n\n" +
+      (error?.message || "Erreur inconnue")
+    );
+  }
+}
