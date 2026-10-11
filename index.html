@@ -1,216 +1,274 @@
-/* =========================================================
-   KINSHASA BUSINESS 🇨🇩
-   CORRECTION DU DÉPÔT UNIQUEMENT
-   Remplace la constante PAYMENTS existante et les fonctions
-   openDeposit(), updatePaymentInfo() et submitDeposit()
-   par celles-ci. Ne supprime pas le reste du fichier.
-   ========================================================= */
 
-const PAYMENTS = [
-  {
-    operator: "AIRTEL MONEY",
-    number: "0973087965",
-    name: "BASHIMBE"
-  },
-  {
-    operator: "ORANGE MONEY",
-    number: "899532643",
-    name: "JEANCQUELINE"
-  },
-  {
-    operator: "M-PESA",
-    number: "0861823718",
-    name: "REGINA"
-  }
-];
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KINSHASA MAKAMBO</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      color: #172033;
+    }
+    header {
+      background: #075e3b;
+      color: white;
+      text-align: center;
+      padding: 24px 12px;
+    }
+    header h1 { margin: 0 0 8px; font-size: 25px; }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      background: white;
+    }
+    button, .nav-button {
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    nav button { background: #e2e8f0; color: #172033; }
+    nav button.active, .primary {
+      background: #087443;
+      color: white;
+    }
+    main {
+      max-width: 600px;
+      margin: 24px auto;
+      padding: 0 14px;
+    }
+    .card {
+      background: white;
+      padding: 22px;
+      margin-bottom: 18px;
+      border-radius: 14px;
+      box-shadow: 0 3px 14px #0000000d;
+    }
+    h2 { margin-top: 0; color: #075e3b; }
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+    }
+    .full { width: 100%; margin-top: 16px; }
+    .payment {
+      text-align: center;
+      background: #f0fdf4;
+      border: 2px solid #087443;
+      border-radius: 12px;
+      padding: 18px 10px;
+      margin: 16px 0;
+    }
+    .number {
+      font-size: 28px;
+      font-weight: bold;
+      color: #087443;
+      overflow-wrap: anywhere;
+      margin: 12px 0;
+    }
+    .hidden { display: none; }
+    .notice {
+      padding: 12px;
+      background: #eff6ff;
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+    }
+    .muted { color: #64748b; font-size: 13px; line-height: 1.5; }
+    footer { text-align: center; padding: 20px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>KINSHASA MAKAMBO</h1>
+    <p>Bienvenue sur votre espace membre</p>
+  </header>
 
-async function openDeposit() {
-  if (!user) {
-    alert("Veuillez vous connecter avant de faire un dépôt.");
-    return;
-  }
+  <nav>
+    <button class="active" data-page="accueil">Accueil</button>
+    <button data-page="depot">Dépôt</button>
+    <button data-page="connexion">Connexion</button>
+    <button data-page="inscription">Inscription</button>
+  </nav>
 
-  showModal(`
-    <button class="close" onclick="closeModal()">×</button>
+  <main>
+    <section id="accueil" class="card">
+      <h2>Bienvenue</h2>
+      <p>Bienvenue sur la plateforme KINSHASA MAKAMBO.</p>
+      <p>Consultez les informations de paiement avant d'effectuer un transfert.</p>
+      <button class="primary full" data-go="depot">Effectuer un dépôt</button>
+    </section>
 
-    <h2>💰 Faire un dépôt</h2>
+    <section id="depot" class="card hidden">
+      <h2>Effectuer un dépôt</h2>
+      <p>Choisissez votre opérateur et effectuez votre paiement avec les informations affichées ci-dessous.</p>
 
-    <div class="notice">
-      Dépôt minimum : <b>15 000 FC</b><br>
-      Choisissez l'opérateur, puis transférez l'argent au numéro affiché.
-    </div>
+      <label for="operateur">Moyen de paiement</label>
+      <select id="operateur">
+        <option value="AIRTEL MONEY">AIRTEL MONEY</option>
+        <option value="ORANGE MONEY">ORANGE MONEY</option>
+        <option value="M-PESA">M-PESA</option>
+      </select>
 
-    <label>Montant du dépôt (FC)</label>
-    <input
-      id="depAmount"
-      type="number"
-      min="15000"
-      step="1"
-      placeholder="Exemple : 15000"
-    >
-
-    <label>Opérateur de paiement</label>
-    <select id="depOperator">
-      ${PAYMENTS.map((p, i) => `
-        <option value="${i}">
-          ${p.operator} — ${p.number} — ${p.name}
-        </option>
-      `).join("")}
-    </select>
-
-    <div id="paymentInfo"></div>
-
-    <label>Référence du transfert (si disponible)</label>
-    <input
-      id="depRef"
-      type="text"
-      placeholder="Référence ou nom du transfert"
-    >
-
-    <button
-      class="btn btn-red"
-      id="submitDepositBtn"
-      onclick="submitDeposit()"
-    >
-      Envoyer ma demande de dépôt
-    </button>
-
-    <button class="btn btn-dark" onclick="closeModal()">
-      Annuler
-    </button>
-  `);
-
-  updatePaymentInfo();
-
-  const selector = document.getElementById("depOperator");
-  if (selector) {
-    selector.addEventListener("change", updatePaymentInfo);
-  }
-}
-
-function updatePaymentInfo() {
-  const selector = document.getElementById("depOperator");
-  const box = document.getElementById("paymentInfo");
-
-  if (!selector || !box) return;
-
-  const index = Number(selector.value);
-  const payment = PAYMENTS[index];
-
-  if (!payment) {
-    box.innerHTML = `
-      <div class="msg err">Moyen de paiement introuvable.</div>
-    `;
-    return;
-  }
-
-  box.innerHTML = `
-    <div class="pay" style="border:2px solid var(--green);padding:16px">
-      <div class="muted">OPÉRATEUR SÉLECTIONNÉ</div>
-
-      <strong style="font-size:19px;display:block;margin-top:7px">
-        ${esc(payment.operator)}
-      </strong>
-
-      <div class="muted" style="margin-top:12px">
-        NUMÉRO À UTILISER
+      <div class="payment">
+        <div id="nomOperateur"><strong>AIRTEL MONEY</strong></div>
+        <div id="numeroPaiement" class="number">0973087965</div>
+        <p>Bénéficiaire : <strong id="nomBeneficiaire">BASHIMBE</strong></p>
+        <button id="copier" class="primary">Copier le numéro</button>
       </div>
 
-      <div class="number"
-           style="font-size:28px;font-weight:900;letter-spacing:1px">
-        ${esc(payment.number)}
-      </div>
+      <form id="formDepot">
+        <label for="montant">Montant envoyé (Fc)</label>
+        <input id="montant" type="number" min="15000" step="1"
+          placeholder="Minimum 15 000 Fc" required>
 
-      <div style="font-size:17px;margin-top:8px">
-        Bénéficiaire :
-        <b>${esc(payment.name)}</b>
-      </div>
+        <label for="reference">Référence de transaction</label>
+        <input id="reference" type="text"
+          placeholder="Référence de votre paiement" required>
 
-      <button
-        type="button"
-        class="btn btn-dark"
-        onclick="copyText('${payment.number}')"
-      >
-        📋 Copier le numéro
-      </button>
+        <button class="primary full" type="submit">Soumettre la demande</button>
+      </form>
 
-      <div class="notice" style="margin-top:12px;margin-bottom:0">
-        Vérifiez le numéro et le nom du bénéficiaire avant de transférer.
-        Envoyer une demande ne signifie pas que le paiement est déjà validé.
-      </div>
-    </div>
-  `;
-}
+      <p id="messageDepot" class="notice hidden" role="status"></p>
+      <p class="muted">Conservez votre preuve de paiement. Une demande soumise ici n'est pas une confirmation automatique du transfert.</p>
+    </section>
 
-async function submitDeposit() {
-  if (!user) {
-    alert("Votre session a expiré. Connectez-vous à nouveau.");
-    return;
-  }
+    <section id="connexion" class="card hidden">
+      <h2>Connexion membre</h2>
+      <form id="formConnexion">
+        <label for="emailConnexion">Adresse e-mail</label>
+        <input id="emailConnexion" type="email" required>
+        <label for="motPasseConnexion">Mot de passe</label>
+        <input id="motPasseConnexion" type="password" required>
+        <button class="primary full" type="submit">Se connecter</button>
+      </form>
+      <p id="messageConnexion" class="notice hidden" role="status"></p>
+    </section>
 
-  const amountInput = document.getElementById("depAmount");
-  const refInput = document.getElementById("depRef");
-  const operatorInput = document.getElementById("depOperator");
-  const submitButton = document.getElementById("submitDepositBtn");
+    <section id="inscription" class="card hidden">
+      <h2>Créer un compte</h2>
+      <form id="formInscription">
+        <label for="nom">Nom complet</label>
+        <input id="nom" type="text" required>
 
-  if (!amountInput || !refInput || !operatorInput) {
-    alert("Le formulaire de dépôt est incomplet. Fermez-le et réessayez.");
-    return;
-  }
+        <label for="telephone">Numéro de téléphone (+243)</label>
+        <input id="telephone" type="tel" placeholder="+243..." required>
 
-  const amount = Number(amountInput.value);
-  const reference = refInput.value.trim();
-  const payment = PAYMENTS[Number(operatorInput.value)];
+        <label for="email">Adresse e-mail</label>
+        <input id="email" type="email" required>
 
-  if (!Number.isFinite(amount) || amount < 15000) {
-    alert("Le dépôt minimum est de 15 000 FC.");
-    return;
-  }
+        <label for="motPasse">Mot de passe (6 caractères minimum)</label>
+        <input id="motPasse" type="password" minlength="6" required>
 
-  if (!payment) {
-    alert("Veuillez sélectionner un opérateur de paiement.");
-    return;
-  }
+        <label for="confirmation">Confirmer le mot de passe</label>
+        <input id="confirmation" type="password" minlength="6" required>
 
-  if (submitButton) {
-    submitButton.disabled = true;
-    submitButton.textContent = "Envoi en cours…";
-  }
+        <button class="primary full" type="submit">S'inscrire</button>
+      </form>
+      <p id="messageInscription" class="notice hidden" role="status"></p>
+    </section>
+  </main>
 
-  try {
-    const { error } = await sb
-      .from("kin_deposit_requests")
-      .insert({
-        user_id: user.id,
-        amount: amount,
-        operator: payment.operator,
-        payment_number: payment.number,
-        payment_name: payment.name,
-        reference: reference || null,
-        status: "pending"
+  <footer>KINSHASA MAKAMBO — Espace d'information</footer>
+
+  <script>
+    const PAIEMENTS = [
+      { operateur: "AIRTEL MONEY", numero: "0973087965", nom: "BASHIMBE" },
+      { operateur: "ORANGE MONEY", numero: "899532643", nom: "JEANCQUELINE" },
+      { operateur: "M-PESA", numero: "0861823718", nom: "REGINA" }
+    ];
+
+    const $ = (id) => document.getElementById(id);
+
+    function afficherPage(id) {
+      document.querySelectorAll("main > section").forEach(section => {
+        section.classList.toggle("hidden", section.id !== id);
       });
-
-    if (error) throw error;
-
-    closeModal();
-
-    alert(
-      "Votre demande de dépôt a été envoyée.\n\n" +
-      "Opérateur : " + payment.operator + "\n" +
-      "Numéro : " + payment.number + "\n" +
-      "Bénéficiaire : " + payment.name + "\n" +
-      "Montant : " + money(amount) + "\n\n" +
-      "Votre demande reste en attente jusqu'à sa vérification par l'administration."
-    );
-  } catch (error) {
-    if (submitButton) {
-      submitButton.disabled = false;
-      submitButton.textContent = "Envoyer ma demande de dépôt";
+      document.querySelectorAll("nav button").forEach(button => {
+        button.classList.toggle("active", button.dataset.page === id);
+      });
+      window.scrollTo(0, 0);
     }
 
-    alert(
-      "Impossible d'envoyer la demande de dépôt.\n\n" +
-      (error?.message || "Erreur inconnue")
-    );
-  }
-}
+    document.querySelectorAll("nav button").forEach(button => {
+      button.addEventListener("click", () => afficherPage(button.dataset.page));
+    });
+
+    document.querySelectorAll("[data-go]").forEach(button => {
+      button.addEventListener("click", () => afficherPage(button.dataset.go));
+    });
+
+    function actualiserPaiement() {
+      const paiement = PAIEMENTS.find(p => p.operateur === $("operateur").value);
+      $("nomOperateur").textContent = paiement.operateur;
+      $("numeroPaiement").textContent = paiement.numero;
+      $("nomBeneficiaire").textContent = paiement.nom;
+    }
+
+    $("operateur").addEventListener("change", actualiserPaiement);
+
+    $("copier").addEventListener("click", async () => {
+      const numero = $("numeroPaiement").textContent;
+      try {
+        await navigator.clipboard.writeText(numero);
+        alert("Numéro copié : " + numero);
+      } catch (e) {
+        alert("Copiez manuellement ce numéro : " + numero);
+      }
+    });
+
+    $("formDepot").addEventListener("submit", event => {
+      event.preventDefault();
+      const montant = Number($("montant").value);
+      const reference = $("reference").value.trim();
+
+      if (!Number.isFinite(montant) || montant < 15000) {
+        $("messageDepot").textContent = "Le dépôt minimum est de 15 000 Fc.";
+      } else if (!reference) {
+        $("messageDepot").textContent = "Veuillez saisir la référence du paiement.";
+      } else {
+        $("messageDepot").textContent =
+          "Formulaire rempli pour " + $("nomOperateur").textContent +
+          ". Montant : " + montant.toLocaleString("fr-FR") +
+          " Fc. Référence : " + reference +
+          ". Cette demande n'a pas encore été enregistrée ni vérifiée par l'administration.";
+      }
+      $("messageDepot").classList.remove("hidden");
+    });
+
+    $("formInscription").addEventListener("submit", event => {
+      event.preventDefault();
+      if ($("motPasse").value !== $("confirmation").value) {
+        $("messageInscription").textContent = "Les deux mots de passe ne correspondent pas.";
+      } else {
+        $("messageInscription").textContent =
+          "Formulaire vérifié, mais le compte n'est pas créé : la connexion à Supabase doit être configurée.";
+      }
+      $("messageInscription").classList.remove("hidden");
+    });
+
+    $("formConnexion").addEventListener("submit", event => {
+      event.preventDefault();
+      $("messageConnexion").textContent =
+        "La connexion réelle nécessite la configuration de Supabase.";
+      $("messageConnexion").classList.remove("hidden");
+    });
+  </script>
+</body>
+</html>
