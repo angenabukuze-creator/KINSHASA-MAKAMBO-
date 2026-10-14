@@ -3,897 +3,914 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#064b87">
-<title>KINSHASA BUSINESS</title>
+<meta name="theme-color" content="#0755b8">
+<title>KINSHASA BUSINESS 🇨🇩</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root {
-  --blue:#064b87;
+  --blue:#0755b8;
   --yellow:#ffcc00;
   --red:#d71920;
-  --bg:#f1f5fa;
-  --green:#168447;
+  --white:#ffffff;
+  --bg:#f2f5fa;
+  --green:#16864a;
+  --text:#17243a;
 }
-* { box-sizing:border-box; }
+* { box-sizing:border-box }
 body {
   margin:0;
-  padding-bottom:82px;
   background:var(--bg);
-  font-family:Arial,sans-serif;
-  color:#172033;
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
 }
+button,input,select { font:inherit }
+button { cursor:pointer }
 header {
   background:var(--blue);
   color:white;
-  text-align:center;
-  padding:20px 10px;
+  padding:17px 15px;
   border-bottom:5px solid var(--yellow);
 }
-header h1 { margin:0; }
-.container { max-width:760px; margin:auto; padding:12px; }
+.brand { font-size:20px;font-weight:900 }
+.subtitle { font-size:12px;margin-top:5px }
+main {
+  width:100%;
+  max-width:650px;
+  margin:auto;
+  padding:14px 13px 100px;
+}
+.hidden { display:none!important }
 .card {
   background:white;
+  border-radius:15px;
   padding:16px;
-  margin:12px 0;
-  border-radius:14px;
-  box-shadow:0 2px 8px #0001;
+  margin-bottom:13px;
+  box-shadow:0 3px 12px #1020400d;
 }
-input,select,button {
-  width:100%;
-  padding:13px;
-  margin:6px 0;
-  border-radius:8px;
-  font-size:16px;
-}
-input,select { border:1px solid #ccd4df; }
-button {
-  background:var(--blue);
+.hero {
+  background:linear-gradient(135deg,#0755b8,#073675);
   color:white;
-  border:0;
-  font-weight:bold;
-  cursor:pointer;
+  border-bottom:5px solid var(--yellow);
 }
-button:disabled { opacity:.55; }
-.yellow { background:var(--yellow); color:#172033; }
-.red { background:var(--red); color:white; }
-.green { background:var(--green); color:white; }
-.hidden { display:none!important; }
-.message { padding:12px; border-radius:8px; overflow-wrap:anywhere; margin:8px 0; }
-.error { background:#ffe0e0; color:#8a1111; }
-.success { background:#dff8e7; color:#14552b; }
-.money { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:12px 0; }
+.money { font-size:27px;font-weight:900;margin:13px 0 }
+.banknotes {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin-bottom:14px;
+}
 .note {
-  text-align:center; padding:16px 4px;
-  border:3px solid var(--yellow); border-radius:10px;
-  font-weight:bold; background:#d8f2df;
+  min-height:62px;
+  border-radius:9px;
+  padding:10px 5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-weight:900;
+  font-size:13px;
+  border:2px solid white;
+  box-shadow:0 3px 8px #0002;
 }
-.note:nth-child(2) { background:#fff0aa; }
-.note:nth-child(3) { background:#ffd7d7; }
-.grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.note:nth-child(1) { background:#16864a;color:white }
+.note:nth-child(2) { background:var(--yellow);color:#222 }
+.note:nth-child(3) { background:var(--red);color:white }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
 .tile {
-  background:white; color:var(--blue);
-  border:2px solid var(--yellow); min-height:100px;
+  border:0;
+  border-radius:14px;
+  background:white;
+  padding:18px 8px;
+  color:var(--blue);
+  font-weight:800;
+  box-shadow:0 3px 12px #1020400d;
 }
-.tile span { display:block; font-size:26px; margin-bottom:8px; }
-.offer {
-  padding:12px; border:1px solid #ddd;
-  border-left:5px solid var(--yellow);
-  margin:10px 0; background:white; border-radius:8px;
+.tile span { display:block;font-size:27px;margin-bottom:8px }
+h2 { font-size:19px;margin:18px 0 12px }
+h3 { margin-top:0 }
+label {
+  display:block;
+  margin:10px 0 5px;
+  font-size:13px;
+  font-weight:bold;
+}
+input,select {
+  width:100%;
+  padding:12px;
+  border:1px solid #cbd5e1;
+  border-radius:9px;
+  background:white;
+}
+.btn {
+  border:0;
+  padding:12px;
+  border-radius:9px;
+  font-weight:bold;
+  margin-top:9px;
+}
+.primary { background:var(--blue);color:white }
+.yellow { background:var(--yellow);color:#222 }
+.green { background:var(--green);color:white }
+.red { background:var(--red);color:white }
+.gray { background:#e8edf5;color:#17243a }
+.full { width:100% }
+.muted { color:#69758a;font-size:13px }
+.notice {
+  padding:12px;
+  border-radius:10px;
+  background:#e8f1ff;
+  border-left:4px solid var(--blue);
+  margin:10px 0;
+  font-size:13px;
+}
+.plan { border-top:4px solid var(--yellow) }
+.price { font-size:22px;font-weight:900;color:var(--blue) }
+.gain { font-weight:bold;color:var(--green);margin:10px 0 }
+.pill {
+  display:inline-block;
+  background:#e8f1ff;
+  padding:5px 8px;
+  border-radius:20px;
+  font-size:12px;
+  margin:3px;
+}
+.item {
+  padding:12px 0;
+  border-bottom:1px solid #e5eaf2;
   overflow-wrap:anywhere;
 }
-.bottom {
-  position:fixed; bottom:0; left:0; right:0;
-  background:white; border-top:3px solid var(--yellow);
-  display:grid; grid-template-columns:repeat(4,1fr); z-index:5;
+.item:last-child { border-bottom:0 }
+.status { font-weight:bold }
+.pending { color:#a86600 }
+.approved { color:var(--green) }
+.rejected { color:var(--red) }
+.nav {
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:650px;
+  background:white;
+  border-top:1px solid #dce3ed;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:7px 3px calc(7px + env(safe-area-inset-bottom));
+  z-index:10;
 }
-.bottom button {
-  background:white; color:var(--blue);
-  font-size:11px; padding:8px 2px; margin:0;
+.nav button {
+  background:white;
+  color:#536179;
+  border:0;
+  font-size:11px;
+  padding:5px 1px;
+  font-weight:bold;
 }
-.bottom span { display:block; font-size:20px; }
-.small { font-size:13px; color:#596579; }
-.timer {
-  background:#102f51; color:white; padding:14px;
-  border-radius:12px; text-align:center;
+.nav button span { display:block;font-size:22px;margin-bottom:4px }
+.nav button.active { color:var(--blue) }
+.auth-wrap {
+  max-width:440px;
+  margin:35px auto;
+  padding:15px;
 }
-.timer strong { color:var(--yellow); font-size:20px; }
-.actions { display:flex; gap:6px; }
-.actions button { flex:1; font-size:13px; padding:10px 4px; }
+.error {
+  color:var(--red);
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font-size:13px;
+}
+.ok { color:var(--green) }
+.admin { border-top:5px solid var(--red) }
+footer { text-align:center;color:#78849a;font-size:11px;padding:15px }
+@media(min-width:480px) {
+  main { padding-left:18px;padding-right:18px }
+}
 </style>
 </head>
+
 <body>
 
 <header>
-  <h1>KINSHASA BUSINESS</h1>
-  <p>Votre plateforme en francs congolais (CDF)</p>
+  <div class="brand">🇨🇩 KINSHASA BUSINESS</div>
+  <div class="subtitle">La plateforme congolaise · Franc congolais (FC)</div>
 </header>
 
-<div class="container">
+<section id="authSection" class="auth-wrap">
+  <div class="card">
+    <h2 id="authTitle">Connexion</h2>
+    <div id="authMessage"></div>
 
-  <div class="money">
-    <div class="note">💵<br>FRANC CONGOLAIS</div>
-    <div class="note">🇨🇩<br>BUSINESS RDC</div>
-    <div class="note">🏢<br>ÉCONOMIE LOCALE</div>
-  </div>
-
-  <div class="card timer">
-    <div>COMPTEUR DU LANCEMENT</div>
-    <strong id="launchTimer">00jrs:00h:00min:00 secondes</strong>
-    <p id="launchMessage" class="small" style="color:white">
-      Temps écoulé depuis le lancement
-    </p>
-  </div>
-
-  <div id="message" aria-live="polite"></div>
-
-  <section id="auth" class="card">
-    <h2>Inscription et connexion</h2>
-    <label for="phone">Téléphone congolais</label>
-    <input id="phone" type="tel" placeholder="+243XXXXXXXXX">
-    <label for="email">Adresse e-mail</label>
-    <input id="email" type="email" autocomplete="email" placeholder="Adresse e-mail">
-    <label for="password">Mot de passe</label>
-    <input id="password" type="password" autocomplete="current-password" placeholder="6 caractères minimum">
-    <label for="referral">Code du parrain (facultatif)</label>
-    <input id="referral" placeholder="Code du parrain">
-    <button onclick="login()">Se connecter</button>
-    <button class="yellow" onclick="signup()">Créer mon compte</button>
-    <p class="small">
-      L'inscription nécessite une configuration valide de Supabase Auth.
-      Si une confirmation e-mail est activée, consultez votre boîte mail.
-    </p>
-  </section>
-
-  <section id="app" class="hidden">
-
-    <div class="card">
-      <h2>Mon compte</h2>
-      <p id="account"></p>
-      <p>Solde disponible : <strong id="balance">Chargement...</strong></p>
-      <p>Mon code de parrainage : <strong id="myReferral">Chargement...</strong></p>
-      <button id="adminButton" class="yellow hidden" onclick="showPage('admin')">
-        ADMINISTRATEUR
-      </button>
-      <button class="red" onclick="logout()">Se déconnecter</button>
-    </div>
-
-    <div class="grid">
-      <button class="tile" onclick="showPage('deposit')"><span>💰</span>DÉPÔT</button>
-      <button class="tile" onclick="showPage('withdraw')"><span>🏧</span>RETRAIT</button>
-      <button class="tile" onclick="showPage('products')"><span>📦</span>MES PRODUITS</button>
-      <button class="tile" onclick="showPage('history')"><span>📋</span>HISTORIQUES DES TRANSACTIONS</button>
-    </div>
-
-    <section id="home" class="card page">
-      <h2>Accueil</h2>
-      <p>Bienvenue sur KINSHASA BUSINESS.</p>
-      <p>Les paiements sont soumis à vérification. Aucun dépôt ne doit être crédité avant confirmation effective.</p>
-    </section>
-
-    <section id="deposit" class="card page hidden">
-      <h2>Effectuer un dépôt</h2>
-      <p>Montant minimum : 15 000 FC</p>
-      <label for="depositAmount">Montant en FC</label>
-      <input id="depositAmount" type="number" min="15000" step="1" placeholder="15000">
-      <label for="depositMethod">Méthode de paiement</label>
-      <select id="depositMethod">
-        <option value="AIRTEL MONEY">Airtel Money</option>
-        <option value="ORANGE MONEY">Orange Money</option>
-        <option value="M-PESA">M-PESA</option>
-      </select>
-      <div class="offer">
-        <strong>Coordonnées de paiement</strong><br>
-        Airtel Money : 0973087965 — BASHIMBE<br>
-        Orange Money : 899532643 — JEANCQUELLINE<br>
-        M-PESA : 0861823718 — REGINA
+    <form id="authForm">
+      <div id="nameField" class="hidden">
+        <label for="fullName">Nom complet</label>
+        <input id="fullName" autocomplete="name">
       </div>
-      <label for="depositReference">Référence de la transaction</label>
-      <input id="depositReference" placeholder="Référence reçue après paiement">
-      <button onclick="deposit()">Envoyer ma demande de dépôt</button>
-      <p class="small">Une référence saisie ne prouve pas à elle seule que le paiement est réel.</p>
-    </section>
 
-    <section id="withdraw" class="card page hidden">
-      <h2>Demander un retrait</h2>
-      <p>Minimum : 2 000 FC — frais indicatifs : 10 %</p>
-      <label for="withdrawAmount">Montant demandé en FC</label>
-      <input id="withdrawAmount" type="number" min="2000" step="1" placeholder="2000">
-      <label for="withdrawMethod">Méthode de réception</label>
-      <select id="withdrawMethod">
-        <option value="AIRTEL MONEY">Airtel Money</option>
-        <option value="ORANGE MONEY">Orange Money</option>
-        <option value="M-PESA">M-PESA</option>
-      </select>
-      <label for="withdrawPhone">Numéro de réception</label>
-      <input id="withdrawPhone" type="tel" placeholder="+243XXXXXXXXX">
-      <div id="withdrawEstimate" class="offer">Montant net estimé : —</div>
-      <button onclick="withdraw()">Envoyer ma demande de retrait</button>
-      <p class="small">L'administrateur doit vérifier la demande et réaliser le transfert réel séparément.</p>
-    </section>
+      <label for="phone">Téléphone congolais</label>
+      <input id="phone" type="tel" placeholder="+243XXXXXXXXX">
 
-    <section id="products" class="card page hidden">
-      <h2>Produits VIP</h2>
-      <p class="small">Les gains affichés ne sont pas garantis. N'achetez un produit que si ses conditions et son financement sont vérifiés.</p>
-      <div id="offers"></div>
-      <h3>Mes achats</h3>
-      <div id="myProducts">Les achats seront affichés lorsque la table des produits sera configurée.</div>
-    </section>
+      <label for="email">Adresse e-mail</label>
+      <input id="email" type="email" required autocomplete="email">
 
-    <section id="history" class="card page hidden">
-      <h2>Historique des transactions</h2>
-      <button onclick="loadHistory()">Actualiser</button>
-      <div id="historyList"></div>
-    </section>
+      <label for="password">Mot de passe</label>
+      <input id="password" type="password" required minlength="6"
+             autocomplete="current-password">
 
-    <section id="team" class="card page hidden">
-      <h2>Équipe et parrainage</h2>
-      <p>Votre code de parrainage :</p>
-      <strong id="teamReferral"></strong>
-      <button onclick="share()">Partager mon lien de parrainage</button>
-      <p id="teamStats">Les statistiques de l'équipe nécessitent la table de parrainage.</p>
-      <div id="teamList"></div>
-    </section>
+      <label id="refLabel" for="refCode">Code de parrainage (facultatif)</label>
+      <input id="refCode" placeholder="Code du parrain">
 
-    <section id="me" class="card page hidden">
-      <h2>Mon profil</h2>
-      <p id="profileEmail"></p>
-      <p id="profilePhone"></p>
-      <button onclick="showPage('history')">Mes transactions</button>
-    </section>
+      <button class="btn primary full" id="authSubmit" type="submit">
+        Se connecter
+      </button>
+    </form>
 
-    <section id="admin" class="card page hidden">
-      <h2>Administration</h2>
-      <p class="small">Seuls les administrateurs autorisés dans la base de données doivent pouvoir approuver des opérations.</p>
-      <button onclick="loadAdmin()">Actualiser</button>
+    <button class="btn gray full" id="toggleAuth" type="button">
+      Créer un compte
+    </button>
+  </div>
+</section>
 
-      <h3>Dépôts en attente</h3>
-      <div id="adminDeposits"></div>
+<div id="app" class="hidden">
+  <main id="content"></main>
 
-      <h3>Retraits en attente</h3>
-      <div id="adminWithdrawals"></div>
-    </section>
-
-  </section>
+  <nav class="nav">
+    <button id="nav-home" class="active" onclick="page('home')">
+      <span>⌂</span>ACCUEIL
+    </button>
+    <button id="nav-products" onclick="page('products')">
+      <span>★</span>VIP/INVESTIR
+    </button>
+    <button id="nav-team" onclick="page('team')">
+      <span>♧</span>ÉQUIPE
+    </button>
+    <button id="nav-profile" onclick="page('profile')">
+      <span>●</span>MOI
+    </button>
+  </nav>
 </div>
 
-<nav class="bottom">
-  <button onclick="showPage('home')"><span>🏠</span>ACCUEIL</button>
-  <button onclick="showPage('products')"><span>⭐</span>VIP/INVESTIR</button>
-  <button onclick="showPage('team')"><span>👥</span>ÉQUIPE</button>
-  <button onclick="showPage('me')"><span>👤</span>MOI</button>
-</nav>
+<footer>KINSHASA BUSINESS · République démocratique du Congo</footer>
 
 <script>
 "use strict";
 
-/* Configuration du projet existant */
+/* CONFIGURATION SUPABASE EXISTANTE */
 const SUPABASE_URL = "https://uewceocdzvekuopgsmpg.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
-
-/*
-  Ce courriel sert seulement à afficher l'accès dans l'interface.
-  La véritable autorisation doit être vérifiée par les fonctions SQL
-  SECURITY DEFINER et la table kb_admins.
-*/
 const ADMIN_EMAIL = "angenabukuze@gmail.com";
 
-/*
-  Remplacez cette date par la date et l'heure réelles du lancement.
-  Format obligatoire : YYYY-MM-DDTHH:MM:SS+02:00
-  Exemple ci-dessous : 14 octobre 2026 à midi, heure de Kinshasa.
-*/
-const LAUNCH_DATE = "2026-10-14T12:00:00+02:00";
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* PARAMÈTRES DE LA PLATEFORME */
+const MIN_DEPOSIT = 15000;
+const MIN_WITHDRAWAL = 2000;
+const WITHDRAWAL_FEE = 0.10;
+const SIGNUP_BONUS = 2000;
+
+const PAYMENTS = [
+  {name:"AIRTEL MONEY",number:"0973087965",beneficiary:"BASHIMBE"},
+  {name:"ORANGE MONEY",number:"899532643",beneficiary:"JEANCQUELLINE"},
+  {name:"M-PESA",number:"0861823718",beneficiary:"REGINA"}
+];
+
+const PLANS = [
+  {id:"KIN1",price:15000,daily:2000,days:60,max:1},
+  {id:"KIN2",price:30000,daily:4400,days:60,max:2},
+  {id:"KIN3",price:80000,daily:12300,days:60,max:3},
+  {id:"KIN4",price:150000,daily:24000,days:60,max:3},
+  {id:"KIN5",price:300000,daily:52000,days:60,max:5},
+  {id:"KIN6",price:600000,daily:120000,days:60,max:2},
+  {id:"KIN7",price:1500000,daily:330000,days:60,max:2}
+];
 
 let user = null;
 let profile = null;
 let isAdmin = false;
-let busy = false;
+let authMode = "login";
+let currentPage = "home";
 
-const offers = [
-  {code:"KIN1",price:15000,daily:2000,duration:60,limit:1},
-  {code:"KIN2",price:30000,daily:4400,duration:60,limit:2},
-  {code:"KIN3",price:80000,daily:12300,duration:60,limit:3},
-  {code:"KIN4",price:150000,daily:24000,duration:60,limit:3},
-  {code:"KIN5",price:300000,daily:52000,duration:60,limit:5},
-  {code:"KIN6",price:600000,daily:120000,duration:60,limit:2},
-  {code:"KIN7",price:1500000,daily:330000,duration:60,limit:2}
-];
+const $ = id => document.getElementById(id);
+const money = value =>
+  Number(value || 0).toLocaleString("fr-FR") + " FC";
 
-function el(id) {
-  return document.getElementById(id);
+function escapeHTML(value) {
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
-function msg(text,type="success") {
-  const box = el("message");
-  box.replaceChildren();
-  const div = document.createElement("div");
-  div.className = "message " + type;
-  div.textContent = String(text);
-  box.appendChild(div);
-  window.scrollTo({top:0,behavior:"smooth"});
+function showMessage(element,text,isError=false) {
+  $(element).innerHTML =
+    `<div class="${isError ? "error" : "ok"}">${escapeHTML(text)}</div>`;
 }
 
-function money(value) {
-  return Number(value || 0).toLocaleString("fr-FR") + " FC";
+function getBalance() {
+  return Number(profile?.balance ?? profile?.solde ?? 0);
 }
 
-function safeError(error) {
-  return error && error.message ? error.message : "Une erreur inattendue est survenue.";
+function getName() {
+  return profile?.full_name ||
+         profile?.name ||
+         user?.user_metadata?.name ||
+         "Membre";
 }
 
-function phoneIsValid(phone) {
-  return /^\+243\d{9}$/.test(phone.replace(/[\s-]/g,""));
+/* INSCRIPTION / CONNEXION */
+function setAuthMode(mode) {
+  authMode = mode;
+  $("authTitle").textContent =
+    mode === "signup" ? "Créer mon compte" : "Connexion";
+  $("nameField").classList.toggle("hidden",mode !== "signup");
+  $("refLabel").classList.toggle("hidden",mode !== "signup");
+  $("refCode").classList.toggle("hidden",mode !== "signup");
+  $("authSubmit").textContent =
+    mode === "signup" ? "Créer mon compte" : "Se connecter";
+  $("toggleAuth").textContent =
+    mode === "signup" ? "J'ai déjà un compte" : "Créer un compte";
+  $("authMessage").innerHTML = "";
 }
 
-function makeReferralCode(id) {
-  return "KB" + String(id).replace(/-/g,"").slice(0,8).toUpperCase();
-}
+$("toggleAuth").addEventListener("click",() => {
+  setAuthMode(authMode === "login" ? "signup" : "login");
+});
 
-function updateLaunchTimer() {
-  const target = new Date(LAUNCH_DATE).getTime();
-  const now = Date.now();
+$("authForm").addEventListener("submit",async event => {
+  event.preventDefault();
 
-  if (!Number.isFinite(target)) {
-    el("launchTimer").textContent = "Date incorrecte";
+  const email = $("email").value.trim();
+  const password = $("password").value;
+  const phone = $("phone").value.trim();
+  const name = $("fullName").value.trim();
+  const referral = $("refCode").value.trim();
+
+  if (!email || !password) {
+    showMessage("authMessage","Veuillez remplir l'e-mail et le mot de passe.",true);
     return;
   }
 
-  let seconds = Math.max(0,Math.floor((now-target)/1000));
-  const days = Math.floor(seconds/86400);
-  seconds %= 86400;
-  const hours = Math.floor(seconds/3600);
-  seconds %= 3600;
-  const minutes = Math.floor(seconds/60);
-  seconds %= 60;
-
-  el("launchTimer").textContent =
-    String(days).padStart(2,"0")+"jrs:"+
-    String(hours).padStart(2,"0")+"h:"+
-    String(minutes).padStart(2,"0")+"min:"+
-    String(seconds).padStart(2,"0")+" secondes";
-
-  el("launchMessage").textContent =
-    now < target ? "Temps restant avant le lancement" :
-    "Temps écoulé depuis le lancement";
-}
-updateLaunchTimer();
-setInterval(updateLaunchTimer,1000);
-
-async function login() {
-  if (busy) return;
-  const email = el("email").value.trim().toLowerCase();
-  const password = el("password").value;
-
-  if (!email || !password) {
-    return msg("Entrez votre adresse e-mail et votre mot de passe.","error");
+  if (authMode === "signup" && !/^\+243\d{9}$/.test(phone)) {
+    showMessage(
+      "authMessage",
+      "Utilisez le format congolais : +243 suivi de 9 chiffres.",
+      true
+    );
+    return;
   }
 
-  busy = true;
+  $("authSubmit").disabled = true;
+
   try {
-    const {error} = await sb.auth.signInWithPassword({email,password});
-    if (error) throw error;
-    await init();
-    msg("Connexion réussie.");
-  } catch (e) {
-    msg("Connexion impossible : " + safeError(e),"error");
-  } finally {
-    busy = false;
-  }
-}
-
-async function signup() {
-  if (busy) return;
-
-  const email = el("email").value.trim().toLowerCase();
-  const password = el("password").value;
-  const phone = el("phone").value.trim().replace(/[\s-]/g,"");
-  const referral = el("referral").value.trim().toUpperCase();
-
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return msg("Entrez une adresse e-mail valide.","error");
-  }
-  if (password.length < 8) {
-    return msg("Utilisez un mot de passe d'au moins 8 caractères.","error");
-  }
-  if (!phoneIsValid(phone)) {
-    return msg("Entrez un numéro congolais au format +243 suivi de 9 chiffres.","error");
-  }
-
-  busy = true;
-  try {
-    /*
-      Le code du parrain est enregistré dans les métadonnées de
-      l'inscription. La base de données doit encore le valider et
-      créer le lien de parrainage de façon sécurisée.
-    */
-    const {data,error} = await sb.auth.signUp({
-      email,
-      password,
-      options:{
-        data:{
-          phone,
-          referral_code:referral || null
+    if (authMode === "signup") {
+      const {data,error} = await sb.auth.signUp({
+        email,
+        password,
+        options:{
+          data:{
+            name,
+            phone,
+            referral_code:referral
+          }
         }
+      });
+
+      if (error) throw error;
+
+      if (data.session) {
+        await initializeUser(data.user);
+      } else {
+        showMessage(
+          "authMessage",
+          "Compte créé. Si la confirmation e-mail est activée dans Supabase, confirmez votre adresse puis connectez-vous."
+        );
       }
-    });
-
-    if (error) throw error;
-
-    if (data.session) {
-      await init();
-      msg("Compte créé. Vérifiez votre profil.");
     } else {
-      msg("Inscription envoyée. Confirmez votre adresse e-mail si Supabase le demande, puis connectez-vous.");
+      const {data,error} = await sb.auth.signInWithPassword({
+        email,password
+      });
+
+      if (error) throw error;
+      await initializeUser(data.user);
     }
-  } catch (e) {
-    msg("Inscription impossible : " + safeError(e),"error");
+  } catch(error) {
+    showMessage("authMessage",error.message || "Une erreur est survenue.",true);
   } finally {
-    busy = false;
+    $("authSubmit").disabled = false;
   }
-}
+});
 
-async function init() {
-  try {
-    const {data,error} = await sb.auth.getUser();
-    if (error) throw error;
-    user = data.user;
+/* CHARGEMENT DU PROFIL ET VÉRIFICATION ADMIN */
+async function initializeUser(authUser) {
+  user = authUser;
 
-    if (!user) {
-      el("auth").classList.remove("hidden");
-      el("app").classList.add("hidden");
-      return;
-    }
+  const adminResult = await sb
+    .from("kb_admins")
+    .select("*")
+    .eq("user_id",user.id)
+    .limit(1);
 
-    el("auth").classList.add("hidden");
-    el("app").classList.remove("hidden");
-    el("account").textContent = user.email || "";
-    el("profileEmail").textContent = "E-mail : " + (user.email || "");
-    el("profilePhone").textContent =
-      "Téléphone : " + (user.user_metadata?.phone || "Non renseigné");
-
-    await loadProfile();
-    await checkAdmin();
-    renderOffers();
-    showPage("home");
-  } catch (e) {
-    msg("Impossible de charger votre compte : " + safeError(e),"error");
+  if (adminResult.error) {
+    console.error("Vérification administrateur:",adminResult.error.message);
   }
-}
 
-async function logout() {
-  const {error} = await sb.auth.signOut();
-  if (error) return msg(safeError(error),"error");
-  user = null;
-  profile = null;
-  isAdmin = false;
-  await init();
-  msg("Vous êtes déconnecté.");
+  isAdmin =
+    user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() &&
+    !adminResult.error &&
+    Array.isArray(adminResult.data) &&
+    adminResult.data.length > 0;
+
+  await loadProfile();
+
+  $("authSection").classList.add("hidden");
+  $("app").classList.remove("hidden");
+
+  page("home");
 }
 
 async function loadProfile() {
-  const {data,error} = await sb.from("kb_profiles")
-    .select("*").eq("id",user.id).maybeSingle();
+  if (!user) return;
 
-  if (error) {
-    el("balance").textContent = "Indisponible";
-    console.error("Profil :",error);
-    return;
+  const result = await sb
+    .from("kb_profiles")
+    .select("*")
+    .eq("id",user.id)
+    .maybeSingle();
+
+  if (result.error) {
+    throw new Error(
+      "Impossible de charger le profil : " + result.error.message
+    );
   }
 
-  profile = data;
+  profile = result.data;
 
   if (!profile) {
-    el("balance").textContent = "Profil non créé";
-    el("myReferral").textContent = makeReferralCode(user.id);
-    return;
-  }
-
-  el("balance").textContent = money(profile.balance ?? profile.solde ?? 0);
-  el("myReferral").textContent =
-    profile.referral_code || makeReferralCode(user.id);
-  el("teamReferral").textContent =
-    profile.referral_code || makeReferralCode(user.id);
-}
-
-async function checkAdmin() {
-  isAdmin = false;
-  el("adminButton").classList.add("hidden");
-
-  /*
-    Ne pas se fier au courriel côté navigateur pour sécuriser les
-    opérations. La fonction SQL doit vérifier kb_admins.
-    Ici, le bouton n'est affiché qu'au courriel prévu.
-  */
-  if ((user.email || "").toLowerCase() === ADMIN_EMAIL) {
-    const {data,error} = await sb.from("kb_admins")
-      .select("*").eq("user_id",user.id).maybeSingle();
-
-    if (!error && data) {
-      isAdmin = true;
-      el("adminButton").classList.remove("hidden");
-    }
+    throw new Error(
+      "Aucun profil trouvé pour ce compte dans kb_profiles. Vérifiez le déclencheur de création du profil déjà configuré dans Supabase."
+    );
   }
 }
 
-function renderOffers() {
-  const box = el("offers");
-  box.replaceChildren();
+async function refreshData() {
+  await loadProfile();
+}
 
-  offers.forEach(o => {
-    const div = document.createElement("div");
-    div.className = "offer";
+/* NAVIGATION */
+function page(name) {
+  currentPage = name;
 
-    const title = document.createElement("h3");
-    title.textContent = o.code;
+  if (name === "admin" && !isAdmin) {
+    name = "profile";
+  }
 
-    const description = document.createElement("p");
-    description.textContent =
-      "Prix : "+money(o.price)+
-      " | Gain annoncé : "+money(o.daily)+"/jour"+
-      " | Durée : "+o.duration+" jours"+
-      " | Limite : "+o.limit;
-
-    const warning = document.createElement("p");
-    warning.className = "small";
-    warning.textContent =
-      "Rendement non garanti. L'achat est désactivé tant que le système d'achat et de calcul des gains n'est pas configuré côté serveur.";
-
-    div.append(title,description,warning);
-    box.appendChild(div);
+  document.querySelectorAll(".nav button").forEach(button => {
+    button.classList.toggle("active",button.id === "nav-" + name);
   });
+
+  if (name === "home") renderHome();
+  else if (name === "products") renderProducts();
+  else if (name === "team") renderTeam();
+  else if (name === "profile") renderProfile();
+  else if (name === "history") renderHistory();
+  else if (name === "admin") renderAdmin();
 }
 
-function showPage(page) {
-  if (!user) {
-    el("auth").classList.remove("hidden");
-    return msg("Connectez-vous d'abord.","error");
-  }
+/* ACCUEIL */
+function renderHome() {
+  $("content").innerHTML = `
+    <div class="banknotes">
+      <div class="note">🇨🇩 FRANC CONGOLAIS</div>
+      <div class="note">KINSHASA BUSINESS</div>
+      <div class="note">FC · RDC</div>
+    </div>
 
-  if (page === "admin" && !isAdmin) {
-    return msg("Accès administrateur refusé. Votre compte doit être autorisé dans kb_admins.","error");
-  }
+    <section class="card hero">
+      <h2>Bienvenue, ${escapeHTML(getName())} !</h2>
+      <div>Mon solde</div>
+      <div class="money">${money(getBalance())}</div>
+      <div>Devise : Franc congolais (FC)</div>
+    </section>
 
-  const target = el(page);
-  if (!target) return msg("Page introuvable.","error");
+    <div class="grid">
+      <button class="tile" onclick="openDeposit()">
+        <span>💰</span>DÉPÔT
+      </button>
+      <button class="tile" onclick="openWithdraw()">
+        <span>💸</span>RETRAIT
+      </button>
+      <button class="tile" onclick="page('products')">
+        <span>🎁</span>MES PRODUITS
+      </button>
+      <button class="tile" onclick="page('history')">
+        <span>📋</span>HISTORIQUES DES TRANSACTIONS
+      </button>
+    </div>
 
-  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-  target.classList.remove("hidden");
+    <h2>Produits VIP</h2>
+    ${PLANS.slice(0,2).map(planCard).join("")}
 
-  if (page === "history") loadHistory();
-  if (page === "admin") loadAdmin();
-  if (page === "team") loadTeam();
+    <button class="btn primary full" onclick="page('products')">
+      Voir tous les produits VIP
+    </button>
+
+    <section class="card">
+      <h3>Compte à rebours</h3>
+      <div id="countdown" class="money">00jrs:00h:00min:00 secondes</div>
+    </section>
+
+    ${isAdmin ? `
+      <button class="btn red full" onclick="page('admin')">
+        ⚙ OUVRIR L'ADMINISTRATION
+      </button>
+    ` : ""}
+  `;
+
+  startCountdown();
 }
 
-async function deposit() {
-  if (!user) return msg("Connectez-vous d'abord.","error");
-
-  const amount = Number(el("depositAmount").value);
-  const method = el("depositMethod").value;
-  const reference = el("depositReference").value.trim();
-
-  if (!Number.isSafeInteger(amount) || amount < 15000) {
-    return msg("Le dépôt minimum est de 15 000 FC. Entrez un montant entier.","error");
-  }
-  if (reference.length < 4 || reference.length > 100) {
-    return msg("Entrez une référence de paiement valide.","error");
-  }
-
-  const button = document.querySelector("#deposit button");
-  button.disabled = true;
-
-  try {
-    const {error} = await sb.from("kb_deposits").insert({
-      user_id:user.id,
-      amount,
-      payment_method:method,
-      payment_reference:reference,
-      status:"pending"
-    });
-
-    if (error) throw error;
-
-    msg("Demande enregistrée. Votre compte sera crédité uniquement après vérification du paiement.");
-    el("depositAmount").value = "";
-    el("depositReference").value = "";
-  } catch (e) {
-    msg("Dépôt non enregistré : "+safeError(e),"error");
-  } finally {
-    button.disabled = false;
-  }
+function planCard(plan) {
+  return `
+    <section class="card plan">
+      <div class="row">
+        <h3>${escapeHTML(plan.id)}</h3>
+        <div class="price">${money(plan.price)}</div>
+      </div>
+      <div class="gain">${money(plan.daily)} / jour · Paramètre affiché</div>
+      <span class="pill">${plan.days} jours</span>
+      <span class="pill">Maximum ${plan.max}</span>
+      <button class="btn primary full" onclick="requestPlan('${plan.id}')">
+        Voir ${escapeHTML(plan.id)}
+      </button>
+    </section>
+  `;
 }
 
-function updateWithdrawEstimate() {
-  const amount = Number(el("withdrawAmount").value);
-  if (!Number.isSafeInteger(amount) || amount < 2000) {
-    el("withdrawEstimate").textContent = "Montant net estimé : —";
+/* PRODUITS VIP */
+function renderProducts() {
+  $("content").innerHTML = `
+    <h2>MES PRODUITS VIP</h2>
+    <div class="notice">
+      Choisissez un produit pour consulter ses paramètres et soumettre votre demande.
+    </div>
+    ${PLANS.map(planCard).join("")}
+  `;
+}
+
+async function requestPlan(planId) {
+  const plan = PLANS.find(item => item.id === planId);
+  if (!plan) return;
+
+  alert(
+    plan.id + "\n" +
+    "Prix : " + money(plan.price) + "\n" +
+    "Gain journalier configuré : " + money(plan.daily) + "\n" +
+    "Durée : " + plan.days + " jours\n\n" +
+    "L'achat réel nécessite la table de commandes VIP et la procédure de débit déjà prévues dans votre backend Supabase."
+  );
+}
+
+/* DÉPÔTS */
+function openDeposit() {
+  $("content").innerHTML = `
+    <h2>💰 Effectuer un dépôt</h2>
+    <section class="card">
+      <div class="notice">Dépôt minimum : ${money(MIN_DEPOSIT)}</div>
+
+      <form id="depositForm">
+        <label>Montant (FC)</label>
+        <input id="depositAmount" type="number" min="${MIN_DEPOSIT}" required>
+
+        <label>Opérateur de paiement</label>
+        <select id="depositOperator">
+          ${PAYMENTS.map((p,i)=>`
+            <option value="${i}">${escapeHTML(p.name)}</option>
+          `).join("")}
+        </select>
+
+        <div id="depositPaymentInfo"></div>
+
+        <label>Référence du transfert</label>
+        <input id="depositReference" required placeholder="Référence de transaction">
+
+        <button class="btn primary full" type="submit">
+          Envoyer ma demande
+        </button>
+      </form>
+    </section>
+
+    <button class="btn gray full" onclick="page('home')">Retour à l'accueil</button>
+  `;
+
+  const updatePaymentInfo = () => {
+    const p = PAYMENTS[Number($("depositOperator").value)];
+    $("depositPaymentInfo").innerHTML = `
+      <div class="notice">
+        <b>${escapeHTML(p.name)}</b><br>
+        Numéro : <b>${escapeHTML(p.number)}</b><br>
+        Bénéficiaire : <b>${escapeHTML(p.beneficiary)}</b>
+        <button class="btn yellow full" type="button"
+          onclick="copyValue('${p.number}')">Copier le numéro</button>
+      </div>
+    `;
+  };
+
+  $("depositOperator").addEventListener("change",updatePaymentInfo);
+  updatePaymentInfo();
+
+  $("depositForm").addEventListener("submit",submitDeposit);
+}
+
+async function submitDeposit(event) {
+  event.preventDefault();
+
+  const amount = Number($("depositAmount").value);
+  const reference = $("depositReference").value.trim();
+  const payment = PAYMENTS[Number($("depositOperator").value)];
+
+  if (amount < MIN_DEPOSIT) {
+    alert("Le dépôt minimum est de " + money(MIN_DEPOSIT));
     return;
   }
-  const fee = Math.ceil(amount * 0.10);
-  el("withdrawEstimate").textContent =
-    "Frais estimés (10 %) : "+money(fee)+
-    " | Net estimé : "+money(amount-fee);
-}
-el("withdrawAmount").addEventListener("input",updateWithdrawEstimate);
-
-async function withdraw() {
-  if (!user) return msg("Connectez-vous d'abord.","error");
-
-  const amount = Number(el("withdrawAmount").value);
-  const method = el("withdrawMethod").value;
-  const phone = el("withdrawPhone").value.trim().replace(/[\s-]/g,"");
-
-  if (!Number.isSafeInteger(amount) || amount < 2000) {
-    return msg("Le retrait minimum est de 2 000 FC.","error");
-  }
-  if (!phoneIsValid(phone)) {
-    return msg("Entrez le numéro de réception au format +243 suivi de 9 chiffres.","error");
-  }
-
-  /*
-    IMPORTANT : ce code crée une demande uniquement.
-    La vérification du solde, la réservation des fonds, les frais et
-    la prévention des doubles retraits doivent être appliqués par une
-    fonction SQL transactionnelle avant de mettre en production.
-  */
-  try {
-    const {error} = await sb.from("kb_withdrawals").insert({
-      user_id:user.id,
-      amount,
-      payment_method:method,
-      phone_number:phone,
-      status:"pending"
-    });
-
-    if (error) throw error;
-
-    msg("Demande envoyée. Le solde doit être contrôlé côté serveur avant approbation.");
-    el("withdrawAmount").value = "";
-    el("withdrawPhone").value = "";
-    updateWithdrawEstimate();
-  } catch (e) {
-    msg("Retrait non enregistré : "+safeError(e),"error");
-  }
-}
-
-async function loadHistory() {
-  if (!user) return;
-  const box = el("historyList");
-  box.textContent = "Chargement…";
 
   try {
-    const {data,error} = await sb.from("kb_transactions")
-      .select("*")
-      .eq("user_id",user.id)
-      .order("created_at",{ascending:false})
-      .limit(50);
-
-    if (error) throw error;
-
-    box.replaceChildren();
-
-    if (!data || !data.length) {
-      box.textContent = "Aucune transaction.";
-      return;
-    }
-
-    data.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "offer";
-      div.textContent = [
-        item.type || item.transaction_type || "Transaction",
-        money(item.amount),
-        item.status || "",
-        item.created_at ? new Date(item.created_at).toLocaleString("fr-FR") : ""
-      ].filter(Boolean).join(" — ");
-      box.appendChild(div);
-    });
-  } catch (e) {
-    box.textContent = "Historique indisponible : "+safeError(e);
-  }
-}
-
-async function loadAdmin() {
-  if (!user || !isAdmin) {
-    return msg("Vous n'êtes pas autorisé à gérer les demandes.","error");
-  }
-
-  const depositBox = el("adminDeposits");
-  const withdrawalBox = el("adminWithdrawals");
-  depositBox.textContent = "Chargement…";
-  withdrawalBox.textContent = "Chargement…";
-
-  try {
-    const [d,w] = await Promise.all([
-      sb.from("kb_deposits").select("*").eq("status","pending")
-        .order("created_at",{ascending:true}).limit(100),
-      sb.from("kb_withdrawals").select("*").eq("status","pending")
-        .order("created_at",{ascending:true}).limit(100)
-    ]);
-
-    depositBox.replaceChildren();
-    withdrawalBox.replaceChildren();
-
-    if (d.error) {
-      depositBox.textContent = "Erreur : "+safeError(d.error);
-    } else if (!d.data.length) {
-      depositBox.textContent = "Aucun dépôt en attente.";
-    } else {
-      d.data.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "offer";
-        const info = document.createElement("p");
-        info.textContent =
-          "Dépôt "+money(item.amount)+
-          " | "+(item.payment_method || "")+
-          " | Référence : "+(item.payment_reference || "—")+
-          " | Membre : "+(item.user_id || "");
-
-        const note = document.createElement("p");
-        note.className = "small";
-        note.textContent =
-          "Vérifiez le paiement auprès du service Mobile Money avant toute approbation.";
-
-        const actions = document.createElement("div");
-        actions.className = "actions";
-
-        const approve = document.createElement("button");
-        approve.className = "green";
-        approve.textContent = "Paiement vérifié : approuver";
-        approve.onclick = () => reviewDeposit(item.id,true);
-
-        const reject = document.createElement("button");
-        reject.className = "red";
-        reject.textContent = "Refuser";
-        reject.onclick = () => reviewDeposit(item.id,false);
-
-        actions.append(approve,reject);
-        div.append(info,note,actions);
-        depositBox.appendChild(div);
+    const {error} = await sb
+      .from("kb_deposits")
+      .insert({
+        user_id:user.id,
+        amount,
+        payment_method:payment.name,
+        payment_reference:reference,
+        status:"pending"
       });
-    }
-
-    if (w.error) {
-      withdrawalBox.textContent = "Erreur : "+safeError(w.error);
-    } else if (!w.data.length) {
-      withdrawalBox.textContent = "Aucun retrait en attente.";
-    } else {
-      w.data.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "offer";
-
-        const info = document.createElement("p");
-        info.textContent =
-          "Retrait "+money(item.amount)+
-          " | "+(item.payment_method || "")+
-          " | Numéro : "+(item.phone_number || "—")+
-          " | Membre : "+(item.user_id || "");
-
-        const note = document.createElement("p");
-        note.className = "small";
-        note.textContent =
-          "Avant approbation, vérifiez le solde et effectuez le transfert réel. Cette validation ne transfère pas l'argent.";
-
-        const actions = document.createElement("div");
-        actions.className = "actions";
-
-        const approve = document.createElement("button");
-        approve.className = "green";
-        approve.textContent = "Marquer comme approuvé";
-        approve.onclick = () => reviewWithdrawal(item.id,true);
-
-        const reject = document.createElement("button");
-        reject.className = "red";
-        reject.textContent = "Refuser";
-        reject.onclick = () => reviewWithdrawal(item.id,false);
-
-        actions.append(approve,reject);
-        div.append(info,note,actions);
-        withdrawalBox.appendChild(div);
-      });
-    }
-  } catch (e) {
-    msg("Erreur d'administration : "+safeError(e),"error");
-  }
-}
-
-async function reviewDeposit(id,approve) {
-  if (!isAdmin) return msg("Accès refusé.","error");
-
-  const question = approve
-    ? "Avez-vous vérifié que l'argent est réellement arrivé ?"
-    : "Confirmez-vous le refus de ce dépôt ?";
-
-  if (!confirm(question)) return;
-
-  try {
-    const {data,error} = await sb.rpc("kb_review_deposit",{
-      p_deposit_id:id,
-      p_approve:approve
-    });
 
     if (error) throw error;
 
-    msg(approve ? "Décision d'approbation envoyée." : "Décision de refus envoyée.");
-    await loadAdmin();
-    await loadProfile();
-  } catch (e) {
-    msg("Validation du dépôt impossible : "+safeError(e),"error");
+    alert("Demande de dépôt envoyée. Elle est en attente de décision de l'administration.");
+    page("history");
+  } catch(error) {
+    alert("Erreur lors de l'envoi : " + error.message);
   }
 }
 
-async function reviewWithdrawal(id,approve) {
-  if (!isAdmin) return msg("Accès refusé.","error");
+/* RETRAITS */
+function openWithdraw() {
+  $("content").innerHTML = `
+    <h2>💸 Effectuer un retrait</h2>
+    <section class="card">
+      <div>Solde actuel : <b>${money(getBalance())}</b></div>
+      <div class="notice">
+        Minimum : ${money(MIN_WITHDRAWAL)}<br>
+        Frais configurés : 10 %
+      </div>
 
-  const question = approve
-    ? "Confirmez-vous que le transfert a été effectué et vérifié ?"
-    : "Confirmez-vous le refus de ce retrait ?";
+      <form id="withdrawForm">
+        <label>Montant brut demandé (FC)</label>
+        <input id="withdrawAmount" type="number" min="${MIN_WITHDRAWAL}" required>
 
-  if (!confirm(question)) return;
+        <label>Opérateur</label>
+        <select id="withdrawOperator">
+          ${PAYMENTS.map(p=>`
+            <option value="${escapeHTML(p.name)}">${escapeHTML(p.name)}</option>
+          `).join("")}
+        </select>
+
+        <label>Numéro de réception +243</label>
+        <input id="withdrawPhone" type="tel" placeholder="+243XXXXXXXXX" required>
+
+        <button class="btn primary full" type="submit">
+          Envoyer ma demande
+        </button>
+      </form>
+    </section>
+    <button class="btn gray full" onclick="page('home')">Retour à l'accueil</button>
+  `;
+
+  $("withdrawForm").addEventListener("submit",submitWithdraw);
+}
+
+async function submitWithdraw(event) {
+  event.preventDefault();
+
+  const amount = Number($("withdrawAmount").value);
+  const operator = $("withdrawOperator").value;
+  const phone = $("withdrawPhone").value.trim();
+
+  if (amount < MIN_WITHDRAWAL) {
+    alert("Le retrait minimum est de " + money(MIN_WITHDRAWAL));
+    return;
+  }
+
+  if (amount > getBalance()) {
+    alert("Votre solde affiché est insuffisant.");
+    return;
+  }
+
+  if (!/^\+243\d{9}$/.test(phone)) {
+    alert("Utilisez le format +243 suivi de 9 chiffres.");
+    return;
+  }
 
   try {
-    const {data,error} = await sb.rpc("kb_review_withdrawal",{
-      p_withdrawal_id:id,
-      p_approve:approve
-    });
+    const {error} = await sb
+      .from("kb_withdrawals")
+      .insert({
+        user_id:user.id,
+        amount,
+        payment_method:operator,
+        phone_number:phone,
+        status:"pending"
+      });
 
     if (error) throw error;
 
-    msg(approve ? "Décision enregistrée. Vérifiez séparément le transfert réel." : "Retrait refusé.");
-    await loadAdmin();
-    await loadProfile();
-  } catch (e) {
-    msg("Validation du retrait impossible : "+safeError(e),"error");
+    alert("Demande envoyée. L'administration pourra l'approuver ou la rejeter.");
+    page("history");
+  } catch(error) {
+    alert("Erreur lors de la demande : " + error.message);
   }
 }
 
-async function loadTeam() {
-  if (!user) return;
+/* HISTORIQUE */
+async function renderHistory() {
+  $("content").innerHTML = `
+    <h2>Historiques des transactions</h2>
+    <section class="card" id="historyBox">Chargement...</section>
+    <button class="btn gray full" onclick="page('home')">Retour</button>
+  `;
 
-  const code = profile?.referral_code || makeReferralCode(user.id);
-  el("teamReferral").textContent = code;
+  const result = await sb
+    .from("kb_transactions")
+    .select("*")
+    .eq("user_id",user.id)
+    .order("created_at",{ascending:false})
+    .limit(100);
 
-  /*
-    Le nombre de filleuls et les commissions ne sont pas inventés ici.
-    Ils doivent venir de la table de parrainage et de fonctions SQL.
-  */
-  el("teamStats").textContent =
-    "Code : "+code+". Le nombre de filleuls et les commissions apparaîtront lorsque le suivi de parrainage sera créé côté serveur.";
-  el("teamList").textContent = "";
-}
-
-async function share() {
-  if (!user) return msg("Connectez-vous d'abord.","error");
-
-  const code = profile?.referral_code || makeReferralCode(user.id);
-  const url = location.origin + location.pathname + "?ref=" + encodeURIComponent(code);
-
-  try {
-    if (navigator.share) {
-      await navigator.share({
-        title:"KINSHASA BUSINESS",
-        text:"Rejoignez KINSHASA BUSINESS avec mon code de parrainage : "+code,
-        url
-      });
-    } else if (navigator.clipboard) {
-      await navigator.clipboard.writeText(url);
-      msg("Lien de parrainage copié.");
-    } else {
-      msg("Copiez ce lien : "+url);
-    }
-  } catch (e) {
-    if (e.name !== "AbortError") msg("Partage impossible : "+safeError(e),"error");
+  if (result.error) {
+    $("historyBox").innerHTML =
+      `<div class="error">${escapeHTML(result.error.message)}</div>`;
+    return;
   }
+
+  const rows = result.data || [];
+
+  $("historyBox").innerHTML = rows.length ? rows.map(row => `
+    <div class="item">
+      <b>${escapeHTML(row.type || row.transaction_type || "Transaction")}</b><br>
+      Montant : ${money(row.amount)}<br>
+      Statut : <span class="status">${escapeHTML(row.status || "enregistré")}</span><br>
+      <small>${escapeHTML(row.created_at || "")}</small>
+    </div>
+  `).join("") : "<p>Aucune transaction enregistrée.</p>";
 }
 
-/* Réouverture automatique de la session si elle existe déjà. */
-sb.auth.onAuthStateChange((event,session) => {
-  setTimeout(() => init(),0);
-});
+/* ÉQUIPE */
+function renderTeam() {
+  const referralCode = "KB" + user.id.replaceAll("-","").slice(0,10).toUpperCase();
+  const link = location.origin + location.pathname + "?ref=" + referralCode;
 
-init();
-</script>
-</body>
-</html>
+  $("content").innerHTML = `
+    <h2>Mon équipe</h2>
+
+    <section class="card">
+      <h3>Mon code de parrainage</h3>
+      <div class="money">${referralCode}</div>
+      <button class="btn primary full" onclick="copyValue('${referralCode}')">
+        Copier mon code
+      </button>
+    </section>
+
+    <section class="card">
+      <h3>Mon lien d'inscription</h3>
+      <input id="referralLink" readonly value="${escapeHTML(link)}">
+      <button class="btn yellow full" onclick="copyValue($('referralLink').value)">
+        Copier mon lien
+      </button>
+    </section>
+
+    <section class="card">
+      <h3>Paramètres de parrainage</h3>
+      <p>1er niveau : <b>30 %</b></p>
+      <p>2e niveau : <b>2 %</b></p>
+      <p>3e niveau : <b>1 %</b></p>
+    </section>
+
+    <section class="card">
+      <h3>Groupes officiels</h3>
+      <a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps" target="_blank" rel="noopener">
+        <button class="btn green full">Rejoindre WhatsApp</button>
+      </a>
+      <a href="https://t.me/francscongolais" target="_blank" rel="noopener">
+        <button class="btn primary full">Rejoindre Telegram</button>
+      </a>
+    </section>
+  `;
+}
+
+/* PROFIL */
+function renderProfile() {
+  $("content").innerHTML = `
+    <h2>Mon compte</h2>
+
+    <section class="card">
+      <h3>${escapeHTML(getName())}</h3>
+      <p>${escapeHTML(user.email || "")}</p>
+      <p>Téléphone : ${escapeHTML(user.user_metadata?.phone || "")}</p>
+      <p>Solde : <b>${money(getBalance())}</b></p>
+      <p>Type de compte : <b>${isAdmin ? "Administrateur" : "Membre"}</b></p>
+    </section>
+
+    <section class="card">
+      <button class="btn primary full" onclick="openDeposit()">Faire un dépôt</button>
+      <button class="btn yellow full" onclick="openWithdraw()">Demander un retrait</button>
+      <button class="btn gray full" onclick="page('history')">Historique des transactions</button>
+      ${isAdmin ? `
+        <button class="btn red full" onclick="page('admin')">⚙ ADMINISTRATION</button>
+      ` : ""}
+      <button class="btn gray full" onclick="logout()">Se déconnecter</button>
+    </section>
+  `;
+}
+
+/* ADMINISTRATION : ACCÈS RÉSERVÉ AU COMPTE ADMIN AUTORISÉ */
+async function renderAdmin() {
+  if (!isAdmin) {
+    alert("Accès réservé à l'administrateur autorisé.");
+    page("profile");
+    return;
+  }
+
+  $("content").innerHTML = `
+    <section class="card admin">
+      <h2>⚙ Administration KINSHASA BUSINESS</h2>
+      <p>Administrateur connecté : ${escapeHTML(user.email)}</p>
+      <p class="muted">Les décisions sont envoyées aux fonctions sécurisées de Supabase.</p>
+    </section>
+
+    <section class="card">
+      <h3>Membres</h3>
+      <div id="adminMembers">Chargement...</div>
+    </section>
+
+    <section class="card">
+      <h3>Dépôts en attente</h3>
+      <div id="adminDeposits">Chargement...</div>
+    </section>
+
+    <section class="card">
+      <h3>Retraits en attente</h3>
+      <div id="adminWithdrawals">Chargement...</div>
+    </section>
+
+    <button class="btn gray full" onclick="page('profile')">Retour au profil</button>
+  `;
+
+  await loadAdminData();
+}
+
+async function loadAdminData() {
+  if (!isAdmin) return;
+
+  const [members,deposits,withdrawals] = await Promise.all([
+    sb.from("kb_profiles").select("*").order("created_at",{ascending:false}).limit(200),
+    sb.from("kb_deposits").select("*").eq("status","pending").order("created_at",{ascending:false}),
+    sb.from("kb_withdrawals").select("*").eq("status","pending").order("created_at",{ascending:false})
+  ]);
+
+  $("adminMembers").innerHTML = members.error
+    ? `<div class="error">${escapeHTML(members.error.message)}</div>`
+    : (members.data || []).map(m => `
+      <div class="item">
+        <b>${escapeHTML(m.full_name || m.name || "Membre")}</b><br>
+        <small>${escapeHTML(m.id || "")}</small><br>
+        Solde : ${money(m.balance ?? m.solde ?? 0)}
+      </div>
+    `).join("") || "Aucun membre.";
+
+  $("adminDeposits").innerHTML = deposits.error
+    ? `<div class="error">${escapeHTML(deposits.error.message)}</div>`
+    : (deposits.data || []).map(d => `
+      <div class="item">
+        <b>${money(d.amount)}</b><br>
+        Opérateur : ${escapeHTML(d.payment_method || "")}<br>
+        Référence : ${escapeHTML(d.payment_reference || "")}<br>
+        Membre : ${escapeHTML(d.user_id || "")}<br>
+        <button class="btn green" onclick="reviewDeposit('${d.id}',true)">Approuver</button>
+        <button class="btn red" onclick="reviewDeposit('${d.id}',false)">Rejeter</button>
+      </div>
+    `).join("") || "Aucun dépôt en attente.";
+
+  $("adminWithdrawals").innerHTML = withdrawals.error
+    ? `<div class="error">${escapeHTML(withdrawals.error.message)}</div>`
+    : (withdrawals.data || []).map(w => `
+      <div class="item">
+        <b>${money(w
