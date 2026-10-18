@@ -2,63 +2,54 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0645a5">
 <title>KINSHASA BUSINESS</title>
-
 <style>
-:root {
-  --blue:#0645a5;
-  --dark:#06275d;
-  --yellow:#ffdc00;
-  --green:#16834a;
-  --bg:#f3f6fb;
-}
+:root{--blue:#0645a5;--dark:#06275d;--yellow:#ffdc00;--red:#e51d2a;--green:#16834a;--bg:#f3f6fb}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#18243a;padding-bottom:80px}
-header{background:linear-gradient(120deg,var(--dark),var(--blue));color:white;padding:22px 18px;border-bottom:5px solid var(--yellow)}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#18243a;padding-bottom:78px}
+header{background:linear-gradient(120deg,var(--dark),var(--blue));color:white;padding:20px 18px;border-bottom:5px solid var(--yellow)}
 header strong{font-size:23px}
 main{max-width:760px;margin:auto;padding:14px}
-.card{background:white;border-radius:16px;padding:18px;margin-bottom:15px;box-shadow:0 3px 12px #00000008}
-h2{font-size:22px;margin-top:0}
+.card{background:white;border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 3px 12px #00000008}
+h2{font-size:21px;margin-top:0}
 label{display:block;font-size:15px;font-weight:bold;margin:14px 0 7px}
-input,select{width:100%;padding:14px;border:1px solid #d7dfeb;border-radius:10px;background:white;font-size:16px}
+input,select{width:100%;padding:15px;border:1px solid #d7dfeb;border-radius:12px;background:white;font-size:16px}
 button{cursor:pointer}
-.btn{width:100%;border:0;border-radius:10px;padding:15px;margin-top:10px;background:var(--blue);color:white;font-weight:bold;font-size:15px}
+.btn{width:100%;border:0;border-radius:11px;padding:15px;margin-top:10px;background:var(--blue);color:white;font-size:15px;font-weight:bold}
 .yellow{background:var(--yellow);color:#18243a}
-.red{background:#d92535}
+.red{background:var(--red)}
 .green{background:var(--green)}
 .light{background:#e9effa;color:var(--blue)}
 .hidden{display:none!important}
 .msg{padding:12px;border-radius:10px;margin:10px 0;background:#edf3ff;font-size:14px;overflow-wrap:anywhere}
-.ok{background:#e6f7ed;color:#12643a}
-.error{background:#fff0f0;color:#a71924}
-.muted{font-size:12px;color:#68758a}
-.balance{background:linear-gradient(120deg,var(--blue),var(--dark));color:white;padding:20px;border-radius:14px;margin-bottom:14px}
-.amount{font-size:27px;font-weight:bold;margin:10px 0}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.grid button{background:white;color:var(--dark);border:1px solid #ddd;border-radius:10px;padding:18px 5px;font-weight:bold}
-.row{padding:13px 0;border-bottom:1px solid #e8edf5;font-size:13px;overflow-wrap:anywhere}
+.ok{background:#e6f7ed;color:#12643a;padding:12px;border-radius:10px;margin:10px 0;overflow-wrap:anywhere}
+.error{background:#fff0f0;color:#a71924;padding:12px;border-radius:10px;margin:10px 0;overflow-wrap:anywhere}
+.muted{font-size:13px;color:#68758a}
+.balance{background:linear-gradient(120deg,var(--blue),var(--dark));color:white;padding:20px;border-radius:15px;margin-bottom:14px}
+.amount{font-size:28px;font-weight:bold;margin:10px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid button{background:white;color:var(--dark);border:1px solid #ddd;border-radius:12px;padding:18px 5px;font-weight:bold}
+.row{padding:13px 0;border-bottom:1px solid #e8edf5;font-size:14px;overflow-wrap:anywhere}
 .row strong{display:block;margin-bottom:5px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:white;display:grid;grid-template-columns:repeat(4,1fr);padding:9px 2px;box-shadow:0 -2px 12px #0001;z-index:10}
+.nav{position:fixed;bottom:0;left:0;right:0;background:white;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 2px;box-shadow:0 -2px 12px #0001;z-index:10}
 .nav button{border:0;background:white;color:var(--blue);font-size:12px;padding:8px 0}
-.payment{border:1px solid #dce5f4;border-radius:13px;padding:14px;margin:12px 0;background:#fff}
-.payment-title{font-size:17px;font-weight:bold;margin-bottom:10px}
-.payment-number{font-size:23px;font-weight:bold;letter-spacing:1px;color:var(--blue);overflow-wrap:anywhere}
-.payment-owner{font-size:14px;color:#59677d;margin-top:7px}
-.copy-btn{width:100%;border:0;border-radius:8px;background:#e9effa;color:var(--blue);padding:12px;margin-top:12px;font-weight:bold}
-.selected-payment{border:2px solid var(--blue);background:#f4f8ff}
+.pay-card{border:1px solid #d9e1eb;border-radius:15px;padding:16px;margin:12px 0;background:#fff}
+.pay-title{font-size:19px;font-weight:bold;margin-bottom:12px}
+.pay-number{font-size:27px;font-weight:bold;color:var(--blue);letter-spacing:1px;overflow-wrap:anywhere;margin:12px 0}
+.pay-name{color:#596579;font-size:15px;margin-bottom:12px}
+.pay-copy{background:#e9effa;color:var(--blue);width:100%;padding:14px;border:0;border-radius:10px;font-size:15px;font-weight:bold}
 .scroll{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:12px}
 th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 </style>
 </head>
-
 <body>
 <header>
 <strong>KINSHASA <span style="color:#ffdc00">BUSINESS</span></strong>
-<div style="font-size:13px;margin-top:7px">Espace en francs congolais (FC)</div>
-<div id="connectionStatus" style="font-size:13px;margin-top:6px">Connexion...</div>
+<div style="font-size:14px;margin-top:8px">Espace en francs congolais (FC)</div>
+<div id="connectionStatus" style="margin-top:7px;font-size:13px">Connexion...</div>
 </header>
 
 <main>
@@ -66,33 +57,24 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 
 <section id="authPage">
 <div class="card">
-<h2>Bienvenue</h2>
+<h2>KINSHASA BUSINESS</h2>
 <p class="muted">Connectez-vous ou créez votre compte.</p>
 <div id="authMessage"></div>
-
 <div id="loginBox">
 <form id="loginForm">
-<label>E-mail</label>
-<input id="loginEmail" type="email" required>
-<label>Mot de passe</label>
-<input id="loginPassword" type="password" required>
+<label>E-mail</label><input id="loginEmail" type="email" required>
+<label>Mot de passe</label><input id="loginPassword" type="password" required>
 <button class="btn" id="loginButton">SE CONNECTER</button>
 </form>
 <button class="btn yellow" onclick="showRegister()">CRÉER UN COMPTE</button>
 </div>
-
 <div id="registerBox" class="hidden">
 <form id="registerForm">
-<label>Nom complet</label>
-<input id="regName" required maxlength="100">
-<label>Téléphone RDC</label>
-<input id="regPhone" type="tel" placeholder="+243..." required>
-<label>E-mail</label>
-<input id="regEmail" type="email" required>
-<label>Mot de passe (8 caractères minimum)</label>
-<input id="regPassword" type="password" minlength="8" required>
-<label>Code de parrainage (facultatif)</label>
-<input id="referralInput">
+<label>Nom complet</label><input id="regName" required maxlength="100">
+<label>Téléphone RDC</label><input id="regPhone" type="tel" placeholder="+243..." required>
+<label>E-mail</label><input id="regEmail" type="email" required>
+<label>Mot de passe (8 caractères minimum)</label><input id="regPassword" type="password" minlength="8" required>
+<label>Code de parrainage (facultatif)</label><input id="referralInput">
 <button class="btn yellow" id="registerButton">CRÉER MON COMPTE</button>
 </form>
 <button class="btn light" onclick="showLogin()">RETOUR À LA CONNEXION</button>
@@ -101,7 +83,6 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 </section>
 
 <div id="app" class="hidden">
-
 <section id="page-accueil" class="page">
 <div class="balance">
 <div>Mon solde disponible</div>
@@ -109,7 +90,6 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <div>Mes revenus : <b id="homeEarnings">0 FC</b></div>
 <div style="margin-top:8px">Compte : <b id="homeUserName">Membre</b></div>
 </div>
-
 <div class="card">
 <h2>Mes opérations</h2>
 <div class="grid">
@@ -121,7 +101,6 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <button onclick="go('moi')">👤<br>MON COMPTE</button>
 </div>
 </div>
-
 <div class="card">
 <h3>Assistance</h3>
 <a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps" target="_blank">Groupe WhatsApp</a><br><br>
@@ -132,54 +111,48 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <section id="page-depot" class="page hidden">
 <div class="card">
 <h2>Effectuer un dépôt</h2>
+<p class="muted">Choisissez un opérateur et copiez son numéro. Vérifiez toujours le nom du bénéficiaire avant d'envoyer de l'argent.</p>
 
-<p class="muted">1. Choisissez votre opérateur. 2. Copiez le numéro correspondant. 3. Effectuez le transfert. 4. Remplissez le formulaire ci-dessous.</p>
-
-<label>Choisir votre opérateur de paiement</label>
-<select id="depositMethod" required>
-<option value="">— Sélectionnez un opérateur —</option>
-<option value="AIRTEL MONEY">Airtel Money</option>
-<option value="ORANGE MONEY">Orange Money</option>
-<option value="M-PESA">M-Pesa</option>
-</select>
-
-<div id="paymentNumbers">
-<div class="payment">
-<div class="payment-title">🔴 AIRTEL MONEY</div>
-<div class="payment-number">0973 087 965</div>
-<div class="payment-owner">Nom du bénéficiaire : BASHIMBE</div>
-<button class="copy-btn" onclick="copyNumber('0973087965','copyAirtel')">📋 COPIER LE NUMÉRO</button>
-<span id="copyAirtel" class="muted"></span>
+<div class="pay-card">
+<div class="pay-title">🔴 AIRTEL MONEY</div>
+<div class="pay-number">097 308 7965</div>
+<div class="pay-name">Nom du bénéficiaire : BASHIMBE</div>
+<button type="button" class="pay-copy" onclick="copyPaymentNumber('0973087965',this)">📋 COPIER LE NUMÉRO</button>
 </div>
 
-<div class="payment">
-<div class="payment-title">🟠 ORANGE MONEY</div>
-<div class="payment-number">899 532 643</div>
-<div class="payment-owner">Nom du bénéficiaire : JEANCQUELLINE</div>
-<button class="copy-btn" onclick="copyNumber('899532643','copyOrange')">📋 COPIER LE NUMÉRO</button>
-<span id="copyOrange" class="muted"></span>
+<div class="pay-card">
+<div class="pay-title">🟠 ORANGE MONEY</div>
+<div class="pay-number">899 532 643</div>
+<div class="pay-name">Nom du bénéficiaire : JEANCQUELLINE</div>
+<button type="button" class="pay-copy" onclick="copyPaymentNumber('899532643',this)">📋 COPIER LE NUMÉRO</button>
 </div>
 
-<div class="payment">
-<div class="payment-title">🟢 M-PESA</div>
-<div class="payment-number">0861 823 718</div>
-<div class="payment-owner">Nom du bénéficiaire : REGINA</div>
-<button class="copy-btn" onclick="copyNumber('0861823718','copyMpesa')">📋 COPIER LE NUMÉRO</button>
-<span id="copyMpesa" class="muted"></span>
-</div>
+<div class="pay-card">
+<div class="pay-title">🟢 M-PESA</div>
+<div class="pay-number">0861 823 718</div>
+<div class="pay-name">Nom du bénéficiaire : REGINA</div>
+<button type="button" class="pay-copy" onclick="copyPaymentNumber('0861823718',this)">📋 COPIER LE NUMÉRO</button>
 </div>
 
 <div class="msg">⚠️ Vérifiez le numéro et le nom du bénéficiaire avant d'envoyer l'argent. Gardez votre preuve de transfert.</div>
-
 <div id="depositMessage"></div>
+
 <form id="depositForm">
 <label>Montant à déposer (FC), minimum 15 000</label>
 <input id="depositAmount" type="number" min="15000" step="1" required>
 
-<label>Référence du transfert</label>
-<input id="depositReference" required placeholder="Référence reçue après paiement">
+<label>Opérateur de paiement</label>
+<select id="depositMethod" required>
+<option value="">— Choisir un opérateur —</option>
+<option value="AIRTEL MONEY">🔴 AIRTEL MONEY</option>
+<option value="ORANGE MONEY">🟠 ORANGE MONEY</option>
+<option value="M-PESA">🟢 M-PESA</option>
+</select>
 
-<button class="btn">ENVOYER MA DEMANDE DE DÉPÔT</button>
+<label>Référence du transfert</label>
+<input id="depositReference" maxlength="120" autocomplete="off" placeholder="Entrez la référence exacte du transfert" required>
+
+<button class="btn" id="depositButton">ENVOYER MA DEMANDE DE DÉPÔT</button>
 </form>
 </div>
 </section>
@@ -190,17 +163,12 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <p class="muted">Minimum 2 000 FC. Frais affichés : 10 %.</p>
 <div id="withdrawMessage"></div>
 <form id="withdrawForm">
-<label>Montant (FC)</label>
-<input id="withdrawAmount" type="number" min="2000" required>
+<label>Montant (FC)</label><input id="withdrawAmount" type="number" min="2000" step="1" required>
 <label>Opérateur</label>
 <select id="withdrawMethod" required>
-<option value="">Choisir</option>
-<option>AIRTEL MONEY</option>
-<option>ORANGE MONEY</option>
-<option>M-PESA</option>
+<option value="">Choisir</option><option>AIRTEL MONEY</option><option>ORANGE MONEY</option><option>M-PESA</option>
 </select>
-<label>Numéro de réception</label>
-<input id="withdrawPhone" type="tel" placeholder="+243..." required>
+<label>Numéro de réception</label><input id="withdrawPhone" type="tel" placeholder="+243..." required>
 <div id="withdrawCalculation" class="msg">Le montant net sera affiché ici.</div>
 <button class="btn yellow">ENVOYER LA DEMANDE</button>
 </form>
@@ -208,24 +176,21 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 </section>
 
 <section id="page-vip" class="page hidden">
-<div class="card">
-<h2>Produits VIP</h2>
-<p class="muted">Les montants affichés sont des projections non garanties. Vérifiez les conditions et les risques avant tout paiement.</p>
+<div class="card"><h2>Produits VIP</h2>
+<p class="muted">Les montants affichés sont des projections et ne garantissent aucun gain. Vérifiez les conditions avant tout paiement.</p>
 <div id="plansList"></div>
 </div>
 </section>
 
 <section id="page-historique" class="page hidden">
-<div class="card">
-<h2>Historique des mouvements</h2>
+<div class="card"><h2>Historique des mouvements</h2>
 <button class="btn light" onclick="loadHistory()">ACTUALISER</button>
 <div id="historyList">Chargement...</div>
 </div>
 </section>
 
 <section id="page-equipe" class="page hidden">
-<div class="card">
-<h2>Mon équipe</h2>
+<div class="card"><h2>Mon équipe</h2>
 <div id="referralLink" class="msg"></div>
 <button class="btn" onclick="copyReferral()">COPIER LE LIEN</button>
 <div id="teamMembers"></div>
@@ -245,8 +210,8 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 
 <div id="adminPanel" class="hidden">
 <div class="card">
-<h2>🔐 Administration</h2>
-<button class="btn" onclick="loadAdmin()">ACTUALISER L'ADMINISTRATION</button>
+<h2>🛡️ Administration</h2>
+<button class="btn" onclick="loadAdmin()">ACTUALISER LE PANNEAU ADMIN</button>
 <div id="adminMessage"></div>
 </div>
 <div class="card"><h3>Dépôts en attente</h3><div id="adminDeposits"></div></div>
@@ -261,7 +226,7 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <button onclick="go('accueil')">🏠<br>ACCUEIL</button>
 <button onclick="go('vip')">📦<br>PRODUITS</button>
 <button onclick="go('equipe')">👥<br>ÉQUIPE</button>
-<button onclick="go('moi')">👤<br>COMPTE</button>
+<button onclick="go('moi')">🛡️<br>COMPTE / ADMIN</button>
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -291,55 +256,35 @@ function errorText(e){
 const s=e?.message||String(e);
 if(/Invalid login credentials/i.test(s))return "E-mail ou mot de passe incorrect.";
 if(/Email not confirmed/i.test(s))return "Confirmez votre adresse e-mail.";
+if(/duplicate key value violates unique constraint.*kb_deposits_unique_reference/i.test(s))return "Cette référence de transfert a déjà été utilisée. Vérifiez la référence et saisissez celle de votre propre transfert.";
+if(/duplicate key value violates unique constraint/i.test(s))return "Cette information existe déjà. Vérifiez votre saisie et réessayez.";
 if(/row-level security|permission denied/i.test(s))return "Autorisation refusée par Supabase. Vérifiez les politiques RLS.";
 if(/Failed to fetch|NetworkError/i.test(s))return "Connexion Internet indisponible.";
 return s;
 }
 
-/* COPIE DES NUMÉROS DE PAIEMENT */
-window.copyNumber=async function(number,outputId){
-const output=$(outputId);
+window.copyPaymentNumber=async function(number,button){
+const original=button.textContent;
 try{
-if(navigator.clipboard && window.isSecureContext){
+if(navigator.clipboard&&window.isSecureContext){
 await navigator.clipboard.writeText(number);
 }else{
-const input=document.createElement("textarea");
-input.value=number;
-input.style.position="fixed";
-input.style.opacity="0";
-document.body.appendChild(input);
-input.select();
-const copied=document.execCommand("copy");
-input.remove();
-if(!copied)throw Error("Copie impossible");
+const temp=document.createElement("textarea");
+temp.value=number;temp.style.position="fixed";temp.style.opacity="0";
+document.body.appendChild(temp);temp.select();
+const ok=document.execCommand("copy");temp.remove();
+if(!ok)throw Error("Copie non disponible");
 }
-output.textContent="✓ Numéro copié : "+number;
+button.textContent="✅ NUMÉRO COPIÉ";
 }catch(e){
 prompt("Copiez ce numéro :",number);
+button.textContent="📋 COPIER LE NUMÉRO";
 }
+setTimeout(()=>button.textContent=original,2200);
 };
 
-/* METTRE EN ÉVIDENCE L'OPÉRATEUR CHOISI */
-$("depositMethod").addEventListener("change",function(){
-document.querySelectorAll(".payment").forEach(el=>el.classList.remove("selected-payment"));
-const index={"AIRTEL MONEY":0,"ORANGE MONEY":1,"M-PESA":2}[this.value];
-if(index!==undefined){
-const cards=document.querySelectorAll(".payment");
-cards[index].classList.add("selected-payment");
-cards[index].scrollIntoView({behavior:"smooth",block:"nearest"});
-}
-});
-
-window.showRegister=()=>{
-$("loginBox").classList.add("hidden");
-$("registerBox").classList.remove("hidden");
-message("authMessage","");
-};
-window.showLogin=()=>{
-$("registerBox").classList.add("hidden");
-$("loginBox").classList.remove("hidden");
-message("authMessage","");
-};
+window.showRegister=()=>{$("loginBox").classList.add("hidden");$("registerBox").classList.remove("hidden");message("authMessage","");};
+window.showLogin=()=>{$("registerBox").classList.add("hidden");$("loginBox").classList.remove("hidden");message("authMessage","");};
 
 function showApp(){
 $("authPage").classList.add("hidden");
@@ -362,18 +307,12 @@ const a=await sb.from("kb_admins").select("user_id").eq("user_id",u.id).maybeSin
 if(a.error)console.warn(a.error.message);
 isAdmin=!!a.data&&(u.email||"").toLowerCase()===ADMIN.toLowerCase();
 
-let p=await sb.from("kb_profiles")
-.select("user_id,full_name,phone,balance_fc,created_at")
-.eq("user_id",u.id).maybeSingle();
-
+let p=await sb.from("kb_profiles").select("user_id,full_name,phone,balance_fc,created_at").eq("user_id",u.id).maybeSingle();
 if(p.error)throw p.error;
 if(!p.data){
 const md=u.user_metadata||{};
 p=await sb.from("kb_profiles").insert({
-user_id:u.id,
-full_name:md.full_name||"",
-phone:md.phone||"",
-balance_fc:0
+user_id:u.id,full_name:md.full_name||"",phone:md.phone||"",balance_fc:0
 }).select("user_id,full_name,phone,balance_fc,created_at").single();
 if(p.error)throw p.error;
 }
@@ -400,9 +339,7 @@ window.scrollTo(0,0);
 
 async function refreshBalance(){
 if(!user)return;
-const p=await sb.from("kb_profiles")
-.select("user_id,full_name,phone,balance_fc,created_at")
-.eq("user_id",user.id).maybeSingle();
+const p=await sb.from("kb_profiles").select("user_id,full_name,phone,balance_fc,created_at").eq("user_id",user.id).maybeSingle();
 if(p.error)throw p.error;
 if(p.data){
 profile=p.data;
@@ -411,28 +348,18 @@ $("profileName").textContent=p.data.full_name||"Membre";
 $("profilePhone").textContent=p.data.phone||"—";
 $("homeUserName").textContent=p.data.full_name||"Membre";
 }
-const t=await sb.from("kb_transactions")
-.select("amount_fc,transaction_type").eq("user_id",user.id);
+const t=await sb.from("kb_transactions").select("amount_fc,transaction_type").eq("user_id",user.id);
 if(!t.error){
-const gains=(t.data||[])
-.filter(x=>/revenu|commission|gain/i.test(x.transaction_type||""))
-.reduce((sum,x)=>sum+Number(x.amount_fc||0),0);
+const gains=(t.data||[]).filter(x=>/revenu|commission|gain/i.test(x.transaction_type||"")).reduce((sum,x)=>sum+Number(x.amount_fc||0),0);
 $("homeEarnings").textContent=money(gains);
 }
 }
-window.refreshAccount=async()=>{
-try{await refreshBalance();message("globalMessage","Compte actualisé.","ok");}
-catch(e){message("globalMessage",errorText(e),"error");}
-};
+window.refreshAccount=async()=>{try{await refreshBalance();message("globalMessage","Compte actualisé.","ok");}catch(e){message("globalMessage",errorText(e),"error");}};
 
 $("loginForm").addEventListener("submit",async e=>{
-e.preventDefault();
-const b=$("loginButton");b.disabled=true;
+e.preventDefault();const b=$("loginButton");b.disabled=true;
 try{
-const r=await sb.auth.signInWithPassword({
-email:$("loginEmail").value.trim(),
-password:$("loginPassword").value
-});
+const r=await sb.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});
 if(r.error)throw r.error;
 await initUser(r.data.user);
 }catch(x){message("authMessage",errorText(x),"error");}
@@ -440,59 +367,49 @@ finally{b.disabled=false;}
 });
 
 $("registerForm").addEventListener("submit",async e=>{
-e.preventDefault();
-const b=$("registerButton");b.disabled=true;
+e.preventDefault();const b=$("registerButton");b.disabled=true;
 try{
-const name=$("regName").value.trim();
-const phone=$("regPhone").value.trim();
-const email=$("regEmail").value.trim();
-const password=$("regPassword").value;
+const name=$("regName").value.trim(),phone=$("regPhone").value.trim(),email=$("regEmail").value.trim(),password=$("regPassword").value;
 if(name.length<2||phone.length<9)throw Error("Vérifiez le nom et le téléphone.");
-const r=await sb.auth.signUp({
-email,password,
-options:{data:{full_name:name,phone:phone,referral_code:$("referralInput").value.trim()}}
-});
+const r=await sb.auth.signUp({email,password,options:{data:{full_name:name,phone:phone,referral_code:$("referralInput").value.trim()}}});
 if(r.error)throw r.error;
 if(r.data.session&&r.data.user)await initUser(r.data.user);
-else{
-message("authMessage","Compte créé. Confirmez votre e-mail si nécessaire.","ok");
-showLogin();
-}
+else{message("authMessage","Compte créé. Confirmez votre e-mail si Supabase le demande.","ok");showLogin();}
 }catch(x){message("authMessage",errorText(x),"error");}
 finally{b.disabled=false;}
 });
 
-/* DÉPÔTS */
 $("depositForm").addEventListener("submit",async e=>{
 e.preventDefault();
+const b=$("depositButton");
+b.disabled=true;
 try{
 if(!user)throw Error("Connectez-vous.");
 const amount=Number($("depositAmount").value);
 const method=$("depositMethod").value;
 const reference=$("depositReference").value.trim();
-if(!method)throw Error("Choisissez d'abord votre opérateur.");
 if(amount<15000||!Number.isFinite(amount))throw Error("Minimum 15 000 FC.");
-if(!reference)throw Error("Saisissez la référence du transfert.");
+if(!method)throw Error("Choisissez un opérateur.");
+if(reference.length<4)throw Error("Saisissez la référence de votre transfert.");
 
 const r=await sb.from("kb_deposits").insert({
 user_id:user.id,
 amount_fc:amount,
 payment_method:method,
-reference,
+reference:reference,
 status:"pending"
 });
 if(r.error)throw r.error;
 $("depositForm").reset();
-document.querySelectorAll(".payment").forEach(el=>el.classList.remove("selected-payment"));
-message("depositMessage","Demande enregistrée, en attente de vérification.","ok");
+message("depositMessage","✅ Demande de dépôt enregistrée. Elle est en attente de vérification.","ok");
 await loadHistory();
-}catch(x){message("depositMessage",errorText(x),"error");}
+}catch(x){
+message("depositMessage",errorText(x),"error");
+}finally{b.disabled=false;}
 });
 
-/* RETRAITS */
 $("withdrawAmount").addEventListener("input",()=>{
-const n=Number($("withdrawAmount").value||0);
-const fee=Math.round(n*.1);
+const n=Number($("withdrawAmount").value||0),fee=Math.round(n*.1);
 message("withdrawCalculation",n?`Frais : ${money(fee)} · Montant net : ${money(n-fee)}`:"Le montant net sera affiché ici.","msg");
 });
 
@@ -500,25 +417,16 @@ $("withdrawForm").addEventListener("submit",async e=>{
 e.preventDefault();
 try{
 if(!user)throw Error("Connectez-vous.");
-const amount=Number($("withdrawAmount").value);
-const method=$("withdrawMethod").value;
-const phone=$("withdrawPhone").value.trim();
+const amount=Number($("withdrawAmount").value),method=$("withdrawMethod").value,phone=$("withdrawPhone").value.trim();
 if(amount<2000||!Number.isFinite(amount))throw Error("Minimum 2 000 FC.");
-const r=await sb.from("kb_withdrawals").insert({
-user_id:user.id,
-amount_fc:amount,
-payment_method:method,
-destination_phone:phone,
-status:"pending"
-});
+const r=await sb.from("kb_withdrawals").insert({user_id:user.id,amount_fc:amount,payment_method:method,destination_phone:phone,status:"pending"});
 if(r.error)throw r.error;
 $("withdrawForm").reset();
-message("withdrawMessage","Demande enregistrée et en attente de traitement.","ok");
+message("withdrawMessage","Demande de retrait enregistrée et en attente de traitement.","ok");
 await loadHistory();
 }catch(x){message("withdrawMessage",errorText(x),"error");}
 });
 
-/* HISTORIQUE */
 window.loadHistory=async function(){
 const el=$("historyList");
 if(!user){el.textContent="Connectez-vous.";return;}
@@ -534,10 +442,10 @@ if(d.error)throw d.error;
 if(w.error)throw w.error;
 const rows=[];
 (t.data||[]).forEach(x=>rows.push({date:x.created_at,type:x.transaction_type||"Transaction",amount:x.amount_fc,details:x.description||"",status:"Enregistrée"}));
-(d.data||[]).forEach(x=>rows.push({date:x.created_at,type:"Dépôt",amount:x.amount_fc,details:(x.payment_method||"")+" · Référence "+(x.reference||"—"),status:x.status||"pending"}));
-(w.data||[]).forEach(x=>rows.push({date:x.created_at,type:"Retrait",amount:x.amount_fc,details:(x.payment_method||"")+" · "+(x.destination_phone||""),status:x.status||"pending"}));
+(d.data||[]).forEach(x=>rows.push({date:x.created_at,type:"Dépôt",amount:x.amount_fc,details:`${x.payment_method||""} · Référence ${x.reference||"—"}`,status:x.status||"En attente"}));
+(w.data||[]).forEach(x=>rows.push({date:x.created_at,type:"Retrait",amount:x.amount_fc,details:`${x.payment_method||""} · ${x.destination_phone||""}`,status:x.status||"En attente"}));
 rows.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
-if(!rows.length){el.innerHTML="<p class='muted'>Aucun mouvement enregistré.</p>";return;}
+if(!rows.length){el.innerHTML="<p class='muted'>Aucun mouvement enregistré pour ce compte.</p>";return;}
 el.innerHTML=rows.map(x=>`<div class="row"><strong>${safe(x.type)} — ${money(x.amount)}</strong><div>${safe(x.details)}</div><div class="muted">${safe(x.status)} · ${x.date?safe(new Date(x.date).toLocaleString("fr-FR")):""}</div></div>`).join("");
 }catch(x){el.textContent="Erreur : "+errorText(x);}
 };
@@ -552,7 +460,7 @@ try{
 const r=await sb.from("kb_profiles").select("full_name,phone,created_at").eq("referred_by",user.id).order("created_at",{ascending:false});
 if(r.error)throw r.error;
 el.innerHTML=r.data.length?r.data.map(x=>`<div class="row"><strong>${safe(x.full_name||"Membre")}</strong>${safe(x.phone||"")}<div class="muted">${x.created_at?safe(new Date(x.created_at).toLocaleDateString("fr-FR")):""}</div></div>`).join(""):"<p class='muted'>Aucun filleul enregistré.</p>";
-}catch(e){el.innerHTML="<p class='muted'>Le parrainage nécessite la configuration du champ referred_by.</p>";}
+}catch(e){el.innerHTML="<p class='muted'>Le parrainage nécessite une configuration correcte du champ referred_by.</p>";}
 }
 window.copyReferral=async()=>{
 try{await navigator.clipboard.writeText(referralURL());alert("Lien copié.");}
@@ -602,11 +510,7 @@ await loadHistory();
 }catch(e){alert(errorText(e));}
 };
 
-window.logout=async()=>{
-await sb.auth.signOut();
-showAuth();
-showLogin();
-};
+window.logout=async()=>{await sb.auth.signOut();showAuth();showLogin();};
 
 async function start(){
 try{
@@ -621,10 +525,7 @@ catch(e){showAuth();message("authMessage",errorText(e),"error");}
 sb.auth.onAuthStateChange((event,session)=>{
 if(event==="SIGNED_OUT")showAuth();
 });
-}catch(e){
-showAuth();
-message("authMessage",errorText(e),"error");
-}
+}catch(e){showAuth();message("authMessage",errorText(e),"error");}
 }
 start();
 })();
