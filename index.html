@@ -8,45 +8,48 @@
 <style>
 :root{--blue:#0645a5;--dark:#06275d;--yellow:#ffdc00;--red:#e51d2a;--green:#16834a;--bg:#f3f6fb}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#18243a;padding-bottom:90px}
-header{background:linear-gradient(120deg,var(--dark),var(--blue));color:white;padding:18px;border-bottom:4px solid var(--yellow)}
-header strong{font-size:21px}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#18243a;padding-bottom:85px}
+header{background:linear-gradient(120deg,var(--dark),var(--blue));color:white;padding:22px 18px;border-bottom:5px solid var(--yellow)}
+header strong{font-size:23px}
 main{max-width:760px;margin:auto;padding:14px}
-.card{background:white;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 3px 12px #00000008}
-h2{font-size:19px;margin-top:0}
-label{display:block;font-size:13px;font-weight:bold;margin:12px 0 6px}
-input,select{width:100%;padding:12px;border:1px solid #d7dfeb;border-radius:9px;background:white}
+.card{background:white;border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 3px 12px #00000008}
+h2{font-size:21px;margin-top:0}
+label{display:block;font-size:14px;font-weight:bold;margin:13px 0 7px}
+input,select{width:100%;padding:14px;border:1px solid #d7dfeb;border-radius:11px;background:white;font-size:16px}
 button{cursor:pointer}
-.btn{width:100%;border:0;border-radius:9px;padding:13px;margin-top:10px;background:var(--blue);color:white;font-weight:bold}
+.btn{width:100%;border:0;border-radius:10px;padding:15px;margin-top:10px;background:var(--blue);color:white;font-weight:bold;font-size:15px}
 .yellow{background:var(--yellow);color:#18243a}
 .red{background:var(--red)}
 .green{background:var(--green)}
 .light{background:#e9effa;color:var(--blue)}
 .hidden{display:none!important}
-.msg{padding:11px;border-radius:9px;margin:10px 0;background:#edf3ff;font-size:13px;overflow-wrap:anywhere}
+.msg{padding:12px;border-radius:10px;margin:10px 0;background:#edf3ff;font-size:14px;overflow-wrap:anywhere}
 .ok{background:#e6f7ed;color:#12643a}
 .error{background:#fff0f0;color:#a71924}
 .muted{font-size:12px;color:#68758a}
-.balance{background:linear-gradient(120deg,var(--blue),var(--dark));color:white;padding:18px;border-radius:14px;margin-bottom:14px}
-.amount{font-size:27px;font-weight:bold;margin:10px 0}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.grid button{background:white;color:var(--dark);border:1px solid #ddd;border-radius:10px;padding:18px 5px;font-weight:bold}
-.row{padding:12px 0;border-bottom:1px solid #e8edf5;font-size:13px;overflow-wrap:anywhere}
-.row strong{display:block;margin-bottom:5px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:white;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:7px 2px;box-shadow:0 -2px 12px #0001;z-index:100}
-.nav button{border:0;background:white;color:var(--blue);font-size:10px;padding:7px 1px;overflow-wrap:anywhere}
+.balance{background:linear-gradient(120deg,var(--blue),var(--dark));color:white;padding:20px;border-radius:15px;margin-bottom:14px}
+.amount{font-size:28px;font-weight:bold;margin:10px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid button{background:white;color:var(--dark);border:1px solid #ddd;border-radius:11px;padding:20px 5px;font-weight:bold;font-size:14px}
+.row{padding:13px 0;border-bottom:1px solid #e8edf5;font-size:14px;overflow-wrap:anywhere}
+.row strong{display:block;margin-bottom:6px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:white;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:7px 2px;box-shadow:0 -2px 12px #0001;z-index:10}
+.nav button{border:0;background:white;color:var(--blue);font-size:10px;padding:8px 1px;line-height:1.5}
+.nav button.adminNav{color:#b00020;font-weight:bold}
 table{border-collapse:collapse;width:100%;font-size:12px}
-th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
+th,td{padding:9px 4px;border-bottom:1px solid #ddd;text-align:left}
 .scroll{overflow-x:auto}
-@media(max-width:380px){.nav button{font-size:9px}}
+.paycard{border:1px solid #dbe3ed;border-radius:14px;padding:15px;margin:12px 0}
+.payname{font-size:18px;font-weight:bold}
+.paynumber{font-size:25px;font-weight:bold;color:var(--blue);letter-spacing:1px;margin:12px 0}
+.copybtn{width:100%;border:0;border-radius:9px;background:#e9effa;color:var(--blue);padding:13px;font-weight:bold}
 </style>
 </head>
 <body>
-
 <header>
 <strong>KINSHASA <span style="color:#ffdc00">BUSINESS</span></strong>
-<div style="font-size:12px;margin-top:6px">Espace en francs congolais (FC)</div>
-<div id="connectionStatus" class="muted" style="color:white;margin-top:5px">Connexion...</div>
+<div style="font-size:14px;margin-top:8px">Espace en francs congolais (FC)</div>
+<div id="connectionStatus" style="font-size:13px;margin-top:7px">Connexion...</div>
 </header>
 
 <main>
@@ -57,30 +60,21 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <h2>KINSHASA BUSINESS</h2>
 <p class="muted">Connectez-vous ou créez votre compte.</p>
 <div id="authMessage"></div>
-
 <div id="loginBox">
 <form id="loginForm">
-<label>E-mail</label>
-<input id="loginEmail" type="email" required>
-<label>Mot de passe</label>
-<input id="loginPassword" type="password" required>
+<label>E-mail</label><input id="loginEmail" type="email" required>
+<label>Mot de passe</label><input id="loginPassword" type="password" required>
 <button class="btn" id="loginButton">SE CONNECTER</button>
 </form>
 <button class="btn yellow" onclick="showRegister()">CRÉER UN COMPTE</button>
 </div>
-
 <div id="registerBox" class="hidden">
 <form id="registerForm">
-<label>Nom complet</label>
-<input id="regName" required maxlength="100">
-<label>Téléphone RDC</label>
-<input id="regPhone" type="tel" placeholder="+243..." required>
-<label>E-mail</label>
-<input id="regEmail" type="email" required>
-<label>Mot de passe (8 caractères minimum)</label>
-<input id="regPassword" type="password" minlength="8" required>
-<label>Code de parrainage (facultatif)</label>
-<input id="referralInput">
+<label>Nom complet</label><input id="regName" required maxlength="100">
+<label>Téléphone RDC</label><input id="regPhone" type="tel" placeholder="+243..." required>
+<label>E-mail</label><input id="regEmail" type="email" required>
+<label>Mot de passe (8 caractères minimum)</label><input id="regPassword" type="password" minlength="8" required>
+<label>Code de parrainage (facultatif)</label><input id="referralInput">
 <button class="btn yellow" id="registerButton">CRÉER MON COMPTE</button>
 </form>
 <button class="btn light" onclick="showLogin()">RETOUR À LA CONNEXION</button>
@@ -97,7 +91,6 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <div>Mes revenus : <b id="homeEarnings">0 FC</b></div>
 <div style="margin-top:8px">Compte : <b id="homeUserName">Membre</b></div>
 </div>
-
 <div class="card">
 <h2>Mes opérations</h2>
 <div class="grid">
@@ -109,7 +102,6 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <button onclick="go('moi')">👤<br>MON COMPTE</button>
 </div>
 </div>
-
 <div class="card">
 <h3>Assistance</h3>
 <a href="https://chat.whatsapp.com/DzKHiqrdBbPI22W7afe9ps" target="_blank" rel="noopener">Groupe WhatsApp</a><br><br>
@@ -120,44 +112,44 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <section id="page-depot" class="page hidden">
 <div class="card">
 <h2>Effectuer un dépôt</h2>
+<p class="muted">Choisissez votre opérateur et copiez le numéro correspondant avant le transfert.</p>
 
-<div class="card">
-<strong>🔴 AIRTEL MONEY</strong>
-<div style="font-size:23px;font-weight:bold;color:#0645a5;margin:12px 0">097 308 7965</div>
-<div>Nom du bénéficiaire : BASHIMBE</div>
-<button class="btn light" onclick="copyNumber('0973087965')">📋 COPIER LE NUMÉRO AIRTEL</button>
+<div class="paycard">
+<div class="payname">🔴 AIRTEL MONEY</div>
+<div class="paynumber">097 308 7965</div>
+<div>Nom du bénéficiaire : <strong>BASHIMBE</strong></div>
+<button type="button" class="copybtn" onclick="copyNumber('0973087965')">📋 COPIER LE NUMÉRO</button>
 </div>
 
-<div class="card">
-<strong>🟠 ORANGE MONEY</strong>
-<div style="font-size:23px;font-weight:bold;color:#0645a5;margin:12px 0">899 532 643</div>
-<div>Nom du bénéficiaire : JEANCQUELLINE</div>
-<button class="btn light" onclick="copyNumber('899532643')">📋 COPIER LE NUMÉRO ORANGE</button>
+<div class="paycard">
+<div class="payname">🟠 ORANGE MONEY</div>
+<div class="paynumber">899 532 643</div>
+<div>Nom du bénéficiaire : <strong>JEANCQUELLINE</strong></div>
+<button type="button" class="copybtn" onclick="copyNumber('899532643')">📋 COPIER LE NUMÉRO</button>
 </div>
 
-<div class="card">
-<strong>🟢 M-PESA</strong>
-<div style="font-size:23px;font-weight:bold;color:#0645a5;margin:12px 0">086 182 3718</div>
-<div>Nom du bénéficiaire : REGINA</div>
-<button class="btn light" onclick="copyNumber('0861823718')">📋 COPIER LE NUMÉRO M-PESA</button>
+<div class="paycard">
+<div class="payname">🟢 M-PESA</div>
+<div class="paynumber">086 182 3718</div>
+<div>Nom du bénéficiaire : <strong>REGINA</strong></div>
+<button type="button" class="copybtn" onclick="copyNumber('0861823718')">📋 COPIER LE NUMÉRO</button>
 </div>
 
 <div class="msg">⚠️ Vérifiez le numéro et le nom du bénéficiaire avant d'envoyer l'argent. Gardez votre preuve de transfert.</div>
 <div id="depositMessage"></div>
-
 <form id="depositForm">
 <label>Montant à déposer (FC), minimum 15 000</label>
 <input id="depositAmount" type="number" min="15000" step="1" required>
-<label>Opérateur</label>
+<label>Opérateur utilisé</label>
 <select id="depositMethod" required>
-<option value="">Choisir un opérateur</option>
-<option value="AIRTEL MONEY">🔴 AIRTEL MONEY</option>
-<option value="ORANGE MONEY">🟠 ORANGE MONEY</option>
-<option value="M-PESA">🟢 M-PESA</option>
+<option value="">Choisir l'opérateur</option>
+<option value="AIRTEL MONEY">AIRTEL MONEY</option>
+<option value="ORANGE MONEY">ORANGE MONEY</option>
+<option value="M-PESA">M-PESA</option>
 </select>
 <label>Référence unique du transfert</label>
-<input id="depositReference" type="text" required maxlength="120" autocomplete="off" placeholder="Référence figurant sur votre reçu">
-<button class="btn">ENVOYER MA DEMANDE DE DÉPÔT</button>
+<input id="depositReference" type="text" maxlength="100" placeholder="Référence reçue après transfert" required>
+<button class="btn" type="submit">ENVOYER MA DEMANDE DE DÉPÔT</button>
 </form>
 </div>
 </section>
@@ -168,8 +160,7 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <p class="muted">Minimum 2 000 FC. Frais affichés : 10 %.</p>
 <div id="withdrawMessage"></div>
 <form id="withdrawForm">
-<label>Montant (FC)</label>
-<input id="withdrawAmount" type="number" min="2000" required>
+<label>Montant (FC)</label><input id="withdrawAmount" type="number" min="2000" required>
 <label>Opérateur</label>
 <select id="withdrawMethod" required>
 <option value="">Choisir</option>
@@ -177,10 +168,9 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <option>ORANGE MONEY</option>
 <option>M-PESA</option>
 </select>
-<label>Numéro de réception</label>
-<input id="withdrawPhone" type="tel" placeholder="+243..." required>
+<label>Numéro de réception</label><input id="withdrawPhone" type="tel" placeholder="+243..." required>
 <div id="withdrawCalculation" class="msg">Le montant net sera affiché ici.</div>
-<button class="btn yellow">ENVOYER LA DEMANDE</button>
+<button class="btn yellow" type="submit">ENVOYER LA DEMANDE</button>
 </form>
 </div>
 </section>
@@ -188,7 +178,6 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <section id="page-vip" class="page hidden">
 <div class="card">
 <h2>Produits VIP</h2>
-<p class="muted">Les revenus affichés sont des projections et ne garantissent aucun gain. Vérifiez les conditions et les risques avant tout paiement.</p>
 <div id="plansList"></div>
 </div>
 </section>
@@ -222,17 +211,17 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 </div>
 </section>
 
-<section id="page-administrateur" class="page hidden">
+<section id="page-admin" class="page hidden">
 <div class="card">
-<h2>🛡️ Espace administrateur</h2>
-<div id="adminMessage"></div>
-<button class="btn light" onclick="loadAdmin()">ACTUALISER LES DONNÉES</button>
+<h2>🛡️ Administration</h2>
+<p class="muted">Gestion des demandes et des membres.</p>
+<button class="btn" onclick="loadAdmin()">ACTUALISER L'ADMINISTRATION</button>
+<div id="adminMessage" class="msg"></div>
 </div>
 <div class="card"><h3>Dépôts en attente</h3><div id="adminDeposits"></div></div>
 <div class="card"><h3>Retraits en attente</h3><div id="adminWithdrawals"></div></div>
-<div class="card"><h3>Membres inscrits</h3><div id="adminMembers"></div></div>
+<div class="card"><h3>Membres</h3><div id="adminMembers"></div></div>
 </section>
-
 </div>
 </main>
 
@@ -240,18 +229,18 @@ th,td{padding:8px 4px;border-bottom:1px solid #ddd;text-align:left}
 <button onclick="go('accueil')">🏠<br>ACCUEIL</button>
 <button onclick="go('vip')">📦<br>PRODUITS</button>
 <button onclick="go('equipe')">👥<br>ÉQUIPE</button>
-<button onclick="go('moi')">👤<br>COMPTE</button>
-<button id="adminNavButton" class="hidden" onclick="go('administrateur')">🛡️<br>ADMINISTRATEUR</button>
+<button onclick="go('moi')">👤<br>MON COMPTE</button>
+<button id="adminNavButton" class="adminNav hidden" onclick="go('admin')">🛡️<br>ADMIN</button>
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 "use strict";
-
 (function(){
 const URL="https://uewceocdzvekuopgsmpg.supabase.co";
 const KEY="sb_publishable_Bl_nhA00AQTJPBVBu7EFFQ_GhPUvtq9";
 const ADMIN="angenabukuze@gmail.com";
+const ADMIN_REFERRAL="KIN897AD457";
 const $=id=>document.getElementById(id);
 let sb=null,user=null,profile=null,isAdmin=false;
 
@@ -265,56 +254,31 @@ const plans=[
 {code:"KIN7",price:1500000,daily:330000,days:60}
 ];
 
-function money(n){
-return Number(n||0).toLocaleString("fr-FR")+" FC";
-}
-
-function safe(s){
-return String(s??"").replace(/[&<>"']/g,c=>({
-"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-}[c]));
-}
-
-function message(id,text,type="msg"){
-const e=$(id);
-if(e){e.className=type;e.textContent=text;}
-}
-
+function money(n){return Number(n||0).toLocaleString("fr-FR")+" FC";}
+function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function message(id,text,type="msg"){const e=$(id);if(e){e.className=type;e.textContent=text;}}
 function errorText(e){
 const s=e?.message||String(e);
 if(/Invalid login credentials/i.test(s))return "E-mail ou mot de passe incorrect.";
 if(/Email not confirmed/i.test(s))return "Confirmez votre adresse e-mail.";
-if(/duplicate key value violates unique constraint.*reference/i.test(s))return "Cette référence de transfert existe déjà. Vérifiez votre reçu et saisissez la référence correcte.";
+if(/duplicate key value violates unique constraint.*kb_deposits_unique_reference/i.test(s))return "Cette référence de transfert a déjà été utilisée. Vérifiez la référence et saisissez celle de votre propre transfert.";
 if(/row-level security|permission denied/i.test(s))return "Autorisation refusée par Supabase. Vérifiez les politiques RLS.";
 if(/Failed to fetch|NetworkError/i.test(s))return "Connexion Internet indisponible.";
 return s;
 }
 
+window.showRegister=()=>{$("loginBox").classList.add("hidden");$("registerBox").classList.remove("hidden");message("authMessage","");};
+window.showLogin=()=>{$("registerBox").classList.add("hidden");$("loginBox").classList.remove("hidden");message("authMessage","");};
+
 window.copyNumber=async function(number){
 try{
-await navigator.clipboard.writeText(number);
-alert("Numéro copié : "+number);
-}catch(e){
-const input=document.createElement("textarea");
-input.value=number;
-document.body.appendChild(input);
-input.select();
-try{document.execCommand("copy");alert("Numéro copié : "+number);}
-catch(err){prompt("Copiez ce numéro :",number);}
-input.remove();
+if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(number);}
+else{
+const t=document.createElement("textarea");t.value=number;t.style.position="fixed";t.style.opacity="0";document.body.appendChild(t);t.select();
+const ok=document.execCommand("copy");t.remove();if(!ok)throw Error("Copie non disponible");
 }
-};
-
-window.showRegister=()=>{
-$("loginBox").classList.add("hidden");
-$("registerBox").classList.remove("hidden");
-message("authMessage","");
-};
-
-window.showLogin=()=>{
-$("registerBox").classList.add("hidden");
-$("loginBox").classList.remove("hidden");
-message("authMessage","");
+alert("Numéro copié : "+number);
+}catch(e){prompt("Copiez ce numéro :",number);}
 };
 
 function showApp(){
@@ -322,14 +286,10 @@ $("authPage").classList.add("hidden");
 $("app").classList.remove("hidden");
 $("bottomNav").classList.remove("hidden");
 $("adminNavButton").classList.toggle("hidden",!isAdmin);
-$("connectionStatus").textContent=isAdmin?"Administrateur connecté":"Connecté";
 go("accueil");
 }
-
 function showAuth(){
-user=null;
-profile=null;
-isAdmin=false;
+user=null;profile=null;isAdmin=false;
 $("authPage").classList.remove("hidden");
 $("app").classList.add("hidden");
 $("bottomNav").classList.add("hidden");
@@ -339,75 +299,51 @@ $("connectionStatus").textContent="Non connecté";
 
 async function initUser(u){
 user=u;
+const email=(u.email||"").trim().toLowerCase();
+const adminCheck=await sb.from("kb_admins").select("user_id").eq("user_id",u.id).maybeSingle();
+if(adminCheck.error)console.warn("Vérification administrateur :",adminCheck.error.message);
+isAdmin=email===ADMIN.toLowerCase()&&!adminCheck.error&&!!adminCheck.data;
 
-const a=await sb.from("kb_admins")
-.select("user_id")
-.eq("user_id",u.id)
-.maybeSingle();
-
-if(a.error)console.warn(a.error.message);
-
-isAdmin=!!a.data&&
-(u.email||"").toLowerCase()===ADMIN.toLowerCase();
-
-let p=await sb.from("kb_profiles")
-.select("user_id,full_name,phone,balance_fc,created_at")
-.eq("user_id",u.id)
-.maybeSingle();
-
+let p=await sb.from("kb_profiles").select("user_id,full_name,phone,balance_fc,created_at").eq("user_id",u.id).maybeSingle();
 if(p.error)throw p.error;
 
 if(!p.data){
 const md=u.user_metadata||{};
-p=await sb.from("kb_profiles")
-.insert({
+p=await sb.from("kb_profiles").insert({
 user_id:u.id,
 full_name:md.full_name||"",
 phone:md.phone||"",
 balance_fc:0
-})
-.select("user_id,full_name,phone,balance_fc,created_at")
-.single();
-
+}).select("user_id,full_name,phone,balance_fc,created_at").single();
 if(p.error)throw p.error;
 }
 
 profile=p.data;
+$("connectionStatus").textContent=isAdmin?"Administrateur":"Connecté";
 $("profileRole").textContent=isAdmin?"Administrateur":"Membre";
 $("profileName").textContent=profile.full_name||"Membre";
 $("profilePhone").textContent=profile.phone||"—";
 $("profileEmail").textContent=u.email||"—";
 $("homeUserName").textContent=profile.full_name||"Membre";
-
 await refreshBalance();
 showApp();
 }
 
 window.go=function(page){
 if(!user)return;
-if(page==="administrateur"&&!isAdmin){
-alert("Accès réservé à l'administrateur.");
-return;
-}
+if(page==="admin"&&!isAdmin){message("globalMessage","Accès administrateur refusé.","error");return;}
 document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
-const target=$("page-"+page);
-if(target)target.classList.remove("hidden");
-if(page==="historique")loadHistory();
+$("page-"+page)?.classList.remove("hidden");
+if(page==="historique")window.loadHistory();
 if(page==="equipe")loadTeam();
-if(page==="administrateur")loadAdmin();
+if(page==="admin"&&isAdmin)window.loadAdmin();
 window.scrollTo(0,0);
 };
 
 async function refreshBalance(){
 if(!user)return;
-
-const p=await sb.from("kb_profiles")
-.select("user_id,full_name,phone,balance_fc,created_at")
-.eq("user_id",user.id)
-.maybeSingle();
-
+const p=await sb.from("kb_profiles").select("user_id,full_name,phone,balance_fc,created_at").eq("user_id",user.id).maybeSingle();
 if(p.error)throw p.error;
-
 if(p.data){
 profile=p.data;
 $("homeBalance").textContent=money(p.data.balance_fc);
@@ -415,279 +351,151 @@ $("profileName").textContent=p.data.full_name||"Membre";
 $("profilePhone").textContent=p.data.phone||"—";
 $("homeUserName").textContent=p.data.full_name||"Membre";
 }
-
-const t=await sb.from("kb_transactions")
-.select("amount_fc,transaction_type")
-.eq("user_id",user.id);
-
+const t=await sb.from("kb_transactions").select("amount_fc,transaction_type").eq("user_id",user.id);
 if(!t.error){
-const gains=(t.data||[])
-.filter(x=>/revenu|commission|gain/i.test(x.transaction_type||""))
-.reduce((sum,x)=>sum+Number(x.amount_fc||0),0);
+const gains=(t.data||[]).filter(x=>/revenu|commission|gain/i.test(x.transaction_type||"")).reduce((sum,x)=>sum+Number(x.amount_fc||0),0);
 $("homeEarnings").textContent=money(gains);
 }
 }
-
 window.refreshAccount=async()=>{
-try{
-await refreshBalance();
-message("globalMessage","Compte actualisé.","ok");
-}catch(e){
-message("globalMessage",errorText(e),"error");
-}
+try{await refreshBalance();message("globalMessage","Compte actualisé.","ok");}
+catch(e){message("globalMessage",errorText(e),"error");}
 };
 
 $("loginForm").addEventListener("submit",async e=>{
 e.preventDefault();
-const b=$("loginButton");
-b.disabled=true;
+const b=$("loginButton");b.disabled=true;
 try{
-const r=await sb.auth.signInWithPassword({
-email:$("loginEmail").value.trim(),
-password:$("loginPassword").value
-});
+const r=await sb.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});
 if(r.error)throw r.error;
 await initUser(r.data.user);
-}catch(x){
-message("authMessage",errorText(x),"error");
-}finally{
-b.disabled=false;
-}
+}catch(x){message("authMessage",errorText(x),"error");}
+finally{b.disabled=false;}
 });
 
 $("registerForm").addEventListener("submit",async e=>{
 e.preventDefault();
-const b=$("registerButton");
-b.disabled=true;
+const b=$("registerButton");b.disabled=true;
 try{
 const name=$("regName").value.trim();
 const phone=$("regPhone").value.trim();
 const email=$("regEmail").value.trim();
 const password=$("regPassword").value;
-
+const referral=$("referralInput").value.trim()||(new URLSearchParams(location.search).get("ref")||"");
 if(name.length<2||phone.length<9)throw Error("Vérifiez le nom et le téléphone.");
-
-const r=await sb.auth.signUp({
-email,
-password,
-options:{data:{
-full_name:name,
-phone:phone,
-referral_code:$("referralInput").value.trim()
-}}
-});
-
+const r=await sb.auth.signUp({email,password,options:{data:{full_name:name,phone:phone,referral_code:referral}}});
 if(r.error)throw r.error;
-
-if(r.data.session&&r.data.user){
-await initUser(r.data.user);
-}else{
-message("authMessage","Compte créé. Confirmez votre e-mail si Supabase le demande.","ok");
-showLogin();
-}
-}catch(x){
-message("authMessage",errorText(x),"error");
-}finally{
-b.disabled=false;
-}
+if(r.data.session&&r.data.user)await initUser(r.data.user);
+else{message("authMessage","Compte créé. Confirmez votre e-mail si Supabase le demande.","ok");showLogin();}
+}catch(x){message("authMessage",errorText(x),"error");}
+finally{b.disabled=false;}
 });
 
 $("depositForm").addEventListener("submit",async e=>{
 e.preventDefault();
 try{
 if(!user)throw Error("Connectez-vous.");
-
 const amount=Number($("depositAmount").value);
 const method=$("depositMethod").value;
 const reference=$("depositReference").value.trim();
-
 if(amount<15000||!Number.isFinite(amount))throw Error("Minimum 15 000 FC.");
-if(!method)throw Error("Choisissez un opérateur.");
-if(!reference)throw Error("Saisissez la référence du transfert.");
-
+if(!method||!reference)throw Error("Choisissez l'opérateur et saisissez la référence.");
 const r=await sb.from("kb_deposits").insert({
-user_id:user.id,
-amount_fc:amount,
-payment_method:method,
-reference,
-status:"pending"
+user_id:user.id,amount_fc:amount,payment_method:method,reference,status:"pending"
 });
-
 if(r.error)throw r.error;
-
 $("depositForm").reset();
-message("depositMessage","Demande enregistrée, en attente de vérification.","ok");
-await loadHistory();
-}catch(x){
-message("depositMessage",errorText(x),"error");
-}
+message("depositMessage","Demande enregistrée et en attente de vérification.","ok");
+await window.loadHistory();
+}catch(x){message("depositMessage",errorText(x),"error");}
 });
 
 $("withdrawAmount").addEventListener("input",()=>{
 const n=Number($("withdrawAmount").value||0);
 const fee=Math.round(n*.1);
-message("withdrawCalculation",n?
-`Frais : ${money(fee)} · Montant net : ${money(n-fee)}`:
-"Le montant net sera affiché ici.","msg");
+message("withdrawCalculation",n?`Frais : ${money(fee)} · Montant net : ${money(n-fee)}`:"Le montant net sera affiché ici.","msg");
 });
 
 $("withdrawForm").addEventListener("submit",async e=>{
 e.preventDefault();
 try{
 if(!user)throw Error("Connectez-vous.");
-
 const amount=Number($("withdrawAmount").value);
 const method=$("withdrawMethod").value;
 const phone=$("withdrawPhone").value.trim();
-
 if(amount<2000||!Number.isFinite(amount))throw Error("Minimum 2 000 FC.");
-
 const r=await sb.from("kb_withdrawals").insert({
-user_id:user.id,
-amount_fc:amount,
-payment_method:method,
-destination_phone:phone,
-status:"pending"
+user_id:user.id,amount_fc:amount,payment_method:method,destination_phone:phone,status:"pending"
 });
-
 if(r.error)throw r.error;
-
 $("withdrawForm").reset();
 message("withdrawMessage","Demande enregistrée et en attente de traitement.","ok");
-await loadHistory();
-}catch(x){
-message("withdrawMessage",errorText(x),"error");
-}
+await window.loadHistory();
+}catch(x){message("withdrawMessage",errorText(x),"error");}
 });
 
 window.loadHistory=async function(){
 const el=$("historyList");
 if(!user){el.textContent="Connectez-vous.";return;}
 el.textContent="Chargement...";
-
 try{
 const [t,d,w]=await Promise.all([
-sb.from("kb_transactions")
-.select("id,transaction_type,amount_fc,description,created_at")
-.eq("user_id",user.id)
-.order("created_at",{ascending:false}).limit(100),
-
-sb.from("kb_deposits")
-.select("id,amount_fc,payment_method,reference,status,created_at")
-.eq("user_id",user.id)
-.order("created_at",{ascending:false}).limit(100),
-
-sb.from("kb_withdrawals")
-.select("id,amount_fc,payment_method,destination_phone,status,created_at")
-.eq("user_id",user.id)
-.order("created_at",{ascending:false}).limit(100)
+sb.from("kb_transactions").select("id,transaction_type,amount_fc,description,created_at").eq("user_id",user.id).order("created_at",{ascending:false}).limit(100),
+sb.from("kb_deposits").select("id,amount_fc,payment_method,reference,status,created_at").eq("user_id",user.id).order("created_at",{ascending:false}).limit(100),
+sb.from("kb_withdrawals").select("id,amount_fc,payment_method,destination_phone,status,created_at").eq("user_id",user.id).order("created_at",{ascending:false}).limit(100)
 ]);
-
 if(t.error)throw t.error;
 if(d.error)throw d.error;
 if(w.error)throw w.error;
-
 const rows=[];
-
-(t.data||[]).forEach(x=>rows.push({
-date:x.created_at,
-type:x.transaction_type||"Transaction",
-amount:x.amount_fc,
-details:x.description||"",
-status:"Enregistrée"
-}));
-
-(d.data||[]).forEach(x=>rows.push({
-date:x.created_at,
-type:"Dépôt",
-amount:x.amount_fc,
-details:`${x.payment_method||""} · Référence ${x.reference||"—"}`,
-status:x.status||"pending"
-}));
-
-(w.data||[]).forEach(x=>rows.push({
-date:x.created_at,
-type:"Retrait",
-amount:x.amount_fc,
-details:`${x.payment_method||""} · ${x.destination_phone||""}`,
-status:x.status||"pending"
-}));
-
+(t.data||[]).forEach(x=>rows.push({date:x.created_at,type:x.transaction_type||"Transaction",amount:x.amount_fc,details:x.description||"",status:"Enregistrée"}));
+(d.data||[]).forEach(x=>rows.push({date:x.created_at,type:"Dépôt",amount:x.amount_fc,details:`${x.payment_method||""} · Référence ${x.reference||"—"}`,status:x.status||"En attente"}));
+(w.data||[]).forEach(x=>rows.push({date:x.created_at,type:"Retrait",amount:x.amount_fc,details:`${x.payment_method||""} · ${x.destination_phone||""}`,status:x.status||"En attente"}));
 rows.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
-
-if(!rows.length){
-el.innerHTML="<p class='muted'>Aucun mouvement enregistré pour ce compte.</p>";
-return;
-}
-
-el.innerHTML=rows.map(x=>`
-<div class="row">
-<strong>${safe(x.type)} — ${money(x.amount)}</strong>
-<div>${safe(x.details)}</div>
-<div class="muted">${safe(x.status)} · ${x.date?safe(new Date(x.date).toLocaleString("fr-FR")):""}</div>
-</div>`).join("");
-
-}catch(x){
-el.textContent="Erreur : "+errorText(x);
-}
+if(!rows.length){el.innerHTML="<p class='muted'>Aucun mouvement enregistré pour ce compte.</p>";return;}
+el.innerHTML=rows.map(x=>`<div class="row"><strong>${safe(x.type)} — ${money(x.amount)}</strong><div>${safe(x.details)}</div><div class="muted">${safe(x.status)} · ${x.date?safe(new Date(x.date).toLocaleString("fr-FR")):""}</div></div>`).join("");
+}catch(x){el.textContent="Erreur : "+errorText(x);}
 };
 
 function referralURL(){
-return location.origin+location.pathname+"?ref="+
-encodeURIComponent(user.id.replace(/-/g,"").slice(0,10).toUpperCase());
+let code;
+if((user?.email||"").trim().toLowerCase()===ADMIN.toLowerCase()){
+code=ADMIN_REFERRAL;
+}else{
+code=(user.id.replace(/-/g,"").slice(0,10)).toUpperCase();
+}
+return location.origin+location.pathname+"?ref="+encodeURIComponent(code);
 }
 
 async function loadTeam(){
 $("referralLink").textContent=referralURL();
-const el=$("teamMembers");
-el.textContent="Chargement...";
-
+const el=$("teamMembers");el.textContent="Chargement...";
 try{
-const r=await sb.from("kb_profiles")
-.select("full_name,phone,created_at")
-.eq("referred_by",user.id)
-.order("created_at",{ascending:false});
-
+const r=await sb.from("kb_profiles").select("full_name,phone,created_at").eq("referred_by",user.id).order("created_at",{ascending:false});
 if(r.error)throw r.error;
-
-el.innerHTML=r.data.length?
-r.data.map(x=>`
-<div class="row">
-<strong>${safe(x.full_name||"Membre")}</strong>
-${safe(x.phone||"")}
-<div class="muted">${x.created_at?safe(new Date(x.created_at).toLocaleDateString("fr-FR")):""}</div>
-</div>`).join(""):
-"<p class='muted'>Aucun filleul enregistré.</p>";
-
-}catch(e){
-el.innerHTML="<p class='muted'>Le parrainage nécessite le champ referred_by dans kb_profiles.</p>";
-}
+el.innerHTML=r.data.length?r.data.map(x=>`<div class="row"><strong>${safe(x.full_name||"Membre")}</strong>${safe(x.phone||"")}<div class="muted">${x.created_at?safe(new Date(x.created_at).toLocaleDateString("fr-FR")):""}</div></div>`).join(""):"<p class='muted'>Aucun filleul enregistré.</p>";
+}catch(e){el.innerHTML="<p class='muted'>Le suivi des filleuls nécessite le champ referred_by dans kb_profiles et l'enregistrement du parrain lors de l'inscription.</p>";}
 }
 
 window.copyReferral=async()=>{
+const link=referralURL();
 try{
-await navigator.clipboard.writeText(referralURL());
-alert("Lien copié.");
-}catch(e){
-prompt("Copiez le lien :",referralURL());
+if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(link);
+else{
+const t=document.createElement("textarea");t.value=link;document.body.appendChild(t);t.select();
+const ok=document.execCommand("copy");t.remove();if(!ok)throw Error("Copie non disponible");
 }
+alert("Lien copié : "+link);
+}catch(e){prompt("Copiez votre lien :",link);}
 };
 
 function plansDisplay(){
-$("plansList").innerHTML=plans.map(p=>`
-<div class="card">
-<strong>${p.code} — ${money(p.price)}</strong>
-<p>Revenu journalier annoncé : ${money(p.daily)}</p>
-<p>Durée : ${p.days} jours</p>
-<p>Total théorique : ${money(p.daily*p.days)}</p>
-<p class="muted">Projection indicative, non garantie. Aucun achat automatique n'est effectué.</p>
-</div>`).join("");
+$("plansList").innerHTML=plans.map(p=>`<div class="card"><strong>${p.code} — ${money(p.price)}</strong><p>Revenu journalier affiché : ${money(p.daily)}</p><p>Durée : ${p.days} jours</p><p>Total théorique : ${money(p.daily*p.days)}</p><p class="muted">Ces montants ne sont pas garantis. Aucun achat automatique n'est effectué.</p></div>`).join("");
 }
 
 function adminItem(x,type){
 const deposit=type==="deposit";
-return `
-<div class="row">
+return `<div class="row">
 <strong>${money(x.amount_fc)} — ${safe(x.payment_method)}</strong>
 <div>${deposit?"Référence : "+safe(x.reference||"—"):"Destinataire : "+safe(x.destination_phone||"—")}</div>
 <div class="muted">Utilisateur : ${safe(x.user_id)}</div>
@@ -696,80 +504,38 @@ return `
 </div>`;
 }
 
-window.loadAdmin=async function(){
-if(!isAdmin){
-message("adminMessage","Accès refusé.","error");
-return;
-}
-
+window.loadAdmin=async()=>{
+if(!isAdmin){message("adminMessage","Accès refusé.","error");return;}
 message("adminMessage","Chargement...");
-
 try{
 const [d,w,m]=await Promise.all([
-sb.from("kb_deposits").select("*")
-.eq("status","pending")
-.order("created_at",{ascending:false}).limit(100),
-
-sb.from("kb_withdrawals").select("*")
-.eq("status","pending")
-.order("created_at",{ascending:false}).limit(100),
-
-sb.from("kb_profiles")
-.select("user_id,full_name,phone,balance_fc,created_at")
-.order("created_at",{ascending:false}).limit(200)
+sb.from("kb_deposits").select("*").eq("status","pending").order("created_at",{ascending:false}).limit(100),
+sb.from("kb_withdrawals").select("*").eq("status","pending").order("created_at",{ascending:false}).limit(100),
+sb.from("kb_profiles").select("user_id,full_name,phone,balance_fc,created_at").order("created_at",{ascending:false}).limit(200)
 ]);
-
 if(d.error)throw d.error;
 if(w.error)throw w.error;
 if(m.error)throw m.error;
-
-$("adminDeposits").innerHTML=d.data.length?
-d.data.map(x=>adminItem(x,"deposit")).join(""):
-"<p>Aucun dépôt en attente.</p>";
-
-$("adminWithdrawals").innerHTML=w.data.length?
-w.data.map(x=>adminItem(x,"withdrawal")).join(""):
-"<p>Aucun retrait en attente.</p>";
-
-$("adminMembers").innerHTML=`
-<div class="scroll">
-<table>
-<tr><th>Nom</th><th>Téléphone</th><th>Solde</th></tr>
-${m.data.map(x=>`
-<tr>
-<td>${safe(x.full_name||"Membre")}</td>
-<td>${safe(x.phone||"—")}</td>
-<td>${money(x.balance_fc)}</td>
-</tr>`).join("")}
-</table>
-</div>`;
-
+$("adminDeposits").innerHTML=d.data.length?d.data.map(x=>adminItem(x,"deposit")).join(""):"<p>Aucun dépôt en attente.</p>";
+$("adminWithdrawals").innerHTML=w.data.length?w.data.map(x=>adminItem(x,"withdrawal")).join(""):"<p>Aucun retrait en attente.</p>";
+$("adminMembers").innerHTML=`<div class="scroll"><table><tr><th>Nom</th><th>Téléphone</th><th>Solde</th></tr>${m.data.map(x=>`<tr><td>${safe(x.full_name||"Membre")}</td><td>${safe(x.phone||"—")}</td><td>${money(x.balance_fc)}</td></tr>`).join("")}</table></div>`;
 message("adminMessage","Administration actualisée.","ok");
-
-}catch(e){
-message("adminMessage",errorText(e),"error");
-}
+}catch(e){message("adminMessage",errorText(e),"error");}
 };
 
 window.review=async(type,id,approve)=>{
 if(!isAdmin)return alert("Accès refusé.");
 if(!confirm(approve?"Confirmer l'approbation ?":"Confirmer le refus ?"))return;
-
 try{
-const r=type==="deposit"?
-await sb.rpc("kb_review_deposit",{p_deposit_id:id,p_approve:approve}):
-await sb.rpc("kb_review_withdrawal",{p_withdrawal_id:id,p_approve:approve});
-
+const r=type==="deposit"
+?await sb.rpc("kb_review_deposit",{p_deposit_id:id,p_approve:approve})
+:await sb.rpc("kb_review_withdrawal",{p_withdrawal_id:id,p_approve:approve});
 if(r.error)throw r.error;
-
 alert("Demande traitée.");
-await loadAdmin();
+await window.loadAdmin();
 await refreshBalance();
-await loadHistory();
-
-}catch(e){
-alert(errorText(e));
-}
+await window.loadHistory();
+}catch(e){alert(errorText(e));}
 };
 
 window.logout=async()=>{
@@ -780,40 +546,22 @@ showLogin();
 
 async function start(){
 try{
-sb=window.supabase.createClient(URL,KEY,{
-auth:{
-persistSession:true,
-autoRefreshToken:true,
-detectSessionInUrl:true
-}
-});
-
+sb=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 plansDisplay();
-
 const s=await sb.auth.getSession();
 if(s.error)throw s.error;
-
 if(s.data.session?.user){
-try{
-await initUser(s.data.session.user);
-}catch(e){
-showAuth();
-message("authMessage",errorText(e),"error");
-}
-}else{
-showAuth();
-}
-
+try{await initUser(s.data.session.user);}
+catch(e){showAuth();message("authMessage",errorText(e),"error");}
+}else showAuth();
 sb.auth.onAuthStateChange((event,session)=>{
 if(event==="SIGNED_OUT")showAuth();
 });
-
 }catch(e){
 showAuth();
 message("authMessage",errorText(e),"error");
 }
 }
-
 start();
 })();
 </script>
