@@ -491,4 +491,186 @@ start();
 })();
 </script>
 </body>
-</html>
+</html><!-- ADMINISTRATION KINSHASA BUSINESS -->
+<style>
+#kb-admin-access {
+  position: fixed;
+  right: 12px;
+  bottom: 18px;
+  z-index: 999999;
+  background: linear-gradient(135deg, #ffcc00, #ff7900);
+  color: #111;
+  border: 3px solid #fff;
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-weight: 900;
+  box-shadow: 0 4px 20px rgba(0,0,0,.45);
+  cursor: pointer;
+}
+#kb-admin-access:hover {
+  transform: scale(1.04);
+}
+#kb-admin-message {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  background: rgba(0,0,0,.78);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#kb-admin-box {
+  background: white;
+  color: #222;
+  padding: 25px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+#kb-admin-box input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+}
+#kb-admin-box button {
+  padding: 12px;
+  margin: 5px;
+  border: 0;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+</style>
+
+<button id="kb-admin-access" type="button">
+  🔐 ADMINISTRATION
+</button>
+
+<div id="kb-admin-message">
+  <div id="kb-admin-box">
+    <h2>🔐 Espace administrateur</h2>
+    <p>KINSHASA BUSINESS</p>
+    <p>Connectez-vous avec votre compte administrateur.</p>
+
+    <input
+      id="kb-admin-email"
+      type="email"
+      value="angenabukuze@gmail.com"
+      readonly
+    >
+
+    <p id="kb-admin-status" role="status">
+      Vérification de votre session...
+    </p>
+
+    <button type="button" onclick="kbOpenAdmin()">
+      OUVRIR MON ADMINISTRATION
+    </button>
+
+    <button type="button" onclick="kbCloseAdmin()">
+      FERMER
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+  const modal = document.getElementById("kb-admin-message");
+  const status = document.getElementById("kb-admin-status");
+
+  document.getElementById("kb-admin-access").addEventListener("click", () => {
+    modal.style.display = "flex";
+    status.textContent = "Vérification de votre session...";
+    checkSession();
+  });
+
+  window.kbCloseAdmin = function () {
+    modal.style.display = "none";
+  };
+
+  async function checkSession() {
+    try {
+      if (!window.supabaseClient) {
+        status.textContent =
+          "Client Supabase introuvable. Vérifiez son initialisation dans votre HTML.";
+        return;
+      }
+
+      const { data, error } =
+        await window.supabaseClient.auth.getSession();
+
+      if (error || !data.session) {
+        status.textContent =
+          "Vous devez d'abord vous connecter à votre compte.";
+        return;
+      }
+
+      const user = data.session.user;
+
+      if ((user.email || "").toLowerCase() !==
+          "angenabukuze@gmail.com") {
+        status.textContent =
+          "Ce compte n'est pas l'adresse administrateur attendue.";
+        return;
+      }
+
+      const { data: admin, error: adminError } =
+        await window.supabaseClient
+          .from("kb_admins")
+          .select("user_id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+      if (adminError) {
+        status.textContent =
+          "Impossible de vérifier les droits dans Supabase : " +
+          adminError.message;
+        return;
+      }
+
+      if (!admin) {
+        status.textContent =
+          "Votre compte n'est pas reconnu dans kb_admins. " +
+          "Vérifiez l'identifiant utilisateur dans Supabase.";
+        return;
+      }
+
+      status.textContent =
+        "Administrateur reconnu. Ouverture du panneau...";
+
+    } catch (e) {
+      status.textContent = "Erreur : " + e.message;
+    }
+  }
+
+  window.kbOpenAdmin = async function () {
+    await checkSession();
+
+    if (!status.textContent.startsWith("Administrateur reconnu.")) {
+      return;
+    }
+
+    kbCloseAdmin();
+
+    // Utilise le bouton d'administration déjà présent dans le site.
+    const existingButton =
+      document.getElementById("adminNavButton");
+
+    if (existingButton) {
+      existingButton.click();
+      return;
+    }
+
+    alert(
+      "Votre compte est reconnu comme administrateur, " +
+      "mais le panneau existant est introuvable dans le HTML."
+    );
+  };
+})();
+</script>
